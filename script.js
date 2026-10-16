@@ -2,7 +2,7 @@
 const SHOP = {
   productName: 'HALONAP Sleep Eye Mask',
   priceGBP: 19.99, // Example price. Change to your actual selling price.
-  whatsappNumber: '', // Example: '447700900123' (country code, digits only, no +).
+  whatsappNumber: '447733967306', // Example: '447700900123' (country code, digits only, no +).
 };
 let quantity = 1;
 let cartQuantity = 0;
