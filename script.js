@@ -33,3 +33,37 @@ if (reviewForm) reviewForm.addEventListener('submit', (event) => {
   const message = ['Hello HALONAP! I would like to submit a customer review.', 'Name: ' + name, 'Rating: ' + rating + '/5', 'Review: ' + review].join('\n');
   window.open('https://wa.me/447733967306?text=' + encodeURIComponent(message), '_blank', 'noopener,noreferrer');
 });
+
+
+// Display only reviews explicitly added to reviews.json after approval.
+// Use textContent for all customer-provided fields to prevent HTML injection.
+(async function showApprovedReviews() {
+  const host = document.getElementById('approvedReviews');
+  if (!host) return;
+  try {
+    const response = await fetch('reviews.json', { cache: 'no-store' });
+    if (!response.ok) return;
+    const reviews = await response.json();
+    if (!Array.isArray(reviews)) return;
+    for (const item of reviews) {
+      if (!item || typeof item.name !== 'string' || typeof item.review !== 'string') continue;
+      const rating = Number(item.rating);
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) continue;
+      const card = document.createElement('article');
+      card.style.cssText = 'background:#fff8fa;border:1px solid #eed8e0;border-radius:18px;padding:22px;margin:14px 0;line-height:1.6';
+      const stars = document.createElement('div');
+      stars.style.cssText = 'letter-spacing:3px;margin-bottom:8px';
+      stars.setAttribute('aria-label', rating + ' out of 5 stars');
+      stars.textContent = '★'.repeat(rating) + '☆'.repeat(5-rating);
+      const name = document.createElement('strong');
+      name.textContent = item.name.slice(0,60);
+      const body = document.createElement('p');
+      body.style.marginTop = '10px';
+      body.textContent = item.review.slice(0,1200);
+      card.append(stars, name, body);
+      host.appendChild(card);
+    }
+  } catch (error) {
+    // Keep the review submission form available if the review feed cannot load.
+  }
+})();
