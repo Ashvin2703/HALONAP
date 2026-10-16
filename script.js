@@ -67,3 +67,21 @@ if (reviewForm) reviewForm.addEventListener('submit', (event) => {
     // Keep the review submission form available if the review feed cannot load.
   }
 })();
+
+/* Accessible hamburger navigation for small screens. */
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const siteNav = document.getElementById('siteNav');
+if (mobileMenuToggle && siteNav) {
+  function setMobileMenu(open) {
+    siteNav.classList.toggle('is-open', open);
+    mobileMenuToggle.setAttribute('aria-expanded', String(open));
+    mobileMenuToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+  }
+  mobileMenuToggle.addEventListener('click', () => setMobileMenu(!siteNav.classList.contains('is-open')));
+  siteNav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMobileMenu(false)));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') setMobileMenu(false); });
+  document.addEventListener('click', event => {
+    if (!siteNav.contains(event.target) && !mobileMenuToggle.contains(event.target)) setMobileMenu(false);
+  });
+  window.addEventListener('resize', () => { if (window.innerWidth > 750) setMobileMenu(false); });
+}
