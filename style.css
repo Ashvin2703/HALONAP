@@ -35,3 +35,11 @@
  .closing h2{font-size:clamp(40px,10vw,70px)}
  .header,.announcement,main,footer{max-width:100%}
 }
+
+/* HALONAP FAQ: lightweight accessible expandable answers. */
+.faq-list{max-width:740px;margin:26px auto}
+.faq-list details{background:#fff8fa;border:1px solid #eed8e0;border-radius:14px;margin:12px 0;padding:0 22px}
+.faq-list summary{cursor:pointer;font-weight:600;padding:20px 0;line-height:1.5}
+.faq-list details[open] summary{color:#974665}
+.faq-list details p{line-height:1.75;margin:0 0 20px;color:#68575c}
+.faq-list a{text-decoration:underline;text-underline-offset:3px}
