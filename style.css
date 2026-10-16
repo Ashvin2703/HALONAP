@@ -20,3 +20,18 @@
  .header nav a,.header nav a:nth-child(2){display:block;font-size:14px;letter-spacing:.04em;padding:14px 8px;border-bottom:1px solid #f2e6e9}
  .header nav a:last-child{border-bottom:0}
 }
+
+/* Mobile-only layout: prevent wide grids from creating a white strip. */
+@media(max-width:750px){
+ html,body{width:100%;max-width:100%;overflow-x:clip}
+ .hero{width:100%;max-width:100%;min-width:0;grid-template-columns:minmax(0,1fr)}
+ .hero-copy,.hero-photo,.product-layout,.product-images,.product-info,.story-copy,.story-image{min-width:0;max-width:100%}
+ .hero-copy{width:100%;padding:65px 7% 60px}
+ .hero h1{font-size:clamp(42px,11vw,66px);max-width:100%}
+ .hero-copy>p{max-width:100%}
+ .hero-photo{width:100%;min-height:340px}
+ .hero-photo img{max-width:100%}
+ .closing{width:100%;max-width:100%;overflow:hidden}
+ .closing h2{font-size:clamp(40px,10vw,70px)}
+ .header,.announcement,main,footer{max-width:100%}
+}
