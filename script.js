@@ -1,8 +1,8 @@
 // SHOP SETTINGS — replace these with your real details before accepting orders.
 const SHOP = {
   productName: 'HALONAP Sleep Eye Mask',
-  priceGBP: 12.99, // Example price. Change to your actual selling price.
-  whatsappNumber: '447733967306', // Example: '447700900123' (country code, digits only, no +).
+  priceGBP: 12.99, // Current selling price.
+  whatsappNumber: '447733967306', // Country code and digits only.
 };
 let quantity = 1;
 let cartQuantity = 0;
@@ -19,4 +19,4 @@ $('bagButton').onclick=openBag;$('closeBag').onclick=closeBag;$('overlay').oncli
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeBag()});
 $('addToBag').onclick=()=>{cartQuantity+=quantity;quantity=1;$('quantity').textContent='1';renderCart();openBag()};
 function renderCart(){ $('bagCount').textContent=cartQuantity;$('subtotal').textContent=money(cartQuantity*SHOP.priceGBP);$('cartContents').innerHTML=cartQuantity?`<div class="cart-item"><img src="images/product-2.jpg" alt="HALONAP eye mask"><div><h3>Sleep Eye Mask</h3><p>${money(SHOP.priceGBP)} × ${cartQuantity}</p><button id="removeItem">Remove</button></div></div>`:'<p class="empty">Your bag is waiting for something lovely ♡</p>';if(cartQuantity)$('removeItem').onclick=()=>{cartQuantity=0;renderCart()};$('checkout').disabled=!cartQuantity;$('checkout').style.opacity=cartQuantity?'1':'.5'}
-$('checkout').onclick=()=>{if(!cartQuantity)return;if(!/^\d{8,15}$/.test(SHOP.whatsappNumber)){$('checkoutHelp').textContent='Checkout is not configured yet. Store owner: add your WhatsApp number in script.js.';return;}const msg=`Hello HALONAP! I'd like to order:\n${SHOP.productName}\nQuantity: ${cartQuantity}\nSubtotal: ${money(cartQuantity*SHOP.priceGBP)}\nPlease confirm shipping, availability and final total.`;window.open(`https://wa.me/${SHOP.whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank','noopener,noreferrer')};renderCart();
+$('checkout').onclick=()=>{if(!cartQuantity)return;if(!/^\d{8,15}$/.test(SHOP.whatsappNumber)){$('checkoutHelp').textContent='Checkout is not configured yet. Store owner: add your WhatsApp number in script.js.';return;}const msg=`Hello HALONAP! I'd like to order:\n${SHOP.productName}\nQuantity: ${cartQuantity}\nSubtotal: ${money(cartQuantity*SHOP.priceGBP)}\nUK delivery: FREE\nTotal: ${money(cartQuantity*SHOP.priceGBP)}\nPlease confirm availability and delivery address.`;window.open(`https://wa.me/${SHOP.whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank','noopener,noreferrer')};renderCart();
