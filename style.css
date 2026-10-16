@@ -2,3 +2,7 @@
 
 /* Gold arrow icons only; preserve button backgrounds and text. */
 .hero-copy .btn span, #addToBag span, #reviewForm .btn span { color: #E5C17B; font-weight: 700; }
+
+/* Luxury rose-pink call-to-action buttons across HALONAP. */
+.btn { background:#B35F80; border-color:#B35F80; color:#fff; }
+.btn:hover, .btn:focus-visible { background:#974665; border-color:#974665; color:#fff; }
