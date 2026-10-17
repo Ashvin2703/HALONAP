@@ -85,3 +85,25 @@
 
 /* Strong password signup and reset UX */
 .password-entry{display:flex;align-items:center;position:relative}.password-entry input{width:100%;padding-right:64px}.password-visibility{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#9a5b70;font-size:12px;padding:8px}.password-rules{background:#fff4f7;border:1px solid #f0d7e0;border-radius:10px;padding:12px 14px;margin:10px 0;color:#805967;font-size:12px;text-align:left}.password-rules p{margin:0 0 7px;font-weight:600}.password-rules ul{margin:0;padding-left:19px;line-height:1.9}.password-rules li.passed{color:#26764b}.password-rules li.passed::marker{content:'✓  '}.confirm-password{margin:12px 0}.confirm-password label{display:block;margin-bottom:6px}.confirm-password #passwordMatch{font-size:12px;color:#a34054;margin:6px 0}.confirm-password #passwordMatch.passed{color:#26764b}
+
+/* HALONAP navy + golden logo-inspired theme; backup branch: backup-pink-theme-2026-10-17 */
+:root{--pink:#dba23b;--blush:#eef2fb;--cream:#fbfcff;--ink:#111d50;--muted:#58617e}
+body{color:var(--ink);background:var(--cream)}
+.announcement{background:#101b4b;color:#fff}
+.header{background:#fff;border-bottom-color:#dce3f4}
+.header .logo{font-family:'DM Sans',Arial,sans-serif;font-weight:700;letter-spacing:-1.8px;color:#101b4b;line-height:1;white-space:nowrap}
+.header .logo .logo-word{font:inherit;color:inherit;vertical-align:baseline;margin:0}
+.header .logo .logo-gold{font:inherit;color:#d49a2a;vertical-align:baseline;margin:0}
+.header nav a,.account-open,.bag{color:#101b4b}
+.hero{background:linear-gradient(130deg,#edf1fb,#fff8e9)}
+.eyebrow,.hero em,.section em,.story em,.closing em,.hero-note{color:#b57b1f}
+.btn{background:#101b4b;border-color:#101b4b;color:#fff}
+.btn:hover{background:#bd8728;border-color:#bd8728}
+.marquee{background:#101b4b;color:#fff}
+.bag span{border-color:#d5a64a}
+.orders-toggle{background:linear-gradient(135deg,#14265d,#253b77);border-color:#14265d;color:#fff}
+.orders-toggle:hover,.orders-toggle[aria-expanded="true"]{background:linear-gradient(135deg,#263c78,#405796)}
+.account-orders #accountOrders:not([hidden]){background:#f5f7fe;border-color:#dce3f4}
+.account-orders #accountOrders h3{color:#14265d}
+.mobile-menu-toggle{color:#101b4b}
+@media(max-width:750px){.mobile-menu-toggle{background:#f3f5fc!important;border-color:#dce3f4!important;color:#101b4b!important}}
