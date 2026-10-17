@@ -52,7 +52,7 @@ if (reviewForm) reviewForm.addEventListener('submit', (event) => {
       const card = document.createElement('article');
       card.style.cssText = 'background:#fff8fa;border:1px solid #eed8e0;border-radius:18px;padding:22px;margin:14px 0;line-height:1.6';
       const stars = document.createElement('div');
-      stars.style.cssText = 'letter-spacing:3px;margin-bottom:8px';
+      stars.style.cssText = 'letter-spacing:3px;margin-bottom:8px;color:#D4AF37;font-size:22px';
       stars.setAttribute('aria-label', rating + ' out of 5 stars');
       stars.textContent = '★'.repeat(rating) + '☆'.repeat(5-rating);
       const name = document.createElement('strong');
