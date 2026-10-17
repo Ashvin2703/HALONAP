@@ -46,3 +46,5 @@
 
 /* Colour variants */
 .colour-options{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0 24px}.colour-option{display:inline-flex;align-items:center;gap:9px;border:1px solid #e4cbd1;border-radius:12px;background:#fffaf7;padding:12px 18px;color:#34282b}.colour-option.selected{border:2px solid #b35f80;background:#fff0f4;padding:11px 17px}.colour-dot{display:inline-block;width:19px;height:19px;border-radius:50%;border:1px solid #c5b7ba}.colour-dot.grey{background:#99979a}.colour-dot.pink{background:#d68f9c}.thumbs{flex-wrap:wrap}.colour-option:focus-visible,.thumb:focus-visible{outline:3px solid #b35f80;outline-offset:3px}
+
+.colour-dot.black{background:#242124;border-color:#242124}
