@@ -6,6 +6,13 @@ const SHOP = {
 };
 let quantity = 1;
 let cartQuantity = 0;
+let selectedColour = "Grey";
+const variantPhotos = {Grey:["IMG_6093.jpeg","IMG_6092.jpeg","IMG_6091.jpeg","IMG_6094(1).jpeg"],Pink:["IMG_6089.jpeg","IMG_6088.jpeg","IMG_6087.jpeg","IMG_6086.jpeg","IMG_6090.jpeg"]};
+const cartVariants = {Grey:0,Pink:0};
+const fallbackPhoto = "images/IMG_6071.jpeg";
+function setVariant(colour){selectedColour=colour;document.getElementById("selectedColour").textContent=colour;document.querySelectorAll(".colour-option").forEach(b=>{const active=b.dataset.colour===colour;b.classList.toggle("selected",active);b.setAttribute("aria-pressed",String(active))});const photos=variantPhotos[colour];const thumbs=document.querySelector(".thumbs");thumbs.innerHTML="";photos.forEach((name,i)=>{const src="images/"+name;const btn=document.createElement("button");btn.type="button";btn.className="thumb"+(i===0?" active":"");btn.dataset.src=src;btn.setAttribute("aria-label",colour+" photo "+(i+1));const img=document.createElement("img");img.src=src;img.alt="";img.onerror=()=>{img.onerror=null;img.src=fallbackPhoto};btn.appendChild(img);btn.onclick=()=>{thumbs.querySelectorAll(".thumb").forEach(x=>x.classList.remove("active"));btn.classList.add("active");const main=document.getElementById("mainProduct");main.src=src;main.alt="HALONAP "+colour+" sleep mask"};thumbs.appendChild(btn)});const main=document.getElementById("mainProduct");main.src="images/"+photos[0];main.alt="HALONAP "+colour+" sleep mask";main.onerror=()=>{main.onerror=null;main.src=fallbackPhoto};}
+document.querySelectorAll(".colour-option").forEach(b=>b.addEventListener("click",()=>setVariant(b.dataset.colour)));
+setVariant("Grey");
 const money = n => new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(n);
 const $ = id => document.getElementById(id);
 $('price').textContent=money(SHOP.priceGBP);
@@ -17,8 +24,9 @@ function openBag(){$('drawer').classList.add('open');$('drawer').setAttribute('a
 function closeBag(){$('drawer').classList.remove('open');$('drawer').setAttribute('aria-hidden','true');$('overlay').hidden=true}
 $('bagButton').onclick=openBag;$('closeBag').onclick=closeBag;$('overlay').onclick=closeBag;
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeBag()});
-$('addToBag').onclick=()=>{cartQuantity+=quantity;quantity=1;$('quantity').textContent='1';renderCart();openBag()};
-function renderCart(){ $('bagCount').textContent=cartQuantity;$('subtotal').textContent=money(cartQuantity*SHOP.priceGBP);$('cartContents').innerHTML=cartQuantity?`<div class="cart-item"><img src="images/IMG_6071.jpeg" alt="HALONAP eye mask"><div><h3>Sleep Eye Mask</h3><p>${money(SHOP.priceGBP)} × ${cartQuantity}</p><button id="removeItem">Remove</button></div></div>`:'<p class="empty">Your bag is waiting for something lovely ♡</p>';if(cartQuantity)$('removeItem').onclick=()=>{cartQuantity=0;renderCart()};$('checkout').disabled=!cartQuantity;$('checkout').style.opacity=cartQuantity?'1':'.5'}
+$('addToBag').onclick=()=>{cartQuantity+=quantity;cartVariants[selectedColour]+=quantity;quantity=1;$('quantity').textContent='1';renderCart();openBag()};
+function renderCart(){ $('bagCount').textContent=cartQuantity;$('subtotal').textContent=money(cartQuantity*SHOP.priceGBP);const host=$('cartContents');host.innerHTML='';for(const colour of ['Grey','Pink']){const count=cartVariants[colour];if(!count)continue;const item=document.createElement('div');item.className='cart-item';item.style.marginBottom='20px';const img=document.createElement('img');img.src='images/'+variantPhotos[colour][0];img.alt='HALONAP '+colour+' eye mask';img.onerror=()=>{img.onerror=null;img.src=fallbackPhoto};const info=document.createElement('div');const title=document.createElement('h3');title.textContent='Sleep Eye Mask — '+colour;const price=document.createElement('p');price.textContent=money(SHOP.priceGBP)+' × '+count;const remove=document.createElement('button');remove.textContent='Remove';remove.onclick=()=>{cartQuantity-=cartVariants[colour];cartVariants[colour]=0;renderCart()};info.append(title,price,remove);item.append(img,info);host.appendChild(item)}if(!cartQuantity)host.innerHTML='<p class="empty">Your bag is waiting for something lovely ♡</p>';$('checkout').disabled=!cartQuantity;$('checkout').style.opacity=cartQuantity?'1':'.5'}
+
 $('checkout').onclick=()=>{if(!cartQuantity)return;window.location.href='https://buy.stripe.com/eVqaEQ16vdmZ6Tp7CXasg00'};renderCart();
 
 // Customer reviews are sent for manual verification; no fabricated ratings are displayed.
