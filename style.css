@@ -68,3 +68,6 @@
 
 /* Shopping bag quantity stepper */
 .cart-qty{display:flex;align-items:center;gap:14px;margin:12px 0}.cart-qty button{width:38px;height:38px;border:1px solid #d9b6c1;border-radius:8px;background:#fff7f9;color:#4c343c;font-size:23px;line-height:1;cursor:pointer}.cart-qty span{min-width:20px;text-align:center;font-size:16px;font-weight:600}.cart-qty button:active{background:#efd3dc}
+
+/* Compact shopping bag quantity controls */
+.cart-qty{gap:8px;margin:8px 0}.cart-qty button{width:28px;height:28px;font-size:18px;border-radius:6px}.cart-qty span{min-width:16px;font-size:13px}
