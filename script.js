@@ -39,52 +39,31 @@ $('buyNow').removeAttribute('href');$('buyNow').setAttribute('role','button');$(
 // Returning from Stripe's Back button should preserve the basket and make editing easy.
 if(new URLSearchParams(location.search).get('checkout')==='cancelled'){window.addEventListener('load',()=>{openBag();try{history.replaceState(null,'',location.pathname+'#shop')}catch(e){}})}
 
-// Customer reviews are sent for manual verification; no fabricated ratings are displayed.
-const reviewForm = document.getElementById('reviewForm');
-if (reviewForm) reviewForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  if (!reviewForm.reportValidity()) return;
-  const name = document.getElementById('reviewName').value.trim();
-  const rating = document.getElementById('reviewRating').value;
-  const review = document.getElementById('reviewMessage').value.trim();
-  if (!name || !rating || !review) return;
-  const message = ['Hello HALONAP! I would like to submit a customer review.', 'Name: ' + name, 'Rating: ' + rating + '/5', 'Review: ' + review].join('\n');
-  window.open('https://wa.me/447733967306?text=' + encodeURIComponent(message), '_blank', 'noopener,noreferrer');
-});
-
-
-// Display only reviews explicitly added to reviews.json after approval.
-// Use textContent for all customer-provided fields to prevent HTML injection.
-(async function showApprovedReviews() {
-  const host = document.getElementById('approvedReviews');
-  if (!host) return;
-  try {
-    const response = await fetch('reviews.json', { cache: 'no-store' });
-    if (!response.ok) return;
-    const reviews = await response.json();
-    if (!Array.isArray(reviews)) return;
-    for (const item of reviews) {
-      if (!item || typeof item.name !== 'string' || typeof item.review !== 'string') continue;
-      const rating = Number(item.rating);
-      if (!Number.isInteger(rating) || rating < 1 || rating > 5) continue;
-      const card = document.createElement('article');
-      card.style.cssText = 'background:#fff8fa;border:1px solid #eed8e0;border-radius:18px;padding:22px;margin:14px 0;line-height:1.6';
-      const stars = document.createElement('div');
-      stars.style.cssText = 'letter-spacing:3px;margin-bottom:8px;color:#D4AF37;font-size:22px';
-      stars.setAttribute('aria-label', rating + ' out of 5 stars');
-      stars.textContent = '★'.repeat(rating) + '☆'.repeat(5-rating);
-      const name = document.createElement('strong');
-      name.textContent = item.name.slice(0,60);
-      const body = document.createElement('p');
-      body.style.marginTop = '10px';
-      body.textContent = item.review.slice(0,1200);
-      card.append(stars, name, body);
-      host.appendChild(card);
-    }
-  } catch (error) {
-    // Keep the review submission form available if the review feed cannot load.
+// HALONAP review submissions and moderation (Supabase RLS enforces admin access).
+(async function initReviews(){
+ const client=window.supabase?.createClient('https://ufhobvpuwhainuheewxb.supabase.co','sb_publishable_upE73V2Ve1wcxj8gXZ9U0A_e5EmKhNy');
+ const form=document.getElementById('reviewForm'),host=document.getElementById('approvedReviews'),admin=document.getElementById('reviewAdmin'),adminList=document.getElementById('reviewAdminList');
+ if(!client||!form||!host)return;
+ const make=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
+ const card=(item,moderation=false)=>{
+  const el=make('article',undefined,'review-card');
+  el.append(make('div','★'.repeat(item.rating)+'☆'.repeat(5-item.rating),'review-stars'),make('strong',item.name),make('p',item.review));
+  const gallery=make('div',undefined,'review-gallery');
+  for(const path of (item.media_paths||[])){
+   const url=client.storage.from('review-media').getPublicUrl(path).data.publicUrl;
+   const video=/\.(mp4|webm|mov)$/i.test(path);
+   const media=document.createElement(video?'video':'img');media.src=url;if(video){media.controls=true;media.preload='metadata'}else media.alt='Customer review photo';media.loading='lazy';gallery.append(media);
   }
+  el.append(gallery);
+  if(moderation){el.append(make('small','Status: '+item.status+' · '+new Date(item.created_at).toLocaleDateString()));const actions=make('div',undefined,'review-actions');for(const [label,status] of [['Approve','approved'],['Reject','rejected'],['Delete','delete']]){const btn=make('button',label);btn.type='button';btn.onclick=async()=>{if(status==='delete'&&!confirm('Delete this review?'))return;btn.disabled=true;const result=status==='delete'?await client.from('product_reviews').delete().eq('id',item.id):await client.from('product_reviews').update({status}).eq('id',item.id);if(result.error)alert(result.error.message);await load();await loadAdmin()};actions.append(btn)}el.append(actions)}
+  return el;
+ };
+ async function load(){const {data,error}=await client.from('product_reviews').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(60);host.replaceChildren();if(!error)for(const item of data||[])host.append(card(item))}
+ async function loadAdmin(){if(!admin||!adminList)return;const {data:{user}}=await client.auth.getUser();if(!user){admin.hidden=true;return}const {data:membership}=await client.from('review_admins').select('user_id').eq('user_id',user.id).maybeSingle();admin.hidden=!membership;if(!membership)return;const {data,error}=await client.from('product_reviews').select('*').order('created_at',{ascending:false}).limit(100);adminList.replaceChildren();if(error){adminList.textContent=error.message;return}for(const item of data||[])adminList.append(card(item,true));if(!data?.length)adminList.textContent='No reviews yet.'}
+ form.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportValidity())return;const status=document.getElementById('reviewStatus'),btn=form.querySelector('button[type=submit]'),files=[...document.getElementById('reviewMedia').files];if(files.length>4){status.textContent='Choose up to 4 files.';return}const allowed=['image/jpeg','image/png','image/webp','video/mp4','video/webm','video/quicktime'];if(files.some(f=>f.size>20*1024*1024||!allowed.includes(f.type))){status.textContent='Only JPG, PNG, WebP, MP4, WebM or MOV files up to 20 MB each.';return}btn.disabled=true;status.textContent='Uploading your review…';const paths=[];try{for(const file of files){const ext=({ 'image/jpeg':'jpg','image/png':'png','image/webp':'webp','video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov'})[file.type];const path='incoming/'+crypto.randomUUID()+'.'+ext;const {error}=await client.storage.from('review-media').upload(path,file,{contentType:file.type,upsert:false});if(error)throw error;paths.push(path)}const {error}=await client.from('product_reviews').insert({name:document.getElementById('reviewName').value.trim(),rating:Number(document.getElementById('reviewRating').value),review:document.getElementById('reviewMessage').value.trim(),media_paths:paths,status:'pending'});if(error)throw error;form.reset();status.textContent='Thank you! Your review has been sent for approval.';await loadAdmin()}catch(err){status.textContent='Submission failed: '+err.message}finally{btn.disabled=false}});
+ await load();await loadAdmin();client.auth.onAuthStateChange(()=>setTimeout(loadAdmin,0));
 })();
+
 
 /* Accessible hamburger navigation for small screens. */
 const mobileMenuToggle = document.getElementById('mobileMenuToggle');
