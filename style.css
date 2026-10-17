@@ -185,3 +185,12 @@ footer.site-footer{display:block;background:#34272c;color:#f6edf0;padding:64px c
 
 /* Customer name shown above email in My Account */
 .account-display-name{display:inline-block;font-size:20px;font-weight:750;color:#14265d;margin-bottom:7px;overflow-wrap:anywhere}#accountFullNameWrap[hidden]{display:none!important}#accountFullNameWrap input{width:100%;box-sizing:border-box}
+
+
+/* Gold interactive customer rating stars; avoids unstyleable native iOS option menu */
+.review-rating-picker{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 14px;background:#fff;border:1px solid #dcc6ce;border-radius:12px}
+.review-rating-stars{display:flex;align-items:center;gap:5px}
+.review-star-button{border:0!important;background:transparent!important;color:#c9c1c5!important;font-size:33px!important;line-height:1!important;padding:4px!important;cursor:pointer;box-shadow:none!important;min-width:36px;min-height:40px}
+.review-star-button.selected{color:#d8a128!important}
+.review-star-button:focus-visible{outline:2px solid #14265d;outline-offset:2px;border-radius:5px}
+.review-rating-caption{font-size:13px;color:#685b67}
