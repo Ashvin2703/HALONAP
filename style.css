@@ -212,3 +212,7 @@ footer.site-footer{display:block;background:#34272c;color:#f6edf0;padding:64px c
 .rating-option-label{font-size:16px}
 .rating-option:focus-visible{outline:2px solid #fff;outline-offset:-3px;border-radius:10px}
 @media(max-width:390px){.rating-option{gap:5px}.rating-option .rating-gold-stars{font-size:22px}.rating-option-label{font-size:14px}}
+
+/* Golden rating text in the original native select; native iOS menu colors are OS-controlled */
+#reviewRating{color:#d8a128!important;font-weight:650}
+#reviewRating option{color:#d8a128;background-color:#fff}
