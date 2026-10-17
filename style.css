@@ -79,3 +79,6 @@
 
 /* HALONAP luxury blush order history */
 .orders-toggle{width:100%;padding:14px 18px;border:1px solid #d8a1b3;border-radius:12px;background:linear-gradient(135deg,#f3cbd7,#e8aebf);color:#633548;font:600 15px Arial,sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(156,76,105,.12)}.orders-toggle:hover,.orders-toggle[aria-expanded="true"]{background:linear-gradient(135deg,#eebdcd,#df9bb1)}.account-orders #accountOrders:not([hidden]){margin-top:12px;padding:16px;background:#fff7fa;border:1px solid #efd9e2;border-radius:12px}.account-orders #accountOrders h3{font:400 21px 'Playfair Display',serif;color:#653c4b;margin:0 0 12px}.account-orders #accountOrdersList{max-height:260px;overflow:auto}
+
+/* Place hamburger menu at far left, immediately before HALONAP logo on mobile */
+@media(max-width:750px){.header .mobile-menu-toggle{order:0;margin-left:0;margin-right:0;flex:0 0 36px;width:36px;height:36px;gap:4px}.header .mobile-menu-toggle span{width:17px}.header .logo{order:1;margin-right:auto}.header nav{order:2}.header .account-open{order:3}.header .bag{order:4}}
