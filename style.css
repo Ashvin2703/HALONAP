@@ -110,3 +110,6 @@ body{color:var(--ink);background:var(--cream)}
 
 /* HALONAP checkout sign-in / guest choice */
 .checkout-choice-card{text-align:center;max-width:440px}.checkout-choice-card h2{margin:12px 0 8px}.checkout-choice-card>p{line-height:1.6;color:#59627c}.checkout-choice-card .btn{display:block;width:100%;margin:12px 0;padding:15px 18px;cursor:pointer}.checkout-choice-card .checkout-guest{background:#fff;color:#14265d;border:1px solid #14265d}.checkout-choice-card .checkout-guest:hover{background:#f0f3fb}.checkout-choice-card .checkout-choice-note{font-size:12px;margin-top:16px}
+
+/* Footer policies and navy-gold information dialog */
+.footer-links{display:flex;flex-wrap:wrap;gap:10px 18px;justify-content:center}.footer-links button{border:0;background:transparent;padding:0;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.footer-links button:hover{color:#c79737}.policy-card{width:min(92vw,620px);max-height:85vh;overflow-y:auto;text-align:left}.policy-card h2{margin:12px 0;color:#14265d}.policy-content{line-height:1.75;font-size:14px;color:#4b5470;margin:16px 0 22px}.policy-content p{margin:0 0 15px}
