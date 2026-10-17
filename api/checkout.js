@@ -12,7 +12,7 @@ export default async function handler(req,res){
   const params=new URLSearchParams();
   params.set('mode','payment');
   params.set('success_url','https://halonap.com/?checkout=success');
-  params.set('cancel_url','https://halonap.com/?checkout=cancelled');
+  params.set('cancel_url','https://halonap.com/?checkout=cancelled#shop');
   params.set('billing_address_collection','required');
   params.set('shipping_address_collection[allowed_countries][0]','GB');
   params.set('phone_number_collection[enabled]','true');
