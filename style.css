@@ -131,3 +131,6 @@ body{color:var(--ink);background:var(--cream)}
 
 /* Consistent HALONAP wordmark in header and footer */
 footer .footer-logo{display:inline-flex;align-items:center;background:#fff;border-radius:12px;padding:10px 15px;color:#101b4b!important;text-decoration:none;width:max-content}footer .footer-logo .logo-word{color:#101b4b!important}footer .footer-logo .logo-gold{color:#d49a2a!important}
+
+/* Footer wordmark: exactly the same typography and colours as the header */
+footer .footer-logo,footer .footer-logo .logo-word{font-family:'DM Sans',Arial,sans-serif!important;font-size:29px!important;font-weight:700!important;letter-spacing:-1.8px!important;line-height:1!important;white-space:nowrap!important;font-style:normal!important}footer .footer-logo .logo-word{display:inline!important;vertical-align:baseline!important;margin:0!important;color:#101b4b!important}footer .footer-logo .logo-gold{font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;letter-spacing:inherit!important;line-height:inherit!important;vertical-align:baseline!important;margin:0!important;color:#d49a2a!important}footer .footer-logo{padding:10px 15px!important}
