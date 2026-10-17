@@ -128,3 +128,6 @@ body{color:var(--ink);background:var(--cream)}
 
 /* Supplied HALONAP brand artwork */
 .logo .brand-logo-image{display:block;width:clamp(135px,22vw,190px);height:auto;max-height:52px;object-fit:contain}.footer-brand-logo{display:inline-flex!important;width:max-content;background:#fff;border-radius:12px;padding:8px 12px!important;align-items:center}.footer-brand-logo .brand-logo-image{width:210px;max-height:70px}@media(max-width:390px){.header .logo .brand-logo-image{width:130px}}
+
+/* Consistent HALONAP wordmark in header and footer */
+footer .footer-logo{display:inline-flex;align-items:center;background:#fff;border-radius:12px;padding:10px 15px;color:#101b4b!important;text-decoration:none;width:max-content}footer .footer-logo .logo-word{color:#101b4b!important}footer .footer-logo .logo-gold{color:#d49a2a!important}
