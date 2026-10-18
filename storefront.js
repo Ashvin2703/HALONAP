@@ -38,3 +38,6 @@ if(new URLSearchParams(location.search).get('checkout')==='cancelled')$('bag').s
 
 
 for(const panel of [document.getElementById('accountPanel'),document.getElementById('checkoutChoice')]){let previous;new MutationObserver(()=>{if(!panel.hidden){previous=document.activeElement;panel.querySelector('button,input')?.focus()}else if(previous?.isConnected)previous.focus()}).observe(panel,{attributes:true,attributeFilter:['hidden']});panel.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;return}if(e.key!=='Tab')return;const all=[...panel.querySelectorAll('button,a,input,select,textarea,[tabindex="0"]')].filter(n=>!n.disabled&&n.getClientRects().length);const first=all[0],last=all.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}})}
+// Show the mobile shortcut after the hero CTA leaves view, avoiding overlap on small screens.
+const stickyBar=document.querySelector('.sticky');
+if('IntersectionObserver' in window){new IntersectionObserver(entries=>{stickyBar.hidden=entries[0].isIntersecting},{threshold:0}).observe(document.getElementById('buyNow'));}
