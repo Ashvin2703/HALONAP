@@ -1,3 +1,4 @@
+export const config = { api: { bodyParser: false } };
 import crypto from 'node:crypto';
 const SUPABASE='https://ufhobvpuwhainuheewxb.supabase.co';
 const PRICES={price_1URLHq24vjMaecFfE01eVMSh:'Black',price_1URNCd24vjMaecFfShkLBUKY:'Pink',price_1URNGr24vjMaecFfnovZJiLp:'Grey'};
