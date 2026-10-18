@@ -20,8 +20,8 @@ export default async function handler(req,res){
   const address=session.collected_information?.shipping_details||session.shipping_details||{};
   const customer=session.customer_details||{};
   const userId=session.metadata?.supabase_user_id||session.client_reference_id;
-  if(!userId||!/^[0-9a-f-]{36}$/i.test(userId))throw Error('Missing authenticated customer reference');
-  const row={user_id:userId,stripe_session_id:session.id,order_number:session.payment_intent||session.id,items,total_pence:session.amount_total||0,currency:session.currency||'gbp',payment_status:'paid',customer_name:address.name||customer.name||null,customer_email:customer.email||null,customer_phone:customer.phone||null,shipping_address:address.address||null};
+  if(userId&&!/^[0-9a-f-]{36}$/i.test(userId))throw Error('Invalid customer reference');
+  const row={user_id:userId||null,stripe_session_id:session.id,order_number:session.payment_intent||session.id,items,total_pence:session.amount_total||0,currency:session.currency||'gbp',payment_status:'paid',customer_name:address.name||customer.name||null,customer_email:customer.email||null,customer_phone:customer.phone||null,shipping_address:address.address||null};
   const result=await fetch(SUPABASE+'/rest/v1/customer_orders?on_conflict=stripe_session_id',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(row)});
   if(!result.ok)throw Error('Order save failed: '+result.status);
   return res.status(200).json({received:true});
