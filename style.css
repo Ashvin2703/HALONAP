@@ -231,3 +231,6 @@ footer.site-footer{display:block;background:#34272c;color:#f6edf0;padding:64px c
 
 /* Footer payment area: remove dark panel, preserve compact one-line logos */
 .footer-payment{background:transparent;border:0;box-shadow:none;border-radius:0;padding-left:0;padding-right:0}.footer-payment-label{color:inherit;opacity:.85}
+
+/* Copyright and registered trading address always appear last in the footer */
+.footer-bottom .footer-copyright-last{display:block;flex:0 0 100%;width:100%;box-sizing:border-box;text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.16);font-size:12px;line-height:1.65;opacity:.8;overflow-wrap:anywhere}.footer-bottom{display:flex;flex-wrap:wrap;justify-content:center}.footer-bottom .footer-payment{order:0}.footer-bottom>span{order:1}.footer-bottom .footer-copyright-last{order:99}
