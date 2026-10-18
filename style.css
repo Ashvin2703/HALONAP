@@ -244,3 +244,13 @@ footer.site-footer{padding:32px clamp(18px,4vw,58px) 16px}
 .site-footer .footer-group h3{margin:0 0 5px}
 .site-footer .footer-bottom{margin-top:20px;padding-top:14px;gap:10px}
 @media(max-width:560px){footer.site-footer{padding:26px 18px 14px}.site-footer .footer-inner{gap:18px}.site-footer .footer-links{gap:18px 12px}.site-footer .footer-group{gap:7px}.site-footer .footer-brand p{margin-top:6px}.site-footer .footer-bottom{margin-top:16px;padding-top:12px}}
+
+/* Remove oversized whitespace between product feature stories and sections. */
+.feature-showcase{padding-bottom:24px!important}
+.feature-showcase .feature-story{margin:20px 0 28px;gap:clamp(18px,3vw,40px)}
+.feature-showcase .feature-story:last-child{margin-bottom:0}
+.feature-showcase .feature-story-copy{padding:8px 0}
+.feature-showcase .feature-story-copy p{line-height:1.6}
+#product-details{padding-top:36px!important;padding-bottom:38px!important}
+#home .story{margin-top:0}
+@media(max-width:700px){.feature-showcase{padding-top:30px!important;padding-bottom:10px!important}.feature-showcase .feature-story{margin:14px 0 24px;gap:10px}.feature-showcase .feature-story-photo{aspect-ratio:1.65;min-height:0}.feature-showcase .feature-story-copy{padding:4px 0}.feature-showcase .feature-story-copy h3{margin:8px 0}.feature-showcase .feature-story-copy p{margin:8px 0;line-height:1.55}#product-details{padding-top:26px!important;padding-bottom:30px!important}#home .section-intro{margin-bottom:22px}}
