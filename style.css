@@ -234,3 +234,13 @@ footer.site-footer{display:block;background:#34272c;color:#f6edf0;padding:64px c
 
 /* Copyright and registered trading address always appear last in the footer */
 .footer-bottom .footer-copyright-last{display:block;flex:0 0 100%;width:100%;box-sizing:border-box;text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.16);font-size:12px;line-height:1.65;opacity:.8;overflow-wrap:anywhere}.footer-bottom{display:flex;flex-wrap:wrap;justify-content:center}.footer-bottom .footer-payment{order:0}.footer-bottom>span{order:1}.footer-bottom .footer-copyright-last{order:99}
+
+/* Compact footer: preserve existing links and payment marks */
+footer.site-footer{padding:32px clamp(18px,4vw,58px) 16px}
+.site-footer .footer-inner{gap:24px}
+.site-footer .footer-brand p{margin-top:8px;line-height:1.4}
+.site-footer .footer-links{gap:16px}
+.site-footer .footer-group{gap:7px}
+.site-footer .footer-group h3{margin:0 0 5px}
+.site-footer .footer-bottom{margin-top:20px;padding-top:14px;gap:10px}
+@media(max-width:560px){footer.site-footer{padding:26px 18px 14px}.site-footer .footer-inner{gap:18px}.site-footer .footer-links{gap:18px 12px}.site-footer .footer-group{gap:7px}.site-footer .footer-brand p{margin-top:6px}.site-footer .footer-bottom{margin-top:16px;padding-top:12px}}
