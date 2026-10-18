@@ -9,7 +9,11 @@ export default async function handler(req,res){
   if(entries.some(x=>!Number.isInteger(x.quantity)||x.quantity<0||x.quantity>99))return res.status(400).json({error:'Invalid quantity'});
   const selected=entries.filter(x=>x.quantity>0);
   if(!selected.length||selected.reduce((n,x)=>n+x.quantity,0)>99)return res.status(400).json({error:'Invalid basket size'});
+  let verifiedUserId=null;
+  const bearer=(req.headers.authorization||'').match(/^Bearer (.+)$/i);
+  if(bearer){const auth=await fetch('https://ufhobvpuwhainuheewxb.supabase.co/auth/v1/user',{headers:{apikey:'sb_publishable_upE73V2Ve1wcxj8gXZ9U0A_e5EmKhNy',Authorization:'Bearer '+bearer[1]}});if(auth.ok){const account=await auth.json();verifiedUserId=account.id||null}}
   const params=new URLSearchParams();
+  if(verifiedUserId)params.set('client_reference_id',verifiedUserId);
   params.set('mode','payment');
   params.set('success_url','https://halonap.com/?checkout=success');
   params.set('cancel_url','https://halonap.com/?checkout=cancelled#shop');
