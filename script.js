@@ -23,8 +23,7 @@ function renderGallery(){
  const file=photos[galleryIndex];
  main.src=(selectedColour==="Black"?"images/":"")+file;
  main.alt="HALONAP "+selectedColour+" sleep mask — photo "+(galleryIndex+1)+" of "+photos.length;
- const thumbs=document.getElementById("productThumbnails");
- if(thumbs){thumbs.innerHTML="";photos.forEach((photo,i)=>{const btn=document.createElement("button");btn.type="button";btn.className="product-thumbnail"+(i===galleryIndex?" active":"");btn.setAttribute("aria-label","View "+selectedColour+" photo "+(i+1));btn.setAttribute("aria-pressed",String(i===galleryIndex));const img=document.createElement("img");img.src=(selectedColour==="Black"?"images/":"")+photo;img.alt=selectedColour+" sleep mask thumbnail "+(i+1);img.loading="lazy";btn.appendChild(img);btn.addEventListener("click",()=>{galleryIndex=i;renderGallery()});thumbs.appendChild(btn)})}
+
 }
 function moveGallery(delta){galleryIndex+=delta;renderGallery()}
 document.getElementById("galleryPrev")?.addEventListener("click",()=>moveGallery(-1));
