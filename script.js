@@ -14,8 +14,33 @@ const CART_STORAGE_KEY = 'halonap-cart-v1';
 let cartCloudUser=null,cartSyncTimer=null,cartLoading=false;function saveCart(){try{localStorage.setItem(CART_STORAGE_KEY,JSON.stringify(cartVariants))}catch(e){}if(cartCloudUser&&!cartLoading){clearTimeout(cartSyncTimer);cartSyncTimer=setTimeout(()=>window.halonapSaveCustomerCart?.({...cartVariants}),450)}}window.halonapSetCustomerCart=(userId,items)=>{clearTimeout(cartSyncTimer);cartLoading=true;cartCloudUser=userId;for(const colour of ['Black','Pink','Grey']){const value=items?.[colour];if(Number.isInteger(value)&&value>=0&&value<=99)cartVariants[colour]=value}cartQuantity=Object.values(cartVariants).reduce((a,b)=>a+b,0);if(cartQuantity>99){cartQuantity=0;for(const colour of ['Black','Pink','Grey'])cartVariants[colour]=0}cartLoading=false;saveCart();if(typeof renderCart==='function')renderCart()};window.halonapDetachCustomerCart=()=>{clearTimeout(cartSyncTimer);cartCloudUser=null;for(const colour of ['Black','Pink','Grey'])cartVariants[colour]=0;cartQuantity=0;saveCart();if(typeof renderCart==='function')renderCart()};window.halonapReadLocalCart=()=>({...cartVariants});
 function restoreCart(){try{const saved=JSON.parse(localStorage.getItem(CART_STORAGE_KEY));if(!saved||typeof saved!=='object')return;for(const colour of ['Black','Pink','Grey']){const n=saved[colour];if(Number.isInteger(n)&&n>=0&&n<=99)cartVariants[colour]=n;}cartQuantity=Object.values(cartVariants).reduce((a,b)=>a+b,0);if(cartQuantity>99){for(const colour of ['Black','Pink','Grey'])cartVariants[colour]=0;cartQuantity=0}}catch(e){}}
 restoreCart();
-const fallbackPhoto = null;
-function setVariant(colour){selectedColour=colour;document.getElementById("selectedColour").textContent=colour;const description=document.getElementById("variantDescription");if(description)description.querySelector("strong").textContent="HALONAP Sleep Eye Mask — Colour: "+colour;document.querySelectorAll(".colour-option").forEach(b=>{const active=b.dataset.colour===colour;b.classList.toggle("selected",active);b.setAttribute("aria-pressed",String(active))});const photos=variantPhotos[colour] || [];const thumbs=document.querySelector(".thumbs");thumbs.innerHTML="";photos.forEach((name,i)=>{const src=(colour==="Black"?"images/":"")+name;const btn=document.createElement("button");btn.type="button";btn.className="thumb"+(i===0?" active":"");btn.dataset.src=src;btn.setAttribute("aria-label",colour+" photo "+(i+1));const img=document.createElement("img");img.src=src;img.alt="";img.onerror=()=>{img.style.display="none"};btn.appendChild(img);btn.onclick=()=>{thumbs.querySelectorAll(".thumb").forEach(x=>x.classList.remove("active"));btn.classList.add("active");const main=document.getElementById("mainProduct");main.src=src;main.alt="HALONAP "+colour+" sleep mask"};thumbs.appendChild(btn)});const main=document.getElementById("mainProduct");main.src=(colour==="Black"?"images/":"")+photos[0];main.alt="HALONAP "+colour+" sleep mask";main.onerror=()=>{main.alt="Photo unavailable for "+colour;main.removeAttribute("src")};}
+let galleryIndex=0;
+function renderGallery(){
+ const photos=variantPhotos[selectedColour]||[];
+ if(!photos.length)return;
+ galleryIndex=(galleryIndex+photos.length)%photos.length;
+ const main=document.getElementById("mainProduct");
+ const file=photos[galleryIndex];
+ main.src=(selectedColour==="Black"?"images/":"")+file;
+ main.alt="HALONAP "+selectedColour+" sleep mask — photo "+(galleryIndex+1)+" of "+photos.length;
+ const counter=document.getElementById("galleryCounter");
+ if(counter)counter.textContent=(galleryIndex+1)+" / "+photos.length;
+}
+function moveGallery(delta){galleryIndex+=delta;renderGallery()}
+document.getElementById("galleryPrev")?.addEventListener("click",()=>moveGallery(-1));
+document.getElementById("galleryNext")?.addEventListener("click",()=>moveGallery(1));
+const galleryPhoto=document.getElementById("mainProduct");
+let swipeStartX=null,swipeStartY=null;
+galleryPhoto?.addEventListener("touchstart",e=>{if(e.touches.length!==1)return;swipeStartX=e.touches[0].clientX;swipeStartY=e.touches[0].clientY},{passive:true});
+galleryPhoto?.addEventListener("touchend",e=>{if(swipeStartX===null||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-swipeStartX,dy=e.changedTouches[0].clientY-swipeStartY;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.25)moveGallery(dx<0?1:-1);swipeStartX=null;swipeStartY=null},{passive:true});
+function setVariant(colour){
+ selectedColour=colour;
+ document.getElementById("selectedColour").textContent=colour;
+ const description=document.getElementById("variantDescription");
+ if(description)description.querySelector("strong").textContent="HALONAP Sleep Eye Mask — Colour: "+colour;
+ document.querySelectorAll(".colour-option").forEach(b=>{const active=b.dataset.colour===colour;b.classList.toggle("selected",active);b.setAttribute("aria-pressed",String(active))});
+ galleryIndex=0;renderGallery();
+}
 document.querySelectorAll(".colour-option").forEach(b=>b.addEventListener("click",()=>setVariant(b.dataset.colour)));
 setVariant("Black");
 const money = n => new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(n);
