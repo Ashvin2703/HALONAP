@@ -20,7 +20,7 @@ export default async function handler(req,res){
   const params=new URLSearchParams();
   if(verifiedUserId)params.set('client_reference_id',verifiedUserId);
   params.set('mode','payment');
-
+  params.set('allow_promotion_codes','true');
   for(const key of ['utm_source','utm_medium','utm_campaign']){const value=req.body?.attribution?.[key];if(typeof value==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(value))params.set('metadata['+key+']',value);}
   params.set('success_url','https://halonap.com/?checkout=success');
   params.set('cancel_url','https://halonap.com/?checkout=cancelled#shop');
@@ -28,27 +28,10 @@ export default async function handler(req,res){
   params.set('shipping_address_collection[allowed_countries][0]','GB');
   // Stripe Checkout presents both UK shipping choices; free shipping is limited to eligible baskets.
   const ukShipping=[{name:'UK Standard Delivery (3 business days)',amount:299},{name:'UK Express Delivery (1–2 business days)',amount:399}];
-  // Resolve prices from Stripe and calculate the approved bundle offer on the server.
-  const prices=await Promise.all(selected.map(async item=>{const response=await fetch('https://api.stripe.com/v1/prices/'+encodeURIComponent(item.price),{headers:{Authorization:`Bearer ${process.env.STRIPE_SECRET_KEY}`}});const data=await response.json();if(!response.ok||data.currency!=='gbp'||data.unit_amount!==1299)throw Error('Unable to verify product price');return data.unit_amount*item.quantity}));
+  // GBP product prices are resolved from Stripe so the £70 threshold cannot be spoofed by the browser.
+  const prices=await Promise.all(selected.map(async item=>{const response=await fetch('https://api.stripe.com/v1/prices/'+encodeURIComponent(item.price),{headers:{Authorization:`Bearer ${process.env.STRIPE_SECRET_KEY}`}});const data=await response.json();if(!response.ok||data.currency!=='gbp'||!Number.isInteger(data.unit_amount))throw Error('Unable to verify product price');return data.unit_amount*item.quantity}));
   const subtotal=prices.reduce((sum,n)=>sum+n,0);
-  const count=selected.reduce((n,item)=>n+item.quantity,0);
-  const bundleTotal=Math.floor(count/3)*3000+(count%3===2?2200:count%3===1?1299:0);
-  const saving=subtotal-bundleTotal;
-  if(saving>0){
-   // Keep original Price IDs so existing order and stock webhooks still identify colours.
-   const couponId='halonap-bundle-v1-'+count;
-   const stripeHeaders={Authorization:`Bearer ${process.env.STRIPE_SECRET_KEY}`};
-   const existing=await fetch('https://api.stripe.com/v1/coupons/'+couponId,{headers:stripeHeaders});
-   let coupon=await existing.json();
-   if(existing.status===404){
-    const body=new URLSearchParams({id:couponId,amount_off:String(saving),currency:'gbp',duration:'once',name:'HALONAP bundle savings'});
-    const created=await fetch('https://api.stripe.com/v1/coupons',{method:'POST',headers:{...stripeHeaders,'Content-Type':'application/x-www-form-urlencoded','Idempotency-Key':couponId},body:body.toString()});
-    coupon=await created.json();if(!created.ok)throw Error('Bundle savings unavailable');
-   }else if(!existing.ok)throw Error('Bundle savings unavailable');
-   if(coupon.amount_off!==saving||coupon.currency!=='gbp'||coupon.valid!==true)throw Error('Bundle offer mismatch');
-   params.set('discounts[0][coupon]',couponId);
-  }else params.set('allow_promotion_codes','true');
-  if(bundleTotal>=2200)ukShipping.unshift({name:'Free UK Delivery (3 business days)',amount:0});
+  if(subtotal>=7000)ukShipping.unshift({name:'Free UK Delivery (3 business days)',amount:0});
   ukShipping.forEach((option,i)=>{params.set(`shipping_options[${i}][shipping_rate_data][type]`,'fixed_amount');params.set(`shipping_options[${i}][shipping_rate_data][display_name]`,option.name);params.set(`shipping_options[${i}][shipping_rate_data][fixed_amount][amount]`,String(option.amount));params.set(`shipping_options[${i}][shipping_rate_data][fixed_amount][currency]`,'gbp')});
   params.set('phone_number_collection[enabled]','true');
   selected.forEach((item,i)=>{params.set(`line_items[${i}][price]`,item.price);params.set(`line_items[${i}][quantity]`,String(item.quantity));});
