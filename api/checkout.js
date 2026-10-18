@@ -20,6 +20,8 @@ export default async function handler(req,res){
   const params=new URLSearchParams();
   if(verifiedUserId)params.set('client_reference_id',verifiedUserId);
   params.set('mode','payment');
+  params.set('allow_promotion_codes','true');
+  for(const key of ['utm_source','utm_medium','utm_campaign']){const value=req.body?.attribution?.[key];if(typeof value==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(value))params.set('metadata['+key+']',value);}
   params.set('success_url','https://halonap.com/?checkout=success');
   params.set('cancel_url','https://halonap.com/?checkout=cancelled#shop');
   params.set('billing_address_collection','required');

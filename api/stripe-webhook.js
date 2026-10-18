@@ -1,3 +1,4 @@
+import {database, syncOrderRefund} from '../lib/commerce.js';
 export const config = { api: { bodyParser: false } };
 import crypto from 'node:crypto';
 const SUPABASE='https://ufhobvpuwhainuheewxb.supabase.co';
@@ -10,6 +11,8 @@ export default async function handler(req,res){
  if(!signing||!key||!process.env.STRIPE_SECRET_KEY)return res.status(503).send('Webhook not configured');
  const raw=await rawBody(req);if(!verified(raw,req.headers['stripe-signature'],signing))return res.status(400).send('Invalid signature');
  let event;try{event=JSON.parse(raw.toString('utf8'))}catch{return res.status(400).end()}
+ if(event.livemode!==true)return res.status(400).send('Live endpoint requires a live event');
+ if(['charge.refunded','refund.created','refund.updated','refund.failed'].includes(event.type)){try{const obj=event.data?.object;const pi=typeof obj?.payment_intent==='string'?obj.payment_intent:obj?.payment_intent?.id;if(pi){const rows=await database('customer_orders?select=id,order_number,total_pence&order_number=eq.'+encodeURIComponent(pi));for(const order of rows)await syncOrderRefund(order);}return res.status(200).json({received:true});}catch{return res.status(500).send('Retry later');}}
  if(!['checkout.session.completed','checkout.session.async_payment_succeeded'].includes(event.type))return res.status(200).json({received:true});
  const session=event.data?.object;
  if(session?.payment_status!=='paid')return res.status(200).json({received:true});
@@ -22,7 +25,7 @@ export default async function handler(req,res){
   const customer=session.customer_details||{};
   const userId=session.metadata?.supabase_user_id||session.client_reference_id;
   if(userId&&!/^[0-9a-f-]{36}$/i.test(userId))throw Error('Invalid customer reference');
-  const row={user_id:userId||null,stripe_session_id:session.id,order_number:session.payment_intent||session.id,items,total_pence:session.amount_total||0,currency:session.currency||'gbp',payment_status:'paid',customer_name:address.name||customer.name||null,customer_email:customer.email||null,customer_phone:customer.phone||null,shipping_address:address.address||null};
+  const row={user_id:userId||null,stripe_session_id:session.id,order_number:session.payment_intent||session.id,items,total_pence:session.amount_total||0,currency:session.currency||'gbp',payment_status:'paid',customer_name:address.name||customer.name||null,customer_email:customer.email||null,customer_phone:customer.phone||null,shipping_address:address.address||null,attribution:Object.fromEntries(['utm_source','utm_medium','utm_campaign'].map(k=>[k,session.metadata?.[k]||'']))};
   // Atomic, idempotent transaction: save paid order and deduct inventory once.
   const result=await fetch(SUPABASE+'/rest/v1/rpc/record_paid_halonap_order',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({p_order:row})});
   if(!result.ok){const detail=await result.text();console.error('Order transaction failed',result.status,detail.slice(0,300));throw Error('Paid order transaction failed: '+result.status)}
