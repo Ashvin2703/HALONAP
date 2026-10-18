@@ -15,7 +15,7 @@
   const {data:member,error:membershipError}=await client.from('review_admins').select('user_id').eq('user_id',user.id).maybeSingle();
   if(membershipError||!member){section.hidden=true;return}
   section.hidden=false;list.textContent='Loading orders…';
-  const {data,error}=await client.from('customer_orders').select('id,order_number,items,total_pence,currency,payment_status,fulfillment_status,tracking_number,created_at,dispatched_at').order('created_at',{ascending:false}).limit(500);
+  const {data,error}=await client.from('customer_orders').select('id,order_number,items,total_pence,currency,payment_status,fulfillment_status,tracking_number,customer_name,customer_email,customer_phone,shipping_address,created_at,dispatched_at').order('created_at',{ascending:false}).limit(500);
   if(error){list.textContent='Could not load orders: '+error.message;return}
   const orders=data||[];
   const counts={Total:orders.length,Pending:orders.filter(o=>o.fulfillment_status==='pending').length,Processing:orders.filter(o=>o.fulfillment_status==='processing').length,Dispatched:orders.filter(o=>o.fulfillment_status==='dispatched').length,Delivered:orders.filter(o=>o.fulfillment_status==='delivered').length};
@@ -33,7 +33,7 @@
    const tracking=el('input');tracking.placeholder='Tracking number (optional)';tracking.value=o.tracking_number||'';tracking.maxLength=120;tracking.style.cssText='display:block;padding:10px;margin:10px 0;max-width:100%;box-sizing:border-box';
    const save=el('button','Save order status');save.type='button';save.className='btn';const message=el('span');message.style.marginLeft='10px';
    save.onclick=async()=>{save.disabled=true;message.textContent='Saving…';const update={fulfillment_status:select.value,tracking_number:tracking.value.trim()||null};if(select.value==='dispatched'&&!o.dispatched_at)update.dispatched_at=new Date().toISOString();const {error}=await client.from('customer_orders').update(update).eq('id',o.id);message.textContent=error?'Error: '+error.message:'Saved';save.disabled=false;if(!error)setTimeout(refresh,400)};
-   card.append(heading,info,items,label,tracking,save,message);list.append(card);
+   const address=o.shipping_address;const delivery=el('p',address?['Delivery: '+(o.customer_name||''),o.customer_email||'',o.customer_phone||'',[address.line1,address.line2,address.city,address.state,address.postal_code,address.country].filter(Boolean).join(', ')].filter(Boolean).join(' · '):'Delivery address not yet synced from Stripe');card.append(heading,info,items,delivery,label,tracking,save,message);list.append(card);
   }
   if(orders.length===500){list.prepend(el('p','Showing latest 500 orders only.'))}
  }
