@@ -9,6 +9,11 @@ export default async function handler(req,res){
   if(entries.some(x=>!Number.isInteger(x.quantity)||x.quantity<0||x.quantity>99))return res.status(400).json({error:'Invalid quantity'});
   const selected=entries.filter(x=>x.quantity>0);
   if(!selected.length||selected.reduce((n,x)=>n+x.quantity,0)>99)return res.status(400).json({error:'Invalid basket size'});
+  // Enforce admin-controlled availability and configured stock before starting payment.
+  const inventoryResponse=await fetch('https://ufhobvpuwhainuheewxb.supabase.co/rest/v1/product_inventory?select=colour,stock_quantity,is_active',{headers:{apikey:'sb_publishable_upE73V2Ve1wcxj8gXZ9U0A_e5EmKhNy'},cache:'no-store'});
+  if(!inventoryResponse.ok)return res.status(503).json({error:'Stock availability is temporarily unavailable. Please try again.'});
+  const inventory=await inventoryResponse.json();
+  for(const item of selected){const record=inventory.find(v=>v.colour===item.colour);if(!record||!record.is_active)return res.status(409).json({error:item.colour+' is currently unavailable.'});if(record.stock_quantity!==null&&record.stock_quantity<item.quantity)return res.status(409).json({error:'Only '+record.stock_quantity+' '+item.colour+' masks available.'});}
   let verifiedUserId=null;
   const bearer=(req.headers.authorization||'').match(/^Bearer (.+)$/i);
   if(bearer){const auth=await fetch('https://ufhobvpuwhainuheewxb.supabase.co/auth/v1/user',{headers:{apikey:'sb_publishable_upE73V2Ve1wcxj8gXZ9U0A_e5EmKhNy',Authorization:'Bearer '+bearer[1]}});if(auth.ok){const account=await auth.json();verifiedUserId=account.id||null}}
