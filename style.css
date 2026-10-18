@@ -264,3 +264,11 @@ footer.site-footer{padding:32px clamp(18px,4vw,58px) 16px}
 #home .product-highlights{gap:8px}
 #home .product-highlights span{font-size:clamp(12px,1.4vw,14px)}
 @media(max-width:700px){#home>.shop{padding:20px 16px 32px}#home>.shop .section-intro{margin-bottom:16px}#home .product-layout{gap:20px}#home .product-actions{gap:8px!important}#home .product-actions .btn{padding:12px 8px;font-size:14px}#home .feature-showcase{padding-top:24px!important}#reviews{padding-top:32px!important;padding-bottom:36px!important}}
+
+/* Compact swipeable product photo gallery */
+#shop .product-images{min-width:0}
+#shop .main-product{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;touch-action:pan-y}
+#shop .gallery-controls{display:flex;justify-content:center;align-items:center;gap:18px;margin:12px auto 0}
+#shop .gallery-controls button{display:grid;place-items:center;width:44px;height:44px;border:1px solid #dcc7d0;border-radius:50%;background:#fff;color:#17234a;font-size:27px;cursor:pointer}
+#shop .gallery-controls span{font-size:13px;letter-spacing:.09em;color:#6b6270;min-width:45px;text-align:center}
+@media(max-width:700px){#shop .main-product{aspect-ratio:1.15/1}#shop .gallery-controls{margin-top:8px;gap:12px}#shop .gallery-controls button{width:40px;height:40px}}
