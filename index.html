@@ -128,4 +128,27 @@ sync();
 #checkoutChoice .checkout-choice-note{font-size:12px!important;margin:8px 0 0!important}
 #checkoutChoice .account-close{position:absolute!important;top:12px!important;right:15px!important;z-index:2!important}
 @media(max-width:390px){#checkoutChoice .checkout-choice-card{padding:25px 19px!important}#checkoutChoice .checkout-member-actions .btn{font-size:13px!important}}
-</style></body></html>
+</style><style id="halonap-video-sections">
+.halonap-video-feature{padding:clamp(38px,6vw,80px) 20px;text-align:center;background:#f8f4f3}
+.halonap-video-feature h2{font:400 clamp(30px,4vw,48px)/1.2 Georgia,serif;color:#142453;margin:10px auto 25px}
+.halonap-video-feature video{width:min(100%,900px);max-height:70vh;object-fit:cover;border-radius:18px;display:block;margin:auto}
+.halonap-video-feature[hidden]{display:none!important}
+</style><script id="halonap-six-video-integration">
+document.addEventListener('DOMContentLoaded',async function(){
+const files=[
+'videos/01-hero-360.mp4','videos/02-product-details.mp4',
+'videos/03-contour.mp4','videos/04-lifestyle.mp4',
+'videos/05-colours.mp4','videos/06-brand-film.mp4'];
+async function available(path){try{const r=await fetch(path,{method:'HEAD'});return r.ok&&((r.headers.get('content-type')||'').includes('video')||path.endsWith('.mp4'))}catch(e){return false}}
+const checks=await Promise.all(files.map(available));
+const existing=[
+document.querySelector('.hero-motion'),
+document.querySelector('.introducing video'),
+document.querySelector('.contour-stage video')];
+existing.forEach((video,i)=>{if(!video||!checks[i])return;const source=video.querySelector('source');if(source){source.src=files[i];video.load();video.play().catch(()=>{})}});
+function feature(i,title,anchor){if(!checks[i]||!anchor)return;const section=document.createElement('section');section.className='halonap-video-feature';section.innerHTML='<span class="eyebrow">HALONAP 3D</span><h2></h2><video muted playsinline loop preload="none" controls aria-label=""></video>';section.querySelector('h2').textContent=title;const v=section.querySelector('video');v.src=files[i];v.setAttribute('aria-label',title);anchor.insertAdjacentElement('afterend',section);const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){v.play().catch(()=>{})}else v.pause()})},{threshold:.25});observer.observe(v)}
+feature(3,'Rest, wherever you are.',document.querySelector('.everyday'));
+feature(4,'Choose your colour.',document.querySelector('.finish-section'));
+if(checks[5]){const v=document.getElementById('productFilm');if(v){v.querySelector('source').src=files[5];v.load()}}
+});
+</script></body></html>
