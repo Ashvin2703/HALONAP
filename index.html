@@ -136,9 +136,9 @@ sync();
 </style><script id="halonap-six-video-integration">
 document.addEventListener('DOMContentLoaded',async function(){
 const files=[
-'videos/01-hero-360.mp4','videos/02-product-details.mp4',
-'videos/03-contour.mp4','videos/04-lifestyle.mp4',
-'videos/05-colours.mp4','videos/06-brand-film.mp4'];
+'01-hero-360.mp4','02-product-details.mp4',
+'03-contour.mp4','04-lifestyle.mp4',
+'05-colours.mp4','06-brand-film.mp4'];
 async function available(path){try{const r=await fetch(path,{method:'HEAD'});return r.ok&&((r.headers.get('content-type')||'').includes('video')||path.endsWith('.mp4'))}catch(e){return false}}
 const checks=await Promise.all(files.map(available));
 const existing=[
