@@ -102,14 +102,22 @@ body.shop-open #shop .product-actions{grid-template-columns:minmax(0,1fr)!import
 .editorial-store .product-navigation .halonap-inline-wordmark{font-size:clamp(18px,2.2vw,23px)!important}
 .editorial-store .product-navigation .halonap-inline-3d{font-size:9px!important;margin-left:2px!important}
 @media(max-width:750px){.editorial-store .hero-product-name .halonap-inline-wordmark{font-size:26px!important}.editorial-store .product-navigation .halonap-inline-wordmark{font-size:20px!important}}
+</style><style id="halonap-transparent-wordmark-fix">
+/* Transparent logo backgrounds; remove 3D labels from hero and sticky bar. */
+.editorial-store .hero-product-name .halonap-inline-wordmark,
+.editorial-store .product-navigation .halonap-inline-wordmark,
+.editorial-store .header a.logo,
+.editorial-store .site-footer a.footer-logo{background:transparent!important;border-radius:0!important;box-shadow:none!important;padding:0!important}
+.editorial-store .hero-product-name .halonap-inline-3d,
+.editorial-store .product-navigation .halonap-inline-3d{display:none!important}
 </style></head><body class="editorial-store">
 <header class="header"><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open navigation menu" aria-controls="siteNav" aria-expanded="false"><span></span><span></span><span></span></button><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
 <video class="hero-motion" autoplay muted loop playsinline preload="metadata" poster="images/IMG_6074.jpeg" aria-label="HALONAP sleep mask rotating to show its contoured shape"><source src="130361228_1790674409511717.mp4" type="video/mp4"></video>
-<div class="rest-hero-copy"><p class="hero-product-name"><span class="halonap-inline-wordmark">Hal<span class="halonap-inline-gold">o</span>nap</span><span class="halonap-inline-3d">3D</span></p><h1 id="restHeadline">Made for switching off.</h1></div>
+<div class="rest-hero-copy"><p class="hero-product-name"><span class="halonap-inline-wordmark">Hal<span class="halonap-inline-gold">o</span>nap</span></p><h1 id="restHeadline">Made for switching off.</h1></div>
 <a href="#shop" class="hero-shop">Shop Now</a>
 </section>
-<div class="product-navigation" aria-label="Product overview"><span class="halonap-inline-wordmark">Hal<span class="halonap-inline-gold">o</span>nap<sup class="halonap-inline-3d">3D</sup></span><a href="#shop" class="mini-shop">Shop Now</a></div>
+<div class="product-navigation" aria-label="Product overview"><span class="halonap-inline-wordmark">Hal<span class="halonap-inline-gold">o</span>nap</span><a href="#shop" class="mini-shop">Shop Now</a></div>
 <section class="introducing"><div class="introducing-copy"><span class="eyebrow">INTRODUCING HALONAP</span><h2>A little less light.<br>A little more comfort.<br>Your space to switch off.</h2></div><video autoplay muted loop playsinline preload="metadata" poster="images/IMG_6074.jpeg" aria-label="A closer look at the HALONAP sleep mask"><source src="130361228_1790674409511717.mp4" type="video/mp4"></video></section>
 <section class="contour-stage" aria-labelledby="contourTitle"><span class="eyebrow">SHAPED AROUND YOU</span><div class="contour-visual"><video autoplay muted loop playsinline preload="metadata" poster="images/IMG_6074.jpeg" aria-label="Front, side and inside views of the HALONAP mask"><source src="130361228_1790674409511717.mp4" type="video/mp4"></video></div><h2 id="contourTitle">3D</h2><p>Contoured. Soft. Adjustable.</p></section>
 <section class="film-section"><div class="film-card"><video id="productFilm" muted loop playsinline preload="none" poster="images/IMG_6073.jpeg"><source src="130361228_1790674409511717.mp4" type="video/mp4"></video><button type="button" id="filmToggle" aria-label="Play product film"><span aria-hidden="true">▶</span><span id="filmLabel">Watch the film</span></button></div><p class="film-description">Thoughtfully contoured around your eyes. Made for quiet nights and moments of rest, wherever you are.</p></section>
