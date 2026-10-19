@@ -23,6 +23,7 @@ function renderGallery(){
  const file=photos[galleryIndex];
  main.src=(selectedColour==="Black"?"images/":"")+file;
  main.alt="HALONAP "+selectedColour+" sleep mask — photo "+(galleryIndex+1)+" of "+photos.length;
+ const count=document.getElementById("galleryCount");if(count)count.textContent=(galleryIndex+1)+" / "+photos.length;
 
 }
 function moveGallery(delta){galleryIndex+=delta;renderGallery()}
