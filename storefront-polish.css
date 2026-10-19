@@ -1,0 +1,52 @@
+/* HALONAP storefront polish — progressive, checkout-safe refinements */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:76px}
+body{overflow-x:clip}
+img,video{max-width:100%}
+.editorial-store{--blue:#102b55;--paper:#f7f6f2;--ink:#222629}
+.editorial-store .header{align-items:center}
+.editorial-store .header .logo{min-width:0}
+.editorial-store .header #accountOpen{background:#102b55!important;color:#fff!important;border:1px solid #6e91c3!important;min-height:42px!important;padding:10px 16px!important;opacity:1!important;flex-shrink:0}
+.editorial-store .header #accountOpen:focus-visible,.editorial-store a:focus-visible,.editorial-store button:focus-visible{outline:3px solid #f4c776;outline-offset:3px}
+.editorial-store .hero-shop,.editorial-store .mini-shop{transition:background .2s ease,transform .2s ease}
+.editorial-store .hero-shop:hover{background:#fff;transform:translateX(-50%) translateY(-2px)}
+.editorial-store .rest-hero-copy{text-wrap:balance}
+.editorial-store .rest-hero h1{max-width:900px;margin-inline:auto}
+.editorial-store .design-facts p,.editorial-store .spec-grid p{font-size:clamp(12px,1.2vw,14px);line-height:1.6}
+.editorial-store .benefit-track article,.editorial-store .finish-track a{scroll-snap-stop:always}
+.editorial-store .halonap-video-feature{padding-block:clamp(35px,5vw,65px)}
+.editorial-store .halonap-video-feature video{background:#ddd7d3}
+.editorial-store #shopOverlayClose{color:#102b55}
+@media(max-width:750px){
+.editorial-store .header{padding-inline:12px!important;gap:7px!important;min-width:0}
+.editorial-store .header .logo-word{font-size:clamp(20px,5vw,29px)!important;letter-spacing:-1px}
+.editorial-store .header #accountOpen{font-size:12px!important;min-width:76px!important;padding:9px 11px!important}
+.editorial-store .header .bag{font-size:12px!important;white-space:nowrap}
+.editorial-store .header .mobile-menu-toggle{flex-shrink:0}
+.editorial-store .rest-hero{min-height:560px;height:100svh}
+.editorial-store .rest-hero-copy{top:32%;left:7%;right:7%}
+.editorial-store .rest-hero h1{font-size:clamp(38px,10vw,58px)}
+.editorial-store .introducing{min-height:530px;padding:65px 22px}
+.editorial-store .contour-stage{padding:50px 18px 48px}
+.editorial-store .contour-visual{height:clamp(240px,65vw,380px);border-radius:20px}
+.editorial-store .film-section{padding:16px 18px 35px}
+.editorial-store .film-card{height:clamp(280px,95vw,480px);border-radius:20px}
+.editorial-store .film-description{font-size:18px}
+.editorial-store .design-facts{padding:25px 18px 40px;gap:12px}
+.editorial-store .design-facts>div{padding:12px 0}
+.editorial-store .comfort-panel{height:430px;margin:0 14px 48px;border-radius:22px}
+.editorial-store .everyday{padding:0 18px 45px}
+.editorial-store .benefit-tabs{justify-content:flex-start;overflow-x:auto;padding-bottom:5px}
+.editorial-store .benefit-track article{flex-basis:min(78vw,330px)}
+.editorial-store #details.specifications{margin:0 14px 50px;padding:24px!important;border-radius:22px}
+.editorial-store .spec-product{gap:16px;margin-bottom:25px}
+.editorial-store .spec-product img{width:95px}
+.editorial-store .spec-grid{gap:18px}
+.editorial-store .finish-section{padding:0 18px 40px}
+.editorial-store .finish-track{gap:12px}
+.editorial-store .finish-track a{flex-basis:42%}
+.editorial-store .finish-track h3{margin-top:10px}
+.editorial-store .halonap-video-feature video{border-radius:15px}
+}
+@media(max-width:370px){.editorial-store .header .logo-word{font-size:20px!important}.editorial-store .header #accountOpen{min-width:68px!important;padding:8px!important}.editorial-store .header .bag{font-size:11px!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
