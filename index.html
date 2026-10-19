@@ -94,6 +94,30 @@ body.shop-open #shop .product-actions{grid-template-columns:minmax(0,1fr)!import
 .editorial-store .site-footer .footer-logo .logo-word{color:#f7f7f4!important;-webkit-text-fill-color:#f7f7f4!important;text-shadow:none!important;opacity:1!important}
 .editorial-store .site-footer .footer-logo .logo-gold{color:#f1bd2c!important;-webkit-text-fill-color:#f1bd2c!important}
 .editorial-store .site-footer a.footer-logo{background:transparent!important;opacity:1!important}
+</style><style id="halonap-shop-modal-layout-v2">
+/* Product popup: balanced photo, compact copy and safe mobile controls. */
+body.shop-open #shop .product-layout{align-items:start!important}
+body.shop-open #shop .product-images{min-width:0!important;max-width:100%!important}
+body.shop-open #shop .main-product{display:block!important;width:100%!important;height:auto!important;aspect-ratio:1/1!important;max-height:460px!important;object-fit:cover!important;object-position:center!important;border-radius:18px!important}
+body.shop-open #shop .product-info{min-width:0!important;max-width:100%!important}
+body.shop-open #shop .product-info .product-title{font-size:clamp(34px,4.4vw,52px)!important;line-height:1.08!important;letter-spacing:-.035em!important;margin:12px 0 14px!important}
+body.shop-open #shop .product-info .subtitle{font-size:clamp(17px,2.1vw,23px)!important;margin:0 0 14px!important;line-height:1.4!important}
+body.shop-open #shop .product-info .product-benefit{font-size:clamp(14px,1.5vw,16px)!important;line-height:1.65!important;margin:0 0 14px!important}
+body.shop-open #shop .product-info .eyebrow{display:block;font-size:11px!important;letter-spacing:.12em!important;line-height:1.5!important}
+body.shop-open #shop .gallery-controls{margin:12px auto 0!important}
+body.shop-open #shop .gallery-controls button{width:42px!important;height:42px!important}
+@media(max-width:750px){
+body.shop-open #shop .product-layout{display:flex!important;flex-direction:column!important;gap:22px!important;padding:70px 16px max(30px,env(safe-area-inset-bottom))!important}
+body.shop-open #shop .product-images,body.shop-open #shop .product-info{width:100%!important;flex:none!important}
+body.shop-open #shop .main-product{aspect-ratio:1/1!important;max-height:none!important;object-fit:cover!important;object-position:center!important;border-radius:18px!important}
+body.shop-open #shop .product-info .product-title{font-size:clamp(35px,9vw,47px)!important;line-height:1.08!important;margin:12px 0 14px!important}
+body.shop-open #shop .product-info .subtitle{font-size:19px!important}
+body.shop-open #shop .product-info .product-benefit{font-size:15px!important;line-height:1.6!important}
+body.shop-open #shop .product-info .price{margin:18px 0 12px!important}
+body.shop-open #shop .product-info .colour-options{gap:8px!important}
+body.shop-open #shop .product-info .product-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px!important}
+body.shop-open #shop .product-info .product-actions .btn{min-width:0!important;padding:12px 8px!important;font-size:14px!important}
+}
 </style></head><body class="editorial-store">
 <header class="header"><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open navigation menu" aria-controls="siteNav" aria-expanded="false"><span></span><span></span><span></span></button><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
