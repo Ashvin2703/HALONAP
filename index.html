@@ -118,7 +118,18 @@ body.shop-open #shop .product-info .colour-options{gap:8px!important}
 body.shop-open #shop .product-info .product-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px!important}
 body.shop-open #shop .product-info .product-actions .btn{min-width:0!important;padding:12px 8px!important;font-size:14px!important}
 }
-</style><style id="halonap-hide-gallery-arrows">#shop .gallery-controls{display:none!important}</style></head><body class="editorial-store">
+</style><style id="halonap-hide-gallery-arrows">#shop .gallery-controls{display:none!important}</style><style id="halonap-remove-benefit-controls">
+/* Hide the two highlighted controls, preserve the swipeable benefit cards. */
+.editorial-store .everyday .benefit-tabs,
+.editorial-store .everyday .benefit-arrows{display:none!important}
+.editorial-store .everyday .benefit-track{margin-top:clamp(18px,3vw,28px)!important;margin-bottom:0!important}
+.editorial-store .everyday{padding-bottom:clamp(34px,5vw,54px)!important}
+@media(max-width:750px){
+.editorial-store .everyday h2{margin-bottom:20px!important}
+.editorial-store .everyday .benefit-track{margin-top:0!important}
+.editorial-store .everyday{padding-bottom:32px!important}
+}
+</style></head><body class="editorial-store">
 <header class="header"><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open navigation menu" aria-controls="siteNav" aria-expanded="false"><span></span><span></span><span></span></button><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
 <video class="hero-motion" autoplay muted loop playsinline preload="metadata" poster="images/IMG_6074.jpeg" aria-label="HALONAP sleep mask rotating to show its contoured shape"><source src="130361228_1790674409511717.mp4" type="video/mp4"></video>
