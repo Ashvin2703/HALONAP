@@ -56,6 +56,34 @@
 .editorial-store .header #accountOpen,.header #accountOpen{background:#102b55!important;color:#fff!important;border:2px solid #254a7c!important;border-radius:999px!important;font-weight:600!important;font-size:clamp(12px,3.2vw,15px)!important;line-height:1.2!important;padding:11px 18px!important;min-width:88px!important;min-height:42px!important;opacity:1!important;visibility:visible!important;text-shadow:none!important;box-shadow:0 2px 8px #0002!important;white-space:nowrap!important}
 .editorial-store .header #accountOpen:hover,.header #accountOpen:focus-visible{background:#1d467e!important}
 @media(max-width:750px){.editorial-store .header #accountOpen,.header #accountOpen{order:1!important;min-width:78px!important;padding:9px 12px!important;font-size:12px!important}.editorial-store .header{gap:8px!important}}
+</style><style id="halonap-targeted-spacing-popup">
+/* Only spacing and responsive Shop Now modal — original design retained. */
+@media(min-width:751px){
+.editorial-store .design-facts{padding-bottom:55px}
+.editorial-store .comfort-panel{margin-bottom:55px}
+.editorial-store .everyday{padding-bottom:50px}
+.editorial-store #details.specifications{margin-bottom:55px}
+.editorial-store .finish-section{padding-bottom:45px}
+}
+body.shop-open #shop{padding:clamp(12px,2vw,28px)!important;scrollbar-gutter:stable}
+body.shop-open #shop .product-layout{width:min(100%,1050px);gap:clamp(18px,3vw,42px);align-items:start}
+body.shop-open #shop .product-images,body.shop-open #shop .product-info{min-width:0}
+body.shop-open #shop img{max-width:100%}
+@media(max-width:750px){
+.editorial-store .contour-stage{padding-top:52px;padding-bottom:48px}
+.editorial-store .film-section{padding-bottom:18px}
+.editorial-store .design-facts{padding-top:12px;padding-bottom:30px}
+.editorial-store .design-facts>div{padding:22px 0}
+.editorial-store .comfort-panel{margin-bottom:42px}
+.editorial-store .everyday{padding-bottom:40px}
+.editorial-store #details.specifications{margin-bottom:45px}
+.editorial-store .finish-section{padding-bottom:42px}
+body.shop-open #shop{inset:0!important;max-height:100dvh!important;overflow-x:hidden!important;overflow-y:auto!important;padding:0!important}
+body.shop-open #shop .product-layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:20px!important;width:100%!important;min-height:100dvh!important;border-radius:0!important;padding:72px 16px max(32px,env(safe-area-inset-bottom))!important;box-shadow:none!important}
+body.shop-open #shop .main-product{width:100%;height:auto;max-height:65vh;object-fit:contain}
+body.shop-open #shop .product-actions{grid-template-columns:minmax(0,1fr)!important}
+#shopOverlayClose{position:fixed!important;top:max(12px,env(safe-area-inset-top))!important;right:14px!important;z-index:99999!important;width:44px!important;height:44px!important;box-shadow:0 2px 10px #0002}
+}
 </style></head><body class="editorial-store">
 <header class="header"><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open navigation menu" aria-controls="siteNav" aria-expanded="false"><span></span><span></span><span></span></button><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
