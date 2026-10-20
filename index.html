@@ -221,6 +221,30 @@ body.shop-open #shop .product-info .product-actions .btn{min-width:0!important;p
 #halonapContactForm .hc-success-close{position:absolute;top:17px;right:24px;border:0;background:#eee9e7;color:#263553;border-radius:50%;width:24px;height:24px;display:grid;place-items:center;font-size:21px;line-height:1;cursor:pointer}
 #halonapContactForm .hc-note-error{background:#fff1f2!important;color:#9f1239!important;border:1px solid #fda4af;border-radius:12px;padding:14px 16px}
 @media(max-width:380px){#halonapContactForm .hc-note-success{padding:27px 21px;width:calc(100vw - 28px)}#halonapContactForm .hc-success-title{font-size:16px}}
+</style><style id="halonap-shop-desktop-overflow-fix">
+/* Keep the product modal fully within the desktop viewport. */
+@media (min-width:751px){
+ body.shop-open #shop{width:100vw!important;max-width:100vw!important;overflow-x:hidden!important;padding:clamp(16px,2.5vw,32px)!important}
+ body.shop-open #shop .product-layout{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  width:min(100%,1080px)!important;max-width:1080px!important;
+  gap:clamp(20px,3vw,40px)!important;margin:0 auto!important;
+  padding:clamp(22px,3vw,40px)!important;align-items:start!important;
+ }
+ body.shop-open #shop .product-images,body.shop-open #shop .product-info{
+  width:100%!important;min-width:0!important;max-width:100%!important;
+ }
+ body.shop-open #shop .main-product{
+  width:100%!important;max-width:100%!important;height:auto!important;
+  aspect-ratio:4/3!important;max-height:440px!important;object-fit:cover!important;
+ }
+ body.shop-open #shop .product-info{overflow-wrap:anywhere!important}
+ body.shop-open #shop .product-thumbnails{max-width:100%!important}
+}
+@media (min-width:751px) and (max-width:950px){
+ body.shop-open #shop .product-layout{gap:20px!important;padding:24px!important}
+ body.shop-open #shop .product-info .product-title{font-size:clamp(30px,4vw,42px)!important}
+}
 </style></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
