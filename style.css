@@ -272,3 +272,8 @@ footer.site-footer{padding:32px clamp(18px,4vw,58px) 16px}
 #shop .gallery-controls button{display:grid;place-items:center;width:44px;height:44px;border:1px solid #dcc7d0;border-radius:50%;background:#fff;color:#17234a;font-size:27px;cursor:pointer}
 #shop .gallery-controls span{font-size:13px;letter-spacing:.09em;color:#6b6270;min-width:45px;text-align:center}
 @media(max-width:700px){#shop .main-product{aspect-ratio:1.15/1}#shop .gallery-controls{margin-top:8px;gap:12px}#shop .gallery-controls button{width:40px;height:40px}}
+
+/* Shopping overlays must sit above the product details dialog. */
+#overlay{z-index:100010}
+#drawer{z-index:100020}
+#accountPanel{z-index:100110}
