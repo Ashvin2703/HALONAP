@@ -423,4 +423,32 @@ body.shop-open #shopOverlayClose:focus{outline:2px solid #aaa!important;outline-
 body.shop-open #shopOverlayClose:focus:not(:focus-visible){outline:none!important}
 }
 </style>
-</body></html>
+<style id="halonap-desktop-layout-consistency">
+/* Desktop-only layout system; existing mobile and functional controls are untouched. */
+@media(min-width:1024px){
+.editorial-store{overflow-x:clip}
+.editorial-store .header{box-sizing:border-box;width:100%;padding-inline:clamp(28px,4vw,72px)!important}
+.editorial-store .header nav{min-width:0;flex-wrap:nowrap}
+.editorial-store .rest-hero{height:clamp(580px,75vh,800px)!important;min-height:0!important}
+.editorial-store .rest-hero-copy{box-sizing:border-box;width:min(100% - 96px,1240px)!important;margin-inline:auto}
+.editorial-store .contour-stage,.editorial-store .film-section,.editorial-store .comfort-panel,.editorial-store .everyday,.editorial-store .specifications,.editorial-store .finish-section{box-sizing:border-box}
+.editorial-store .contour-stage .contour-visual,.editorial-store .film-section .film-card{box-sizing:border-box;width:min(100% - 64px,1320px)!important;min-height:0!important;margin-inline:auto!important}
+.editorial-store .contour-stage .contour-visual video,.editorial-store .film-section .film-card video{width:100%!important;max-height:690px!important;min-height:0!important;object-fit:cover!important}
+.editorial-store .comfort-panel,.editorial-store .everyday,.editorial-store .specifications,.editorial-store .finish-section{width:min(100% - 80px,1240px);max-width:1240px;margin-inline:auto}
+.editorial-store .comfort-panel{gap:clamp(28px,4vw,68px);align-items:center}
+.editorial-store .comfort-panel>img{max-width:100%;height:auto}
+.editorial-store .benefit-track,.editorial-store .spec-grid,.editorial-store .finish-track{max-width:100%;min-width:0}
+.editorial-store .benefit-track>*,.editorial-store .spec-grid>*,.editorial-store .finish-track>*{min-width:0}
+.editorial-store .benefit-track img,.editorial-store .finish-track img{max-width:100%;object-fit:cover}
+.editorial-store #reviews,.editorial-store #faq{box-sizing:border-box;width:min(100% - 80px,1080px);margin-inline:auto!important}
+.editorial-store #reviews{padding:60px 24px!important}
+.editorial-store #faq{padding:54px 24px!important}
+.editorial-store .site-footer .footer-inner,.editorial-store .site-footer .footer-bottom{box-sizing:border-box;width:min(100% - 80px,1240px);margin-inline:auto!important}
+}
+@media(min-width:751px) and (max-width:1023px){
+.editorial-store .header{box-sizing:border-box;max-width:100%}
+.editorial-store .comfort-panel,.editorial-store .everyday,.editorial-store .specifications,.editorial-store .finish-section{box-sizing:border-box;max-width:calc(100% - 48px);margin-inline:auto}
+.editorial-store .contour-stage .contour-visual,.editorial-store .film-section .film-card{max-width:calc(100% - 40px);margin-inline:auto}
+.editorial-store #reviews,.editorial-store #faq{box-sizing:border-box;max-width:calc(100% - 48px)}
+}
+</style></body></html>
