@@ -458,21 +458,15 @@ body.shop-open #shopOverlayClose:focus:not(:focus-visible){outline:none!importan
 .editorial-store .footer-payment .payment-apple .apple-pay-svg{display:block!important;flex:0 0 24px;width:24px;height:26px;color:#111}
 .editorial-store .footer-payment .payment-apple{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:2px}
 }
-</style><style id="halonap-desktop-comfort-product-visible">
-/* Keep the whole mask visible instead of cropping it at the bottom on desktop. */
+</style><style id="halonap-desktop-comfort-seamless">
+/* One continuous desktop image: no contain bars, duplicated backgrounds, or seams. */
 @media(min-width:751px){
-.editorial-store .comfort-panel{background:#c8a8a4!important}
-.editorial-store .comfort-panel>img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;object-fit:contain!important;object-position:center center!important;filter:brightness(.83)!important}
-.editorial-store .comfort-panel>div{bottom:auto!important;top:7%!important;left:5%!important;right:5%!important}
-.editorial-store .comfort-panel h2{font-size:clamp(30px,3.4vw,50px)!important}
-.editorial-store .comfort-panel p{font-size:clamp(15px,1.5vw,19px)!important}
-}
-</style><style id="halonap-desktop-comfort-fullbleed">
-@media(min-width:751px){
-.editorial-store .comfort-panel{position:relative!important;isolation:isolate!important;overflow:hidden!important;background:#d4aaa3!important}
-.editorial-store .comfort-panel::before{content:"";position:absolute;inset:-28px;z-index:-1;background:url("images/IMG_6051.jpeg") center center/cover no-repeat;filter:blur(24px) brightness(.87);transform:scale(1.07);pointer-events:none}
-.editorial-store .comfort-panel>img{position:relative;z-index:0;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center center!important;filter:none!important}
-.editorial-store .comfort-panel>div{z-index:2!important;top:6%!important}
-.editorial-store .comfort-panel::after{content:"";position:absolute;z-index:1;inset:0 0 auto;height:38%;background:linear-gradient(to bottom,rgba(27,19,24,.23),transparent);pointer-events:none}
+.editorial-store .comfort-panel{position:relative!important;isolation:isolate!important;overflow:hidden!important;height:clamp(420px,43vw,550px)!important;background:#cda9a5!important}
+.editorial-store .comfort-panel::before{content:none!important}
+.editorial-store .comfort-panel>img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;object-position:center 63%!important;filter:brightness(.85)!important}
+.editorial-store .comfort-panel>div{position:absolute!important;z-index:2!important;top:5%!important;bottom:auto!important;left:5%!important;right:5%!important;text-align:center!important}
+.editorial-store .comfort-panel h2{font-size:clamp(32px,3.7vw,52px)!important}
+.editorial-store .comfort-panel p{font-size:clamp(15px,1.45vw,19px)!important}
+.editorial-store .comfort-panel::after{content:"";position:absolute;z-index:1;inset:0 0 auto;height:38%;background:linear-gradient(to bottom,rgba(26,20,26,.30),transparent);pointer-events:none}
 }
 </style></body></html>
