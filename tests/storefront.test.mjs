@@ -56,3 +56,46 @@ test('failed signout keeps account visible and reports failure',async()=>{
  api.auth.signOut=async()=>({error:{message:'Network unavailable'}});
  await el('accountSignOut').onclick();assert.equal(el('accountStatus').textContent,'Network unavailable');assert.equal(el('accountSignedIn').hidden,false);dom.window.close();
 });
+test('closing checkout choice cancels persisted checkout and keeps bag contents',async()=>{
+ const {dom,w,el}=setup();el('addToBag').click();el('checkout').click();
+ assert.equal(w.halonapHasPendingCheckout(),true);
+ el('checkoutChoiceClose').click();
+ assert.equal(w.halonapHasPendingCheckout(),false);
+ assert.equal(w.sessionStorage.getItem('halonap-pending-checkout-v1'),null);
+ assert.equal(el('bagCount').textContent,'1');dom.window.close();
+});
+test('Escape dismisses checkout choice without closing the underlying shop',()=>{
+ const {dom,w,el}=setup();w.document.body.classList.add('shop-open');el('buyNow').click();
+ let underlyingClosed=false;w.document.addEventListener('keydown',()=>{underlyingClosed=true});
+ w.document.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+ assert.equal(el('checkoutChoice').hidden,true);assert.equal(w.halonapHasPendingCheckout(),false);
+ assert.equal(underlyingClosed,false);dom.window.close();
+});
+test('merging a large cloud cart preserves the local bag within checkout limits',async()=>{
+ const {dom,w,el,callbacks,user,api}=await authSetup();
+ for(let i=0;i<59;i++)el('plus').click();el('addToBag').click();
+ let persisted;
+ const query={select(){return this},eq(){return this},order(){return this},limit:async()=>({data:[]}),maybeSingle:async()=>({data:{items:{Pink:60}}}),upsert:async row=>{persisted=row.items;return {error:null}}};
+ api.from=()=>query;callbacks.forEach(fn=>fn('SIGNED_IN',{user}));await new Promise(r=>setImmediate(r));
+ assert.equal(el('bagCount').textContent,'99');assert.equal(persisted.Black,60);assert.equal(persisted.Pink,39);
+ assert.equal(JSON.parse(w.localStorage.getItem('halonap-cart-v1')).Black,60);dom.window.close();
+});
+test('dismissing checkout sign-in clears stale checkout intent',async()=>{
+ const {dom,w,el}=await authSetup();el('buyNow').click();await new Promise(r=>setImmediate(r));
+ el('checkoutChoiceSignIn').click();assert.equal(w.__halonapCheckoutLogin,true);
+ el('accountClose').click();assert.equal(w.halonapHasPendingCheckout(),false);
+ assert.equal(w.sessionStorage.getItem('halonap-checkout-auth'),null);dom.window.close();
+});
+test('checkout blocks concurrent session requests and recovers after failure',async()=>{
+ const {dom,w,el}=setup();let calls=0,finish;
+ w.halonapGetSession=async()=>({user:{id:'test'}});
+ w.fetch=()=>{calls++;return new Promise(resolve=>{finish=resolve})};
+ el('buyNow').click();await new Promise(r=>setImmediate(r));
+ el('addToBag').click();el('checkout').click();await new Promise(r=>setImmediate(r));
+ assert.equal(calls,1);finish({ok:false,json:async()=>({error:'Temporarily unavailable'})});await new Promise(r=>setImmediate(r));
+ assert.equal(el('buyNow').disabled,false);dom.window.close();
+});
+test('storefront features reuse one auth client',()=>{
+ const {dom,w}=setup();let calls=0;const client={};w.supabase={createClient:()=>{calls++;return client}};
+ assert.equal(w.halonapGetClient(),client);assert.equal(w.halonapGetClient(),client);assert.equal(calls,1);dom.window.close();
+});

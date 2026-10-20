@@ -1,6 +1,6 @@
 /* HALONAP admin-only order management. Access enforced by Supabase RLS. */
 (async()=>{
- const client=window.supabase?.createClient('https://ufhobvpuwhainuheewxb.supabase.co','sb_publishable_upE73V2Ve1wcxj8gXZ9U0A_e5EmKhNy');
+ const client=window.halonapGetClient?.();
  if(!client)return;
  const anchor=document.getElementById('reviewAdmin');if(!anchor)return;
  const section=document.createElement('section');section.id='orderAdmin';section.className='section review-admin';section.hidden=true;
