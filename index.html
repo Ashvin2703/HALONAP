@@ -518,4 +518,15 @@ body.shop-open #shop .product-actions .btn{min-height:48px}
 body.shop-open #shop .product-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
 .editorial-store #reviews{padding-inline:22px!important}
 }
+</style><style id="halonap-desktop-footer-transition">
+/* Desktop only: soft fade into existing dark footer without changing footer content. */
+@media (min-width:751px){
+.editorial-store .site-footer{position:relative;isolation:isolate}
+.editorial-store .site-footer::before{
+ content:"";position:absolute;left:0;right:0;bottom:100%;height:clamp(110px,12vw,190px);
+ background:linear-gradient(to bottom,transparent 0%,rgba(20,21,25,.08) 30%,rgba(20,21,25,.34) 62%,#141519 100%);
+ pointer-events:none;z-index:0
+}
+.editorial-store .site-footer>*{position:relative;z-index:1}
+}
 </style></body></html>
