@@ -348,6 +348,18 @@ document.addEventListener('DOMContentLoaded',()=>{
  @keyframes hn-added{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
 }
 @media(prefers-reduced-motion:reduce){.hn-headline-reveal,#shop #mainProduct,.comfort-panel>img{animation:none!important;transition:none!important}}
+</style><style id="halonap-shop-image-layout-polish">
+/* Keep product photos proportional; avoid the oversized letterbox on desktop. */
+@media(min-width:751px){
+ body.shop-open #shop .product-layout{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)!important;gap:clamp(24px,3.5vw,48px)!important;align-items:start!important}
+ body.shop-open #shop .product-images{width:100%!important;min-width:0!important;align-self:start!important}
+ body.shop-open #shop .main-product{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:clamp(310px,36vw,480px)!important;aspect-ratio:4/3!important;object-fit:cover!important;object-position:center!important;border-radius:16px!important;margin:0 auto!important;background:#f4efed!important}
+ body.shop-open #shop .gallery-dots{margin-top:10px!important}
+}
+@media(max-width:750px){
+ body.shop-open #shop .product-images{width:100%!important;min-width:0!important}
+ body.shop-open #shop .main-product{display:block!important;width:100%!important;max-width:480px!important;height:auto!important;aspect-ratio:4/3!important;object-fit:cover!important;object-position:center!important;margin-inline:auto!important}
+}
 </style></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
