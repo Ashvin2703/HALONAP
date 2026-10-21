@@ -27,28 +27,26 @@ function renderGallery(){
  if(!photos.length)return;
  galleryIndex=(galleryIndex+photos.length)%photos.length;
  const main=document.getElementById('mainProduct');
- const file=photos[galleryIndex];
- const nextSrc=(selectedColour==='Black'?'images/':'')+file;
+ const nextSrc=(selectedColour==='Black'?'images/':'')+photos[galleryIndex];
  const label='HALONAP '+selectedColour+' sleep mask — photo '+(galleryIndex+1)+' of '+photos.length;
  const count=document.getElementById('galleryCount');
  if(count)count.textContent=(galleryIndex+1)+' / '+photos.length;
- document.querySelectorAll('.gallery-dot').forEach((dot,i)=>dot.setAttribute('aria-pressed',String(i===galleryIndex)));
  const token=++gallerySwapToken;
- if(main.getAttribute('src')===nextSrc){main.alt=label;main.classList.remove('hn-photo-changing');return}
- const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- if(reduced){main.src=nextSrc;main.alt=label;main.classList.remove('hn-photo-changing');return}
- const preloaded=new Image();
- preloaded.onload=()=>{
-  if(token!==gallerySwapToken)return;
+ const changed=main.getAttribute('src')!==nextSrc;
+ if(changed){
+  // Update the displayed source and gallery indicators together, not after a slow preload.
+  main.classList.remove('hn-photo-changing');
+  main.src=nextSrc;
+ }
+ main.alt=label;
+ // The dot observer is triggered by the source change; sync the current selection as well.
+ document.querySelectorAll('.gallery-dot').forEach((dot,i)=>dot.setAttribute('aria-pressed',String(i===galleryIndex)));
+ if(changed && window.matchMedia('(prefers-reduced-motion: no-preference)').matches){
   main.classList.add('hn-photo-changing');
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-   if(token!==gallerySwapToken)return;
-   main.src=nextSrc;main.alt=label;
-   requestAnimationFrame(()=>main.classList.remove('hn-photo-changing'));
-  }));
- };
- preloaded.onerror=()=>{if(token!==gallerySwapToken)return;main.src=nextSrc;main.alt=label;main.classList.remove('hn-photo-changing')};
- preloaded.src=nextSrc;
+  const settle=()=>{if(token===gallerySwapToken)main.classList.remove('hn-photo-changing')};
+  if(main.complete)requestAnimationFrame(settle);
+  else {main.addEventListener('load',settle,{once:true});main.addEventListener('error',settle,{once:true})}
+ }
 }
 function moveGallery(delta){galleryIndex+=delta;renderGallery()}
 document.getElementById("galleryPrev")?.addEventListener("click",()=>moveGallery(-1));
