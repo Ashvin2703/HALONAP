@@ -324,7 +324,16 @@ document.addEventListener('DOMContentLoaded',()=>{
  const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){entry.target.classList.add('hn-visible');observer.unobserve(entry.target)}}},{threshold:.08,rootMargin:'0px 0px -35px 0px'});
  targets.forEach(el=>{el.classList.add('hn-reveal');observer.observe(el)});
 });
-</script></head><body class="editorial-store">
+</script><style id="halonap-mobile-hero-shop-position-fix">
+/* Preserve horizontal centering while the hero CTA animates. */
+.editorial-store .rest-hero > a.hero-shop{left:50%!important;right:auto!important;box-sizing:border-box!important;transform:translateX(-50%)!important;max-width:calc(100% - 32px)!important}
+@media(max-width:750px){.editorial-store .rest-hero > a.hero-shop{width:calc(100% - 48px)!important;max-width:420px!important}}
+@media(prefers-reduced-motion:no-preference){
+.editorial-store .rest-hero > a.hero-shop{animation:hn-cta-centered .85s .3s cubic-bezier(.22,1,.36,1) both!important}
+@keyframes hn-cta-centered{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(hover:hover) and (pointer:fine){.editorial-store .rest-hero > a.hero-shop:hover{transform:translate(-50%,-3px)!important}}
+}
+</style></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
 <video class="hero-motion" autoplay muted loop playsinline preload="metadata" poster="images/IMG_6074.jpeg" aria-label="HALONAP sleep mask rotating to show its contoured shape"><source src="130361228_1790674409511717.mp4" type="video/mp4"></video>
