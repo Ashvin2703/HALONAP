@@ -27,7 +27,14 @@ function renderGallery(){
  galleryIndex=(galleryIndex+photos.length)%photos.length;
  const main=document.getElementById("mainProduct");
  const file=photos[galleryIndex];
- main.src=(selectedColour==="Black"?"images/":"")+file;
+ const nextSrc=(selectedColour==="Black"?"images/":"")+file;
+ if(main.getAttribute('src')!==nextSrc && window.matchMedia('(prefers-reduced-motion: no-preference)').matches){
+  const token=String(Date.now())+Math.random();main.dataset.hnSwap=token;
+  main.classList.add('hn-photo-changing');
+  const preload=new Image();preload.onload=()=>{if(main.dataset.hnSwap!==token)return;main.src=nextSrc;requestAnimationFrame(()=>main.classList.remove('hn-photo-changing'))};
+  preload.onerror=()=>{if(main.dataset.hnSwap!==token)return;main.src=nextSrc;main.classList.remove('hn-photo-changing')};
+  preload.src=nextSrc;
+ }else{main.src=nextSrc;main.classList.remove('hn-photo-changing')}
  main.alt="HALONAP "+selectedColour+" sleep mask — photo "+(galleryIndex+1)+" of "+photos.length;
  const count=document.getElementById("galleryCount");if(count)count.textContent=(galleryIndex+1)+" / "+photos.length;
 
@@ -63,7 +70,7 @@ function openBag(){bagReturnFocus=document.activeElement;$('drawer').inert=false
 function closeBag(){const wasOpen=$('drawer').classList.contains('open');$('drawer').classList.remove('open');if(wasOpen&&bagReturnFocus?.isConnected)bagReturnFocus.focus();$('drawer').inert=true;$('drawer').setAttribute('aria-hidden','true');$('overlay').hidden=true}
 $('bagButton').onclick=openBag;$('closeBag').onclick=closeBag;$('overlay').onclick=closeBag;
 document.addEventListener('keydown',e=>{if(!$('drawer').classList.contains('open'))return;if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();closeBag()}else if(e.key==='Tab'){const controls=[...$('drawer').querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),[tabindex="0"]')];const first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
-$('addToBag').onclick=()=>{if(cartQuantity+quantity>99){alert('Your bag can hold up to 99 masks. Please reduce the quantity before adding more.');return}cartQuantity+=quantity;cartVariants[selectedColour]+=quantity;saveCart();quantity=1;$('quantity').textContent='1';updateVariantSummary();renderCart();openBag()};
+$('addToBag').onclick=()=>{if(cartQuantity+quantity>99){alert('Your bag can hold up to 99 masks. Please reduce the quantity before adding more.');return}cartQuantity+=quantity;cartVariants[selectedColour]+=quantity;saveCart();quantity=1;$('quantity').textContent='1';updateVariantSummary();renderCart();const btn=$('addToBag');btn.classList.remove('hn-added');void btn.offsetWidth;btn.classList.add('hn-added');setTimeout(()=>btn.classList.remove('hn-added'),400);openBag()};
 function renderCart(){ $('bagCount').textContent=cartQuantity;$('subtotal').textContent=money(cartQuantity*SHOP.priceGBP);const host=$('cartContents');host.innerHTML='';for(const colour of ['Black','Pink','Grey']){const count=cartVariants[colour];if(!count)continue;const item=document.createElement('div');item.className='cart-item';item.style.marginBottom='20px';const img=document.createElement('img');img.src=(colour==='Black'?'images/':'')+variantPhotos[colour][0];img.alt='HALONAP '+colour+' eye mask';img.onerror=()=>{img.style.display="none"};const info=document.createElement('div');const title=document.createElement('h3');title.textContent='HALONAP Sleep Eye Mask — Colour: '+colour;const price=document.createElement('p');price.textContent='Quantity: '+count+' · Total: '+money(SHOP.priceGBP*count);const remove=document.createElement('button');remove.textContent='Remove';remove.onclick=()=>{cartQuantity-=cartVariants[colour];cartVariants[colour]=0;saveCart();renderCart()};const controls=document.createElement('div');controls.className='cart-qty';const dec=document.createElement('button');dec.type='button';dec.textContent='−';dec.setAttribute('aria-label','Decrease '+colour+' quantity');const amount=document.createElement('span');amount.textContent=String(count);amount.setAttribute('aria-live','polite');const inc=document.createElement('button');inc.type='button';inc.textContent='+';inc.setAttribute('aria-label','Increase '+colour+' quantity');const change=delta=>{const next=Math.max(0,Math.min(99,cartVariants[colour]+delta));if(cartQuantity+next-cartVariants[colour]>99)return;cartQuantity+=next-cartVariants[colour];cartVariants[colour]=next;saveCart();renderCart()};dec.onclick=()=>change(-1);inc.onclick=()=>change(1);controls.append(dec,amount,inc);info.append(title,price,controls,remove);item.append(img,info);host.appendChild(item)}if(!cartQuantity)host.innerHTML='<p class="empty">Your bag is waiting for something lovely ♡</p>';$('checkout').disabled=!cartQuantity;$('checkout').style.opacity=cartQuantity?'1':'.5'}
 
 let checkoutBusy=false;
@@ -143,3 +150,19 @@ privacy:{title:'Privacy Policy',html:'<p>We use the information you provide to m
 terms:{title:'Terms & Conditions',html:'<p>HALONAP sells sleep eye masks through this website. Product colours, quantities and prices are shown before checkout. Your order is submitted through a secure Stripe checkout.</p><p>Please check your delivery address and order details carefully before paying. Contact us promptly if you need to correct an order.</p><p>Nothing in these terms limits your statutory rights under UK consumer law, including rights relating to faulty or misdescribed goods.</p>'}
 };
 (()=>{const modal=document.getElementById('policyModal');if(!modal)return;const close=()=>{modal.hidden=true};document.querySelectorAll('[data-policy]').forEach(button=>button.addEventListener('click',()=>{const policy=halonapPolicies[button.dataset.policy];if(!policy)return;document.getElementById('policyTitle').textContent=policy.title;document.getElementById('policyContent').innerHTML=button.dataset.policy==='faq'?(document.getElementById('faqContentTemplate')?.innerHTML||'<p>Contact us for assistance.</p>'):policy.html;modal.hidden=false;document.getElementById('policyClose').focus()}));document.getElementById('policyClose').onclick=close;document.getElementById('policyDone').onclick=close;modal.addEventListener('click',event=>{if(event.target===modal)close()});document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!modal.hidden)close()})})();
+
+/* HALONAP editorial headline reveal and desktop-only lightweight image parallax. */
+document.addEventListener('DOMContentLoaded',()=>{
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const headings=document.querySelectorAll('.comfort-panel h2,.everyday>h2,.specifications h2,.finish-section h2,.film-description');
+ if('IntersectionObserver' in window){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('hn-shown');obs.unobserve(e.target)}}),{threshold:.08});
+  headings.forEach(h=>{if(h.closest('.hn-reveal'))return;h.classList.add('hn-headline-reveal');obs.observe(h)});
+ }
+ const panel=document.querySelector('.comfort-panel');const desktop=window.matchMedia('(min-width:900px)');
+ if(!panel||!desktop.matches)return;
+ let scheduled=false;
+ const update=()=>{scheduled=false;const r=panel.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;const progress=(innerHeight-r.top)/(innerHeight+r.height);panel.style.setProperty('--hn-parallax',((progress-.5)*24).toFixed(1)+'px')};
+ const scroll=()=>{if(!scheduled){scheduled=true;requestAnimationFrame(update)}};
+ addEventListener('scroll',scroll,{passive:true});update();
+});
