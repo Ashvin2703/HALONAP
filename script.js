@@ -21,23 +21,34 @@ let cartCloudUser=null,cartSyncTimer=null,cartLoading=false;function saveCart(){
 function restoreCart(){try{const saved=JSON.parse(localStorage.getItem(CART_STORAGE_KEY));if(!saved||typeof saved!=='object')return;for(const colour of ['Black','Pink','Grey']){const n=saved[colour];if(Number.isInteger(n)&&n>=0&&n<=99)cartVariants[colour]=n;}cartQuantity=Object.values(cartVariants).reduce((a,b)=>a+b,0);if(cartQuantity>99){for(const colour of ['Black','Pink','Grey'])cartVariants[colour]=0;cartQuantity=0}}catch(e){}}
 restoreCart();
 let galleryIndex=0;
+let gallerySwapToken=0;
 function renderGallery(){
  const photos=variantPhotos[selectedColour]||[];
  if(!photos.length)return;
  galleryIndex=(galleryIndex+photos.length)%photos.length;
- const main=document.getElementById("mainProduct");
+ const main=document.getElementById('mainProduct');
  const file=photos[galleryIndex];
- const nextSrc=(selectedColour==="Black"?"images/":"")+file;
- if(main.getAttribute('src')!==nextSrc && window.matchMedia('(prefers-reduced-motion: no-preference)').matches){
-  const token=String(Date.now())+Math.random();main.dataset.hnSwap=token;
+ const nextSrc=(selectedColour==='Black'?'images/':'')+file;
+ const label='HALONAP '+selectedColour+' sleep mask — photo '+(galleryIndex+1)+' of '+photos.length;
+ const count=document.getElementById('galleryCount');
+ if(count)count.textContent=(galleryIndex+1)+' / '+photos.length;
+ document.querySelectorAll('.gallery-dot').forEach((dot,i)=>dot.setAttribute('aria-pressed',String(i===galleryIndex)));
+ const token=++gallerySwapToken;
+ if(main.getAttribute('src')===nextSrc){main.alt=label;main.classList.remove('hn-photo-changing');return}
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(reduced){main.src=nextSrc;main.alt=label;main.classList.remove('hn-photo-changing');return}
+ const preloaded=new Image();
+ preloaded.onload=()=>{
+  if(token!==gallerySwapToken)return;
   main.classList.add('hn-photo-changing');
-  const preload=new Image();preload.onload=()=>{if(main.dataset.hnSwap!==token)return;main.src=nextSrc;requestAnimationFrame(()=>main.classList.remove('hn-photo-changing'))};
-  preload.onerror=()=>{if(main.dataset.hnSwap!==token)return;main.src=nextSrc;main.classList.remove('hn-photo-changing')};
-  preload.src=nextSrc;
- }else{main.src=nextSrc;main.classList.remove('hn-photo-changing')}
- main.alt="HALONAP "+selectedColour+" sleep mask — photo "+(galleryIndex+1)+" of "+photos.length;
- const count=document.getElementById("galleryCount");if(count)count.textContent=(galleryIndex+1)+" / "+photos.length;
-
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(token!==gallerySwapToken)return;
+   main.src=nextSrc;main.alt=label;
+   requestAnimationFrame(()=>main.classList.remove('hn-photo-changing'));
+  }));
+ };
+ preloaded.onerror=()=>{if(token!==gallerySwapToken)return;main.src=nextSrc;main.alt=label;main.classList.remove('hn-photo-changing')};
+ preloaded.src=nextSrc;
 }
 function moveGallery(delta){galleryIndex+=delta;renderGallery()}
 document.getElementById("galleryPrev")?.addEventListener("click",()=>moveGallery(-1));
