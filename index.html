@@ -300,26 +300,31 @@ body.shop-open #shop .product-info .product-actions .btn{min-width:0!important;p
 .editorial-store .product-navigation > span{color:#272724!important}
 .editorial-store .product-navigation > span .brand-gold-o{color:#f1bd2c!important;-webkit-text-fill-color:#f1bd2c!important}
 </style><style id="halonap-hero-gold-o-only">.editorial-store .rest-hero-copy .hero-product-name .brand-gold-o{color:#f1bd2c!important;-webkit-text-fill-color:#f1bd2c!important;font-size:inherit!important;vertical-align:baseline!important;margin-left:0!important;letter-spacing:inherit!important;line-height:inherit!important}</style><style id="halonap-premium-motion-20261021">
-/* Quiet, accessible editorial motion; no changes to layout or palette. */
-@media (prefers-reduced-motion:no-preference){
- .rest-hero .rest-hero-copy{animation:hn-arrive .75s cubic-bezier(.22,1,.36,1) both}
- .rest-hero .hero-shop{animation:hn-arrive .7s .16s cubic-bezier(.22,1,.36,1) both}
- @keyframes hn-arrive{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
- .editorial-store a.hero-shop,.editorial-store a.mini-shop,.editorial-store .btn,.editorial-store .site-footer a,.editorial-store .benefit-track article img,.editorial-store .feature-story-photo img{transition:transform .22s ease,box-shadow .22s ease,opacity .22s ease,background-color .22s ease}
+/* Noticeable but restrained premium motion, no palette/layout changes. */
+@media(prefers-reduced-motion:no-preference){
+ .rest-hero .rest-hero-copy{animation:hn-enter .9s .08s cubic-bezier(.22,1,.36,1) both}
+ .rest-hero .hero-shop{animation:hn-enter .85s .3s cubic-bezier(.22,1,.36,1) both}
+ @keyframes hn-enter{from{opacity:0;transform:translate3d(0,28px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+ .hn-reveal{opacity:0;transform:translate3d(0,32px,0);transition:opacity .85s cubic-bezier(.22,1,.36,1),transform .85s cubic-bezier(.22,1,.36,1)}
+ .hn-reveal.hn-visible{opacity:1;transform:translate3d(0,0,0)}
+ .editorial-store a.hero-shop,.editorial-store a.mini-shop,.editorial-store .btn,.editorial-store .site-footer a,.editorial-store .benefit-track article img{transition:transform .25s ease,opacity .25s ease,box-shadow .25s ease,background-color .25s ease}
  @media(hover:hover) and (pointer:fine){
-  .editorial-store a.hero-shop:hover,.editorial-store a.mini-shop:hover,.editorial-store .btn:hover{transform:translateY(-2px)}
-  .editorial-store .benefit-track article:hover img,.editorial-store .feature-story-photo:hover img{transform:scale(1.018)}
-  .editorial-store .site-footer a:hover{opacity:.82}
- }
- @supports(animation-timeline:view()){
-  .editorial-store .contour-stage>h2,.editorial-store .comfort-panel>div,.editorial-store .everyday>h2,.editorial-store .specifications>.section-intro,.editorial-store .finish-section>h2{
-   animation:hn-scroll-reveal linear both;animation-timeline:view();animation-range:entry 0% entry 28%;
-  }
-  @keyframes hn-scroll-reveal{from{opacity:.75;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+ .editorial-store a.hero-shop:hover,.editorial-store a.mini-shop:hover,.editorial-store .btn:hover{transform:translateY(-3px)}
+ .editorial-store .benefit-track article:hover img{transform:scale(1.035)}
+ .editorial-store .site-footer a:hover{opacity:.78}
  }
 }
-@media(prefers-reduced-motion:reduce){.rest-hero .rest-hero-copy,.rest-hero .hero-shop{animation:none!important}}
-</style></head><body class="editorial-store">
+@media(prefers-reduced-motion:reduce){.hn-reveal{opacity:1!important;transform:none!important;transition:none!important}}
+</style>
+<script id="halonap-premium-motion-init">
+document.addEventListener('DOMContentLoaded',()=>{
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const targets=document.querySelectorAll('.contour-stage > h2,.contour-stage > p,.comfort-panel > div,.everyday > h2,.everyday .benefit-track article,#details .feature-story,#reviews .section-intro,.finish-section > h2,.site-footer .footer-logo');
+ if(!('IntersectionObserver' in window))return;
+ const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){entry.target.classList.add('hn-visible');observer.unobserve(entry.target)}}},{threshold:.08,rootMargin:'0px 0px -35px 0px'});
+ targets.forEach(el=>{el.classList.add('hn-reveal');observer.observe(el)});
+});
+</script></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
 <video class="hero-motion" autoplay muted loop playsinline preload="metadata" poster="images/IMG_6074.jpeg" aria-label="HALONAP sleep mask rotating to show its contoured shape"><source src="130361228_1790674409511717.mp4" type="video/mp4"></video>
