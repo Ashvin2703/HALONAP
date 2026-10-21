@@ -151,18 +151,24 @@ terms:{title:'Terms & Conditions',html:'<p>HALONAP sells sleep eye masks through
 };
 (()=>{const modal=document.getElementById('policyModal');if(!modal)return;const close=()=>{modal.hidden=true};document.querySelectorAll('[data-policy]').forEach(button=>button.addEventListener('click',()=>{const policy=halonapPolicies[button.dataset.policy];if(!policy)return;document.getElementById('policyTitle').textContent=policy.title;document.getElementById('policyContent').innerHTML=button.dataset.policy==='faq'?(document.getElementById('faqContentTemplate')?.innerHTML||'<p>Contact us for assistance.</p>'):policy.html;modal.hidden=false;document.getElementById('policyClose').focus()}));document.getElementById('policyClose').onclick=close;document.getElementById('policyDone').onclick=close;modal.addEventListener('click',event=>{if(event.target===modal)close()});document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!modal.hidden)close()})})();
 
-/* HALONAP editorial headline reveal and desktop-only lightweight image parallax. */
+/* Minimal scroll polish: no persistent invisible text and no mobile parallax. */
 document.addEventListener('DOMContentLoaded',()=>{
  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
  const headings=document.querySelectorAll('.comfort-panel h2,.everyday>h2,.specifications h2,.finish-section h2,.film-description');
  if('IntersectionObserver' in window){
-  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('hn-shown');obs.unobserve(e.target)}}),{threshold:.08});
+  const obs=new IntersectionObserver(entries=>entries.forEach(entry=>{
+   if(!entry.isIntersecting)return;
+   entry.target.classList.add('hn-entering');
+   entry.target.addEventListener('animationend',()=>entry.target.classList.remove('hn-entering'),{once:true});
+   obs.unobserve(entry.target);
+  }),{threshold:.18});
   headings.forEach(h=>{if(h.closest('.hn-reveal'))return;h.classList.add('hn-headline-reveal');obs.observe(h)});
  }
- const panel=document.querySelector('.comfort-panel');const desktop=window.matchMedia('(min-width:900px)');
+ const panel=document.querySelector('.comfort-panel');
+ const desktop=window.matchMedia('(min-width:900px)');
  if(!panel||!desktop.matches)return;
- let scheduled=false;
- const update=()=>{scheduled=false;const r=panel.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;const progress=(innerHeight-r.top)/(innerHeight+r.height);panel.style.setProperty('--hn-parallax',((progress-.5)*24).toFixed(1)+'px')};
- const scroll=()=>{if(!scheduled){scheduled=true;requestAnimationFrame(update)}};
- addEventListener('scroll',scroll,{passive:true});update();
+ let ticking=false;
+ const update=()=>{ticking=false;const rect=panel.getBoundingClientRect();if(rect.bottom<0||rect.top>innerHeight)return;const ratio=(innerHeight-rect.top)/(innerHeight+rect.height);panel.style.setProperty('--hn-parallax',((ratio-.5)*12).toFixed(1)+'px')};
+ const onScroll=()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}};
+ addEventListener('scroll',onScroll,{passive:true});update();
 });
