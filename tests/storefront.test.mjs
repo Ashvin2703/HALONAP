@@ -6,7 +6,9 @@ const {JSDOM}=createRequire(import.meta.url)('jsdom');
 const read=name=>readFileSync(new URL('../'+name,import.meta.url),'utf8');
 function setup(){
  const dom=new JSDOM(read('index.html'),{url:'https://www.halonap.com/',runScripts:'outside-only'});
- const w=dom.window;w.alert=()=>{};w.eval(read('script.js'));
+ const w=dom.window;w.alert=()=>{};
+ w.matchMedia=query=>({matches:false,media:query,addEventListener(){},removeEventListener(){},addListener(){},removeListener(){}});
+ w.eval(read('script.js'));
  return {dom,w,el:id=>w.document.getElementById(id)};
 }
 test('repeated Add to Bag cannot exceed checkout limit or erase the saved basket',()=>{
