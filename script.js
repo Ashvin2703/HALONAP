@@ -134,7 +134,7 @@ function showReviewThankYou(){
     const average=count?ratings.reduce((a,b)=>a+b,0)/count:0;
     if(stars){stars.textContent=count?'★'.repeat(Math.round(average))+'☆'.repeat(5-Math.round(average)):'☆☆☆☆☆';stars.setAttribute('aria-label',count?average.toFixed(1)+' out of 5 stars':'No ratings yet');}
     if(caption)caption.textContent=count?average.toFixed(1)+' / 5 · '+count+' '+(count===1?'review':'reviews'):'No customer ratings yet';
-    if(link)link.textContent=count?'Read '+count+' '+(count===1?'review':'reviews')+' ↗':'Be the first to review ↗';
+    if(link)link.textContent=count?'Read '+count+' '+(count===1?'review':'reviews'):'Be the first to review';
    }
   }}
  async function loadAdmin(){if(!admin||!adminList)return;const {data:{user}}=await client.auth.getUser();if(!user){admin.hidden=true;return}const {data:membership}=await client.from('review_admins').select('user_id').eq('user_id',user.id).maybeSingle();admin.hidden=!membership;if(!membership)return;const {data,error}=await client.from('product_reviews').select('*').order('created_at',{ascending:false}).limit(100);adminList.replaceChildren();if(error){adminList.textContent=error.message;return}for(const item of data||[])adminList.append(card(item,true));if(!data?.length)adminList.textContent='No reviews yet.'}
