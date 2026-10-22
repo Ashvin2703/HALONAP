@@ -447,6 +447,22 @@ body.shop-open .hn-sticky-buy.hn-sticky-visible{display:flex;position:fixed;bott
   .editorial-store #faq .section-intro, .editorial-store #faq .faq-list { position:relative; z-index:2; }
   .editorial-store #faq h2 { position:static; transform:none; white-space:normal; line-height:1.2; overflow-wrap:break-word; }
 }
+</style><style id="halonap-desktop-overlay-structural-fix-20261022">
+/* Shop is a fullscreen modal, not a normal page section. Keep its overlay
+   positioning and confine all visible content to the product card. */
+@media (min-width:751px) {
+ body.shop-open #shop { position:fixed!important; inset:0!important; display:block!important; overflow-x:hidden!important; overflow-y:auto!important; z-index:99990!important; background:rgba(22,20,23,.52)!important; }
+ body.shop-open #shop .hn-shop-heading { display:none!important; }
+ body.shop-open #shop .product-layout { position:relative!important; display:grid!important; grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important; gap:clamp(24px,4vw,52px)!important; width:min(100%,1050px)!important; max-width:1050px!important; margin:0 auto!important; align-items:start!important; }
+ body.shop-open #shop .product-layout > *,body.shop-open #shop .product-info { min-width:0!important; }
+ body.shop-open #shop .product-info .product-title { position:static!important; transform:none!important; white-space:normal!important; overflow-wrap:break-word!important; line-height:1.16!important; }
+ body.shop-open #shop .product-images { min-width:0!important; }
+ body.shop-open #shop .main-product { display:block!important; width:100%!important; height:auto!important; object-fit:contain!important; }
+ .editorial-store #faqSection { position:relative; isolation:isolate; background:#f7f6f2; }
+ .editorial-store #faq { position:relative; z-index:1; background:#f7f6f2; }
+ .editorial-store #faq .section-intro { margin-bottom:24px; }
+ .editorial-store #faq h2 { position:static!important; height:auto!important; line-height:1.2!important; }
+}
 </style></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
