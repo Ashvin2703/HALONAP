@@ -900,4 +900,43 @@ body.shop-open #shopOverlayClose:focus:not(:focus-visible){outline:none!importan
 .editorial-store .comfort-panel p{font-size:20px!important}
 .editorial-store .comfort-panel::after{content:"";position:absolute;z-index:1;inset:0 0 auto;height:38%;background:linear-gradient(to bottom,rgba(26,20,26,.30),transparent);pointer-events:none}
 }
-</style><style id="halonap-desktop-union-jack">@media(min-width:751px){.editorial-store .footer-uk-flag{display:inline-flex!important;align-items:center!important;vertical-align:middle!important;margin-right:6px!important}.editorial-store .footer-uk-emoji{display:none!important}.editorial-store .footer-uk-svg{display:inline-block!important;width:22px!important;height:11px!important;flex:none!important;border-radius:1px}}@media(max-width:750px){.editorial-store .footer-uk-svg{display:none!important}}</style><div id="reviewThankYou" role="status" aria-live="polite" aria-atomic="true" hidden><div class="review-thanks-card"><span class="review-thanks-icon" aria-hidden="true">✓</span><h2>Thank You!</h2><p>Your review has been submitted successfully.<br>We appreciate you sharing your experience with HALONAP.</p></div></div><script id="hn-sticky-shop-script">(function(){function init(){var bar=document.getElementById('hnStickyBuy'),cta=document.getElementById('hnStickyAdd'),target=document.querySelector('#shop .product-actions'),review=document.getElementById('hnReviewLink');if(!bar||!cta||!target)return;cta.addEventListener('click',function(){var original=document.getElementById('addToBag');if(original)original.click()});function update(){var r=target.getBoundingClientRect();var show=document.body.classList.contains('shop-open')&&r.bottom<0;bar.classList.toggle('hn-sticky-visible',show)}window.addEventListener('scroll',update,{passive:true});document.getElementById('shop').addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);var mo=new MutationObserver(update);mo.observe(document.body,{attributes:true,attributeFilter:['class']});if(review)review.addEventListener('click',function(){document.body.classList.remove('shop-open')});update()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init()})();</script></body></html>
+</style><style id="halonap-desktop-union-jack">@media(min-width:751px){.editorial-store .footer-uk-flag{display:inline-flex!important;align-items:center!important;vertical-align:middle!important;margin-right:6px!important}.editorial-store .footer-uk-emoji{display:none!important}.editorial-store .footer-uk-svg{display:inline-block!important;width:22px!important;height:11px!important;flex:none!important;border-radius:1px}}@media(max-width:750px){.editorial-store .footer-uk-svg{display:none!important}}</style><div id="reviewThankYou" role="status" aria-live="polite" aria-atomic="true" hidden><div class="review-thanks-card"><span class="review-thanks-icon" aria-hidden="true">✓</span><h2>Thank You!</h2><p>Your review has been submitted successfully.<br>We appreciate you sharing your experience with HALONAP.</p></div></div><script id="hn-sticky-shop-script">(function(){function init(){var bar=document.getElementById('hnStickyBuy'),cta=document.getElementById('hnStickyAdd'),target=document.querySelector('#shop .product-actions'),review=document.getElementById('hnReviewLink');if(!bar||!cta||!target)return;cta.addEventListener('click',function(){var original=document.getElementById('addToBag');if(original)original.click()});function update(){var r=target.getBoundingClientRect();var show=document.body.classList.contains('shop-open')&&r.bottom<0;bar.classList.toggle('hn-sticky-visible',show)}window.addEventListener('scroll',update,{passive:true});document.getElementById('shop').addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);var mo=new MutationObserver(update);mo.observe(document.body,{attributes:true,attributeFilter:['class']});if(review)review.addEventListener('click',function(){document.body.classList.remove('shop-open')});update()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init()})();</script><script id="halonap-desktop-quick-details-placement">
+/* Place only the three shop accordions beneath the product photo on desktop. */
+(function(){
+  const media=window.matchMedia('(min-width: 1024px)');
+  function placeDetails(){
+    const shop=document.getElementById('shop');
+    if(!shop)return;
+    const photo=shop.querySelector('.product-images');
+    const info=shop.querySelector('.product-info');
+    const details=shop.querySelector('.product-quick-details');
+    if(!photo||!info||!details)return;
+    if(media.matches){
+      if(details.parentElement!==photo)photo.appendChild(details);
+    }else{
+      const caption=info.querySelector('.hn-checkout-caption');
+      if(details.parentElement!==info){
+        if(caption)caption.insertAdjacentElement('afterend',details);
+        else info.appendChild(details);
+      }
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeDetails);
+  else placeDetails();
+  if(media.addEventListener)media.addEventListener('change',placeDetails);
+  else media.addListener(placeDetails);
+})();
+</script>
+<style id="halonap-desktop-quick-details-placement-style">
+@media(min-width:1024px){
+  #shop .product-images>.product-quick-details{
+    display:block;
+    width:100%;
+    margin:18px 0 0;
+    padding:0;
+    text-align:left;
+  }
+  #shop .product-images>.product-quick-details details{max-width:100%}
+}
+</style>
+</body></html>
