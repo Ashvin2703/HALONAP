@@ -549,6 +549,17 @@ body.shop-open #shop .hn-shop-heading{display:none!important}
 #shop #shopOverlayClose{position:fixed!important;top:calc(env(safe-area-inset-top,0px) + 12px)!important;left:16px!important;right:auto!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;padding:0!important;border:1px solid #dbe5e8!important;border-radius:50%!important;background:rgba(255,255,255,.96)!important;color:#193b4b!important;font-size:0!important;line-height:1!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 3px 14px rgba(15,37,48,.10)!important;z-index:99999!important}
 #shop #shopOverlayClose::after{content:'←';font:normal 24px/1 Arial,sans-serif!important}
 @media(max-width:750px){#shop .hn-showcase h2,#shop .hn-compare h2,#shop .hn-everyone h2,#shop .hn-faq-showcase h2{font-size:clamp(27px,7.5vw,35px)!important}#shop .hn-showcase-intro{margin-top:30px!important}#shop .hn-feature-scene{margin-bottom:48px!important}#shop .hn-faq-list summary{font-size:15px!important}}
+</style><style id="halonap-unified-typography-palette-20261022">
+/* Consistent editorial typography and navy/cream palette across public sections. */
+:root{--hn-ink:#203e4c;--hn-muted:#627580;--hn-surface:#fbfaf7;--hn-line:#e2e8e8}
+.editorial-store{color:var(--hn-ink)}
+.editorial-store :is(p,li,summary,details,label,input,textarea,select,button){font-family:'DM Sans',Arial,sans-serif}
+.editorial-store :is(h1,h2,h3){color:var(--hn-ink);text-wrap:balance}
+.editorial-store :is(.section-intro h2,.hn-showcase h2,.hn-compare h2,.hn-everyone h2,.hn-faq-showcase h2,#faq h2){font-family:Georgia,'Times New Roman',serif!important;font-weight:500!important;letter-spacing:-.035em!important;line-height:1.14!important;color:#203e4c!important}
+.editorial-store :is(.section-intro p,.hn-showcase-intro p,.hn-everyone p,.hn-faq-showcase p){color:var(--hn-muted)!important}
+.editorial-store :is(.hn-compare,.hn-faq-showcase,.hn-reviews-showcase){border-color:var(--hn-line)}
+.editorial-store :is(.hn-showcase-intro>span,.hn-compare>span,.hn-faq-showcase>span){color:#466b79!important}
+@media(max-width:750px){.editorial-store :is(.section-intro h2,.hn-showcase h2,.hn-compare h2,.hn-everyone h2,.hn-faq-showcase h2,#faq h2){font-size:clamp(27px,7.4vw,36px)!important}}
 </style></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
