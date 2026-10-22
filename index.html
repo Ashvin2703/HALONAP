@@ -1113,4 +1113,14 @@ body.shop-open #shop .product-info .product-title{overflow-wrap:break-word!impor
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
-</body></html>
+<style id="hn-shop-mobile-spacing-fix-20261023">
+/* Tighten mobile product layout only; preserve gallery, typography and controls. */
+@media(max-width:750px){
+ body.shop-open #shop .product-layout{gap:12px!important;padding-top:64px!important}
+ body.shop-open #shop .product-layout>.product-images{padding-top:0!important;padding-bottom:0!important;margin-bottom:0!important;min-height:0!important}
+ body.shop-open #shop .product-layout>.product-info{padding-top:0!important;margin-top:0!important}
+ body.shop-open #shop .gallery-dots{margin-top:0!important;margin-bottom:0!important}
+ body.shop-open #shop .gallery-controls{margin-bottom:0!important}
+ body.shop-open #shop .hn-product-kicker{margin-top:0!important}
+}
+</style></body></html>
