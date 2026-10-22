@@ -1061,4 +1061,18 @@ body.shop-open #shop .product-info .product-title{overflow-wrap:break-word!impor
  body.shop-open #shop .product-info .product-title{font-size:clamp(29px,8vw,40px)!important;line-height:1.12!important}
 }
 </style>
+<style id="hn-shop-gallery-balanced-20261022">
+/* Keep every gallery image fully visible and stop the image column dominating. */
+@media(min-width:751px){
+ body.shop-open #shop .product-layout{grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr)!important;max-width:1040px!important;gap:clamp(24px,3vw,40px)!important}
+ body.shop-open #shop .product-images{align-self:start!important;min-width:0!important}
+ body.shop-open #shop .product-images #mainProduct{width:100%!important;height:clamp(280px,30vw,400px)!important;max-height:400px!important;aspect-ratio:auto!important;object-fit:contain!important;object-position:center center!important;background:#f6f0ee!important;border-radius:16px!important}
+ body.shop-open #shop .product-info{min-width:0!important;overflow-wrap:break-word!important}
+ body.shop-open #shop .gallery-controls{max-width:100%!important}
+}
+@media(max-width:750px){
+ body.shop-open #shop .product-images #mainProduct{width:100%!important;height:auto!important;max-height:400px!important;aspect-ratio:4/3!important;object-fit:contain!important;object-position:center!important;background:#f6f0ee!important}
+ body.shop-open #shop .product-info{padding-inline:0!important}
+}
+</style>
 </body></html>
