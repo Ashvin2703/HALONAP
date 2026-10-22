@@ -433,6 +433,20 @@ body.shop-open #shop .main-product{display:block!important;width:100%!important;
 @media(max-width:750px){.hn-showcase{padding:22px 18px 45px}.hn-showcase h2{font-size:34px}.hn-feature-scene{grid-template-columns:1fr;gap:16px;margin-bottom:55px}.hn-feature-scene>img{aspect-ratio:1.3}.hn-feature-list{padding:10px 18px}.hn-compare{padding:22px 13px;margin-bottom:55px}.hn-everyone{margin-bottom:55px}.hn-everyone li{display:block}.hn-everyone li span{display:block;margin-top:6px}.hn-everyone-images img{height:150px}.hn-reviews-showcase{padding:35px 16px;margin-bottom:55px}.hn-faq-list details{padding:19px}
 body.shop-open .hn-sticky-buy.hn-sticky-visible{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:9995;align-items:center;gap:10px;background:#fff;padding:11px 14px max(11px,env(safe-area-inset-bottom));box-shadow:0 -4px 22px #203b4b20;color:#244a58}
 .hn-sticky-buy img{width:51px;height:51px;object-fit:cover;border-radius:10px}.hn-sticky-buy>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.hn-sticky-buy strong{font-size:12px;line-height:1.25}.hn-sticky-buy span{font-weight:800;font-size:16px}.hn-sticky-buy button{background:#244a58;color:white;border:0;border-radius:30px;padding:14px 17px;font-weight:700;white-space:nowrap}}
+</style><style id="halonap-desktop-overlap-repair-20261022">
+/* Desktop-only flow safeguards: preserve existing mobile design and interactions. */
+@media (min-width: 1024px) {
+  .editorial-store #shop, .editorial-store #faq, .editorial-store #faqSection { position:relative; clear:both; }
+  .editorial-store #shop .product-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:start; }
+  .editorial-store #shop .product-layout > *, .editorial-store #shop .product-info { min-width:0; max-width:100%; }
+  .editorial-store #shop .product-title { position:relative; inset:auto; transform:none; height:auto; min-height:0; white-space:normal; overflow-wrap:break-word; line-height:1.16; margin:12px 0 16px; }
+  .editorial-store #shop .hn-shop-heading h2 { line-height:1.18; overflow-wrap:break-word; }
+  .editorial-store #shop .product-images img { max-width:100%; }
+  .editorial-store #faqSection { isolation:isolate; }
+  .editorial-store #faq { position:relative; z-index:1; background:inherit; }
+  .editorial-store #faq .section-intro, .editorial-store #faq .faq-list { position:relative; z-index:2; }
+  .editorial-store #faq h2 { position:static; transform:none; white-space:normal; line-height:1.2; overflow-wrap:break-word; }
+}
 </style></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
