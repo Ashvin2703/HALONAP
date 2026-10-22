@@ -139,7 +139,13 @@ function showReviewThankYou(){
   }}
  async function loadAdmin(){if(!admin||!adminList)return;const {data:{user}}=await client.auth.getUser();if(!user){admin.hidden=true;return}const {data:membership}=await client.from('review_admins').select('user_id').eq('user_id',user.id).maybeSingle();admin.hidden=!membership;if(!membership)return;const {data,error}=await client.from('product_reviews').select('*').order('created_at',{ascending:false}).limit(100);adminList.replaceChildren();if(error){adminList.textContent=error.message;return}for(const item of data||[])adminList.append(card(item,true));if(!data?.length)adminList.textContent='No reviews yet.'}
  form.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportValidity())return;const status=document.getElementById('reviewStatus'),btn=form.querySelector('button[type=submit]'),files=[...document.getElementById('reviewMedia').files];if(files.length>4){status.textContent='Choose up to 4 files.';return}const allowed=['image/jpeg','image/png','image/webp','video/mp4','video/webm','video/quicktime'];if(files.some(f=>f.size>20*1024*1024||!allowed.includes(f.type))){status.textContent='Only JPG, PNG, WebP, MP4, WebM or MOV files up to 20 MB each.';return}btn.disabled=true;status.textContent='Uploading your review…';const paths=[];try{for(const file of files){const ext=({ 'image/jpeg':'jpg','image/png':'png','image/webp':'webp','video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov'})[file.type];const path='incoming/'+crypto.randomUUID()+'.'+ext;const {error}=await client.storage.from('review-media').upload(path,file,{contentType:file.type,upsert:false});if(error)throw error;paths.push(path)}const {error}=await client.from('product_reviews').insert({name:document.getElementById('reviewName').value.trim(),rating:Number(document.getElementById('reviewRating').value),review:document.getElementById('reviewMessage').value.trim(),media_paths:paths,status:'pending'});if(error)throw error;form.reset();status.textContent='';showReviewThankYou();await loadAdmin()}catch(err){status.textContent='Submission failed: '+err.message}finally{btn.disabled=false}});
- await load();await loadAdmin();client.auth.onAuthStateChange(()=>setTimeout(loadAdmin,0));
+ await load();await loadAdmin();
+ // Keep visible ratings current after moderation, on tab return and periodically.
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()});
+ window.addEventListener('focus',()=>load());
+ const reviewsRefresh=setInterval(()=>{if(!document.hidden)load()},60000);
+ window.addEventListener('pagehide',()=>clearInterval(reviewsRefresh),{once:true});
+ client.auth.onAuthStateChange(()=>setTimeout(loadAdmin,0));
 })();
 
 
