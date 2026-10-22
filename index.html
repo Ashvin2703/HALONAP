@@ -529,6 +529,16 @@ body.shop-open #shop .hn-shop-heading{display:none!important}
 #faqSection #faq .hn-faq-visual img{width:100%;height:auto;aspect-ratio:3/2;object-fit:contain;background:#f6f2ef;border-radius:22px}
 #faqSection #faq .faq-list{width:100%;max-width:850px;margin-left:auto;margin-right:auto}
 @media(max-width:849px){#faqSection #faq .hn-faq-layout{display:block!important}#faqSection #faq .hn-faq-visual{margin:0 auto 28px!important}}
+</style><style id="halonap-faq-desktop-left-image-20261022">
+/* Desktop only: image in left empty column, questions right; mobile remains unchanged. */
+@media(min-width:850px){
+#faqSection #faq .hn-faq-layout{display:block!important;max-width:1200px!important}
+#faqSection #faq .hn-faq-content{display:grid!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);column-gap:clamp(28px,4vw,64px);align-items:start;width:100%!important}
+#faqSection #faq .section-intro{grid-column:1/-1;text-align:center!important;margin-bottom:32px}
+#faqSection #faq .hn-faq-visual{grid-column:1;grid-row:2;width:100%!important;max-width:none!important;margin:0!important;align-self:start}
+#faqSection #faq .hn-faq-visual img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:22px}
+#faqSection #faq .faq-list{grid-column:2;grid-row:2;width:100%;max-width:none;margin:0}
+}
 </style></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
