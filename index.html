@@ -607,6 +607,21 @@ body.shop-open #shop .hn-shop-heading{display:none!important}
 .hn-everyone-images img{display:block;width:100%;height:clamp(190px,23vw,330px);object-fit:cover;object-position:center 38%;border-radius:18px}
 @media(max-width:767px){.hn-everyone-images{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;gap:12px;padding-bottom:8px;scrollbar-width:thin}.hn-everyone-images img{flex:0 0 65%;width:65%;height:260px;scroll-snap-align:start;object-fit:cover}}
 </style>
+<style id="hn-everyone-desktop-layout-20261022">
+/* Only the Shop Now lifestyle section on desktop. Mobile remains unchanged. */
+@media (min-width:1024px){
+ body.shop-open #shop .hn-everyone{display:grid!important;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)!important;gap:clamp(24px,3.2vw,48px)!important;align-items:center!important;max-width:1160px!important;margin:48px auto 68px!important;padding:0 12px!important;box-sizing:border-box}
+ body.shop-open #shop .hn-everyone>div:first-child{min-width:0!important;max-width:none!important}
+ body.shop-open #shop .hn-everyone h2{font-size:clamp(35px,3.7vw,55px)!important;line-height:1.12!important;margin:14px 0 16px!important}
+ body.shop-open #shop .hn-everyone p{font-size:clamp(15px,1.25vw,17px)!important;line-height:1.65!important;max-width:48ch!important}
+ body.shop-open #shop .hn-everyone ul{margin:22px 0 0!important;padding:12px 20px!important;box-shadow:none!important;border-radius:20px!important}
+ body.shop-open #shop .hn-everyone li{display:grid!important;grid-template-columns:minmax(135px,.85fr) minmax(0,1fr)!important;gap:12px!important;padding:13px 0!important}
+ body.shop-open #shop .hn-everyone li strong{min-width:0!important;font-size:14px!important}
+ body.shop-open #shop .hn-everyone li span{font-size:13px!important;line-height:1.5!important}
+ body.shop-open #shop .hn-everyone .hn-everyone-images{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:12px!important;margin:0!important;min-width:0!important;align-self:stretch!important}
+ body.shop-open #shop .hn-everyone .hn-everyone-images img{width:100%!important;height:100%!important;min-height:0!important;max-height:260px!important;aspect-ratio:1.18/1!important;object-fit:cover!important;object-position:center 36%!important;border-radius:18px!important}
+}
+</style>
 </head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
