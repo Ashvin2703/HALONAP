@@ -519,25 +519,29 @@ document.addEventListener('DOMContentLoaded',function(){
     if(button)button.addEventListener('click',close);
   });
 });
-</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script><script src="storefront-settings.js"></script><script src="script.js?v=20261021gallerysync" defer></script><script src="interface.js?v=20261019b" defer></script><script>document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('accountSwitch');if(!b)return;b.addEventListener('click',function(){if(window.__halonapAuthReady)return;var title=document.getElementById('accountHeading');var submit=document.getElementById('accountSubmit');var create=title.textContent!=='Create Account';title.textContent=create?'Create Account':'Sign In';submit.textContent=create?'Sign Up':'Sign In';b.textContent=create?'Already registered? Sign In':'Create an account';document.getElementById('accountStatus').textContent='Account service is temporarily unavailable. Please refresh to try again.';});});</script><script src="auth.js?v=20261020b" defer></script><script src="admin-orders.js?v=20261020b" defer></script><script>document.addEventListener("DOMContentLoaded",function(){const link=document.querySelector('a[href="#faq"]');const section=document.getElementById("faqSection");if(!section)return;const reveal=()=>{section.hidden=false;document.getElementById("faq")?.scrollIntoView({behavior:"smooth",block:"start"})};if(location.hash==="#faq")reveal();document.querySelectorAll('a[href="#faq"]').forEach(a=>a.addEventListener("click",()=>{section.hidden=false}));window.addEventListener("hashchange",()=>{if(location.hash==="#faq")reveal()})});</script><style id="shop-overlay-style">
-body:not(.shop-open) #shop{display:none!important}
-body.shop-open{overflow:hidden}
-body.shop-open #shop{display:block!important;position:fixed!important;inset:0!important;z-index:99990!important;overflow-y:auto!important;overscroll-behavior:contain;background:rgba(22,20,23,.52)!important;padding:clamp(12px,3vw,38px)!important;box-sizing:border-box}
-body.shop-open #shop .product-layout{position:relative;max-width:1050px;margin:0 auto;background:#f8f7f4;border-radius:26px;padding:clamp(24px,4vw,55px);box-shadow:0 25px 90px #0003;box-sizing:border-box}
-#shopOverlayClose{position:sticky;top:8px;float:right;z-index:20;border:1px solid #ddd;border-radius:50%;background:#fff;color:#222;width:44px;height:44px;font-size:28px;cursor:pointer;margin:0 0 -44px}
-@media(max-width:750px){body.shop-open #shop{padding:0!important;background:#f8f7f4!important}body.shop-open #shop .product-layout{min-height:100%;border-radius:0;padding:64px 18px 28px!important}#shopOverlayClose{position:fixed;right:18px;top:14px}}
-</style><script>
+</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script><script src="storefront-settings.js"></script><script src="script.js?v=20261021gallerysync" defer></script><script src="interface.js?v=20261019b" defer></script><script>document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('accountSwitch');if(!b)return;b.addEventListener('click',function(){if(window.__halonapAuthReady)return;var title=document.getElementById('accountHeading');var submit=document.getElementById('accountSubmit');var create=title.textContent!=='Create Account';title.textContent=create?'Create Account':'Sign In';submit.textContent=create?'Sign Up':'Sign In';b.textContent=create?'Already registered? Sign In':'Create an account';document.getElementById('accountStatus').textContent='Account service is temporarily unavailable. Please refresh to try again.';});});</script><script src="auth.js?v=20261020b" defer></script><script src="admin-orders.js?v=20261020b" defer></script><script>document.addEventListener("DOMContentLoaded",function(){const link=document.querySelector('a[href="#faq"]');const section=document.getElementById("faqSection");if(!section)return;const reveal=()=>{section.hidden=false;document.getElementById("faq")?.scrollIntoView({behavior:"smooth",block:"start"})};if(location.hash==="#faq")reveal();document.querySelectorAll('a[href="#faq"]').forEach(a=>a.addEventListener("click",()=>{section.hidden=false}));window.addEventListener("hashchange",()=>{if(location.hash==="#faq")reveal()})});</script><style id="shop-single-page-layout-20261022">
+/* Keep all content in normal document flow; Shop Now navigates to #shop. */
+body:not(.shop-open) #shop,body.shop-open #shop{
+ display:block!important;position:relative!important;inset:auto!important;
+ z-index:auto!important;overflow:visible!important;overscroll-behavior:auto!important;
+ background:#f7f6f2!important;box-sizing:border-box!important;
+ padding:clamp(42px,5vw,76px) clamp(18px,4vw,64px)!important;
+}
+body.shop-open{overflow:auto!important}
+#shop .product-layout,body.shop-open #shop .product-layout{
+ position:relative!important;width:min(100%,1160px)!important;max-width:1160px!important;
+ margin:0 auto!important;box-shadow:none!important;box-sizing:border-box!important;
+}
+#shopOverlayClose{display:none!important}
+#shop{scroll-margin-top:82px}
+@media(max-width:750px){
+ body:not(.shop-open) #shop,body.shop-open #shop{padding:34px 18px!important}
+ #shop .product-layout,body.shop-open #shop .product-layout{width:100%!important;padding:0!important;min-height:0!important}
+}
+</style><script id="halonap-single-page-navigation">
 document.addEventListener('DOMContentLoaded',function(){
-const shop=document.getElementById('shop');if(!shop)return;
-const close=document.createElement('button');close.type='button';close.id='shopOverlayClose';close.setAttribute('aria-label','Close product details');close.textContent='×';shop.prepend(close);
-function sync(){const open=location.hash==='#shop';document.body.classList.toggle('shop-open',open);if(open){shop.scrollTop=0;close.focus({preventScroll:true});}}
-function hide(){if(location.hash==='#shop'){history.pushState(null,'',location.pathname+location.search+'#home')}document.body.classList.remove('shop-open');}
-close.addEventListener('click',hide);
-shop.addEventListener('click',function(e){if(e.target===shop)hide()});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.body.classList.contains('shop-open'))hide()});
-window.addEventListener('hashchange',sync);
-document.querySelectorAll('a[href="#shop"]').forEach(a=>a.addEventListener('click',()=>setTimeout(sync,0)));
-sync();
+ document.body.classList.remove('shop-open');
+ window.addEventListener('hashchange',function(){document.body.classList.remove('shop-open')});
 });
 </script><style id="checkout-choice-mobile-fix">
 #checkoutChoice.account-panel{position:fixed!important;inset:0!important;z-index:100100!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:18px!important;overflow-y:auto!important;box-sizing:border-box}
