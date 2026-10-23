@@ -277,3 +277,30 @@ footer.site-footer{padding:32px clamp(18px,4vw,58px) 16px}
 #overlay{z-index:100010}
 #drawer{z-index:100020}
 #accountPanel{z-index:100110}
+
+
+/* HALONAP mobile product-details density — 2026-10-23.
+   Shop modal only: keep desktop and all product functionality unchanged. */
+@media (max-width:750px){
+ body.shop-open #shop .product-info .product-title{font-size:clamp(27px,7.3vw,34px)!important;line-height:1.13!important;margin:5px 0 7px!important}
+ body.shop-open #shop .product-info .subtitle{font-size:15px!important;line-height:1.35!important;margin:0 0 8px!important}
+ body.shop-open #shop .product-info .product-benefit{font-size:13px!important;line-height:1.48!important;margin:0 0 10px!important}
+ body.shop-open #shop .product-info .hn-product-kicker{margin:0 0 4px!important;font-size:10px!important}
+ body.shop-open #shop .product-info .eyebrow{font-size:10px!important;margin:0 0 4px!important}
+ body.shop-open #shop .product-info .hn-feature-pills{display:flex!important;flex-wrap:wrap!important;gap:6px!important;margin:0 0 9px!important}
+ body.shop-open #shop .product-info .hn-feature-pills span{font-size:11px!important;line-height:1.2!important;padding:7px 10px!important}
+ body.shop-open #shop .hn-product-customer-ratings{margin:5px 0 8px!important;padding:6px 0 9px!important;gap:5px 8px!important}
+ body.shop-open #shop .hn-product-customer-ratings .hn-ratings-stars{font-size:16px!important}
+ body.shop-open #shop .hn-product-customer-ratings .hn-ratings-caption,
+ body.shop-open #shop .hn-product-customer-ratings a{font-size:11px!important}
+ body.shop-open #shop .product-info .price{font-size:29px!important;line-height:1.15!important;margin:8px 0 5px!important}
+ body.shop-open #shop .product-info .selection-summary{font-size:12px!important;line-height:1.45!important;margin:4px 0 6px!important}
+ body.shop-open #shop .product-info .delivery-summary{font-size:12px!important;line-height:1.45!important;margin:5px 0 12px!important}
+ body.shop-open #shop .product-info .field-label{font-size:12px!important;line-height:1.35!important;margin:10px 0 7px!important;letter-spacing:.07em!important}
+ body.shop-open #shop .product-info .colour-options{display:flex!important;flex-wrap:nowrap!important;gap:7px!important;margin:0 0 10px!important}
+ body.shop-open #shop .product-info .colour-option{flex:1 1 0!important;min-width:0!important;min-height:44px!important;padding:8px 6px!important;font-size:13px!important;gap:6px!important}
+ body.shop-open #shop .product-info .colour-dot{width:18px!important;height:18px!important;flex-shrink:0!important}
+ body.shop-open #shop .product-info .qty{margin:5px 0 13px!important;min-height:44px!important}
+ body.shop-open #shop .product-info .qty button{min-height:44px!important}
+ body.shop-open #shop .product-info .product-actions{gap:8px!important}
+}
