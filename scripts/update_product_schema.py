@@ -23,7 +23,7 @@ valid = [r for r in rows if type(r.get("rating")) is int and 1 <= r["rating"] <=
 if len(rows) >= 1000:
     raise ValueError("Pagination required: refusing to publish an incomplete review count")
 text = HTML.read_text(encoding="utf-8")
-pattern = r'(<script type="application/ld\\+json">)(.*?)(</script>)'
+pattern = r'(<script type="application/ld\+json">)(.*?)(</script>)'
 match = re.search(pattern, text, re.DOTALL)
 if not match:
     raise ValueError("Product JSON-LD not found")
