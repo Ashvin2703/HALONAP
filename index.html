@@ -654,10 +654,15 @@ body.shop-open #shop .hn-shop-heading{display:none!important}
  body.shop-open #shop .hn-everyone .hn-everyone-highlights li div>span{display:block;margin-top:6px}
 }
 </style>
-</head><body class="editorial-store">
+<style id="halonap-hero-video-fallback-20261025">
+.editorial-store .rest-hero .hero-video-play{position:absolute;z-index:5;left:50%;top:56%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:9px;border:1px solid #ffffff99;border-radius:999px;background:#171717d9;color:#fff;padding:13px 20px;font:600 14px/1.2 Arial,sans-serif;cursor:pointer;box-shadow:0 5px 20px #0005}
+.editorial-store .rest-hero .hero-video-play[hidden]{display:none!important}
+.editorial-store .rest-hero .hero-video-play:focus-visible{outline:3px solid #fff;outline-offset:3px}
+</style></head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
 <video class="hero-motion" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/IMG_6074.jpeg" aria-label="HALONAP sleep mask rotating to show its contoured shape"><source src="01-hero-360.mp4" type="video/mp4"></video>
+<button type="button" id="heroVideoPlay" class="hero-video-play" aria-label="Play HALONAP background video" hidden>▶ <span>Play video</span></button>
 <div class="rest-hero-copy"><p class="hero-product-name">HAL<span class="brand-gold-o">O</span>NAP</p><h1 id="restHeadline">Made for switching off.</h1></div>
 <a href="#shop" class="hero-shop">Shop Now</a>
 </section>
@@ -793,7 +798,13 @@ const hero=document.querySelector('.hero-motion');
 if(hero){
   hero.muted=true; hero.defaultMuted=true; hero.playsInline=true;
   hero.setAttribute('muted',''); hero.setAttribute('playsinline','');
-  const attempt=()=>{if(document.hidden)return;const p=hero.play();if(p&&typeof p.catch==='function')p.catch(()=>{});};
+  const fallback=document.getElementById('heroVideoPlay');
+  const showFallback=()=>{if(fallback&&hero.paused)fallback.hidden=false;};
+  const attempt=()=>{if(document.hidden)return;hero.muted=true;const p=hero.play();if(p&&typeof p.then==='function')p.then(()=>{if(fallback)fallback.hidden=true}).catch(showFallback);};
+  if(fallback)fallback.addEventListener('click',()=>{hero.muted=true;hero.setAttribute('muted','');hero.play().then(()=>{fallback.hidden=true}).catch(()=>{fallback.hidden=false;fallback.querySelector('span').textContent='Tap to play'})});
+  hero.addEventListener('playing',()=>{if(fallback)fallback.hidden=true});
+  hero.addEventListener('error',showFallback);
+  hero.addEventListener('stalled',()=>{if(hero.paused)showFallback()});
   if(hero.readyState>=2)attempt();else hero.addEventListener('loadeddata',attempt,{once:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)attempt()});
   window.addEventListener('pageshow',attempt);
