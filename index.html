@@ -657,7 +657,7 @@ body.shop-open #shop .hn-shop-heading{display:none!important}
 </head><body class="editorial-store">
 <header class="header"><a href="#home" class="logo" aria-label="Halonap home"><span class="logo-word">Hal<span class="logo-gold">o</span>nap</span></a><nav id="siteNav"><a href="#shop">Shop</a><a href="#details">Why HALONAP</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a></nav><button type="button" id="accountOpen" class="account-open">Sign In</button><button type="button" id="headerContactOpen" class="header-contact-open" aria-label="Contact HALONAP customer support" title="Contact us"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M3 13h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm18 0h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5Z"/><path d="M21 18a4 4 0 0 1-4 4h-5"/></svg></button><button class="bag" id="bagButton" aria-label="Open shopping bag">Bag <span id="bagCount">0</span></button></header>
 <main id="home"><section class="rest-hero" aria-labelledby="restHeadline">
-<video class="hero-motion" autoplay muted loop playsinline preload="metadata" poster="images/IMG_6074.jpeg" aria-label="HALONAP sleep mask rotating to show its contoured shape"><source src="130361228_1790674409511717.mp4" type="video/mp4"></video>
+<video class="hero-motion" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="images/IMG_6074.jpeg" aria-label="HALONAP sleep mask rotating to show its contoured shape"><source src="01-hero-360.mp4" type="video/mp4"></video>
 <div class="rest-hero-copy"><p class="hero-product-name">HAL<span class="brand-gold-o">O</span>NAP</p><h1 id="restHeadline">Made for switching off.</h1></div>
 <a href="#shop" class="hero-shop">Shop Now</a>
 </section>
@@ -787,6 +787,17 @@ document.addEventListener('DOMContentLoaded',function(){
 .halonap-video-feature[hidden]{display:none!important}
 </style><script id="halonap-six-video-integration">
 document.addEventListener('DOMContentLoaded',async function(){
+
+// Safari-safe muted inline autoplay. Avoid reloading the hero after its initial load.
+const hero=document.querySelector('.hero-motion');
+if(hero){
+  hero.muted=true; hero.defaultMuted=true; hero.playsInline=true;
+  hero.setAttribute('muted',''); hero.setAttribute('playsinline','');
+  const attempt=()=>{if(document.hidden)return;const p=hero.play();if(p&&typeof p.catch==='function')p.catch(()=>{});};
+  if(hero.readyState>=2)attempt();else hero.addEventListener('loadeddata',attempt,{once:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)attempt()});
+  window.addEventListener('pageshow',attempt);
+}
 const files=[
 '01-hero-360.mp4','02-product-details.mp4',
 '03-contour.mp4','04-lifestyle.mp4',
@@ -794,7 +805,7 @@ const files=[
 async function available(path){try{const r=await fetch(path,{method:'HEAD'});return r.ok&&((r.headers.get('content-type')||'').includes('video')||path.endsWith('.mp4'))}catch(e){return false}}
 const checks=await Promise.all(files.map(available));
 const existing=[
-document.querySelector('.hero-motion'),
+null,
 document.querySelector('.introducing video'),
 document.querySelector('.contour-stage video')];
 existing.forEach((video,i)=>{if(!video||!checks[i])return;const source=video.querySelector('source');if(source){source.src=files[i];video.load();video.play().catch(()=>{})}});
