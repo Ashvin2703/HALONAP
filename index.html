@@ -789,19 +789,22 @@ document.addEventListener('DOMContentLoaded',function(){
 document.addEventListener('DOMContentLoaded',async function(){
 
 // Safari-safe muted inline autoplay. Avoid reloading the hero after its initial load.
+// Clean hero playback reset: one source, no controls, no competing load() calls.
 const hero=document.querySelector('.hero-motion');
 if(hero){
-  hero.muted=true; hero.defaultMuted=true; hero.playsInline=true;
-  hero.setAttribute('muted',''); hero.setAttribute('playsinline','');
-  const attempt=()=>{if(document.hidden)return;hero.muted=true;const p=hero.play();if(p&&typeof p.catch==='function')p.catch(()=>{});};
+  hero.muted=true;
+  hero.defaultMuted=true;
+  hero.playsInline=true;
+  hero.autoplay=true;
+  hero.loop=true;
   hero.controls=false;
   hero.removeAttribute('controls');
-  hero.setAttribute('disablepictureinpicture','');
-  hero.setAttribute('disableremoteplayback','');
-  hero.addEventListener('loadedmetadata',attempt);
-  if(hero.readyState>=2)attempt();else hero.addEventListener('loadeddata',attempt,{once:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)attempt()});
-  window.addEventListener('pageshow',attempt);
+  const startHero=()=>{if(document.hidden)return;const result=hero.play();if(result?.catch)result.catch(()=>{});};
+  hero.addEventListener('canplay',startHero);
+  window.addEventListener('pageshow',startHero);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)startHero();});
+  document.addEventListener('pointerdown',startHero,{once:true,passive:true});
+  startHero();
 }
 const files=[
 '01-hero-360.mp4','02-product-details.mp4',
