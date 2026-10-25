@@ -124,6 +124,27 @@ function showReviewThankYou(){
   return el;
  };
  async function load(){const {data,error}=await client.from('product_reviews').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(60);host.replaceChildren();if(!error)for(const item of data||[])host.append(card(item));
+  // Keep product structured data aligned with the same approved reviews shown on this page.
+  // Do not publish ratings if the review query fails or no valid approved reviews exist.
+  if(!error){
+   const schemaNode=document.querySelector('script[type="application/ld+json"]');
+   if(schemaNode){
+    try{
+     const schema=JSON.parse(schemaNode.textContent);
+     if(schema['@type']==='Product'){
+      const valid=(data||[]).filter(item=>Number.isInteger(Number(item.rating))&&Number(item.rating)>=1&&Number(item.rating)<=5);
+      if(valid.length){
+       const mean=valid.reduce((sum,item)=>sum+Number(item.rating),0)/valid.length;
+       schema.aggregateRating={'@type':'AggregateRating',ratingValue:Number(mean.toFixed(2)),reviewCount:valid.length,bestRating:5,worstRating:1};
+       const withText=valid.filter(item=>typeof item.review==='string'&&item.review.trim()&&typeof item.name==='string'&&item.name.trim());
+       if(withText.length)schema.review=withText.map(item=>({'@type':'Review',author:{'@type':'Person',name:item.name.trim()},reviewRating:{'@type':'Rating',ratingValue:Number(item.rating),bestRating:5,worstRating:1},reviewBody:item.review.trim()}));
+       else delete schema.review;
+      }else{delete schema.aggregateRating;delete schema.review;}
+      schemaNode.textContent=JSON.stringify(schema);
+     }
+    }catch(e){console.warn('HALONAP review structured data unavailable',e);}
+   }
+  }
   const ratingBox=document.querySelector('#shop .hn-product-customer-ratings');
   if(ratingBox){
    const stars=ratingBox.querySelector('.hn-ratings-stars'),caption=ratingBox.querySelector('.hn-ratings-caption'),link=ratingBox.querySelector('#hnProductRatingsLink');
