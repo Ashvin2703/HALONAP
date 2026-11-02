@@ -15,3 +15,19 @@ test('pending refund cannot create another refund',async()=>{global.fetch=async(
 test('webhook rejects forged and test-mode events',async()=>{global.fetch=()=>{throw Error('must not fetch')};let r=res();await webhook({method:'POST',headers:{},body:'{}'},r);assert.equal(r.code,400);const body=JSON.stringify({livemode:false,type:'checkout.session.completed'}),t=Math.floor(Date.now()/1000),sig=crypto.createHmac('sha256','test-webhook').update(t+'.'+body).digest('hex');r=res();await webhook({method:'POST',headers:{'stripe-signature':`t=${t},v1=${sig}`},body},r);assert.equal(r.code,400)});
 test('checkout rejects unavailable stock before payment creation',async()=>{global.fetch=async url=>{assert.ok(url.includes('product_inventory'));return reply([{colour:'Black',stock_quantity:0,is_active:true}])};const r=res();await checkout({method:'POST',headers:{},body:{items:{Black:1}}},r);assert.equal(r.code,409)});
 test('checkout enables promotion codes and validated campaign attribution',async()=>{global.fetch=async(url,opt={})=>{if(url.includes('product_inventory'))return reply([{colour:'Black',stock_quantity:180,is_active:true}]);if(url.includes('/prices/'))return reply({currency:'gbp',unit_amount:1299});const body=new URLSearchParams(opt.body);assert.equal(body.get('allow_promotion_codes'),'true');assert.equal(body.get('metadata[utm_source]'),'instagram');assert.equal(body.get('metadata[utm_campaign]'),null);return reply({url:'https://checkout.stripe.com/test'})};const r=res();await checkout({method:'POST',headers:{},body:{items:{Black:1},attribution:{utm_source:'instagram',utm_campaign:'invalid value'}}},r);assert.equal(r.code,200)});
+for(const quantity of [1,6])test(`checkout keeps £2.99 UK shipping and 3–5 business days for ${quantity} masks`,async()=>{
+ global.fetch=async(url,opt={})=>{
+  if(url.includes('product_inventory'))return reply([{colour:'Black',stock_quantity:180,is_active:true}]);
+  assert.ok(url.endsWith('/checkout/sessions'));
+  const p=new URLSearchParams(opt.body),prefix='shipping_options[0][shipping_rate_data]';
+  assert.equal(p.get('shipping_address_collection[allowed_countries][0]'),'GB');
+  assert.equal(p.get(`${prefix}[fixed_amount][amount]`),'299');
+  assert.equal(p.get(`${prefix}[delivery_estimate][minimum][value]`),'3');
+  assert.equal(p.get(`${prefix}[delivery_estimate][maximum][value]`),'5');
+  assert.equal(p.get(`${prefix}[delivery_estimate][minimum][unit]`),'business_day');
+  assert.ok(![...p.keys()].some(k=>k.startsWith('shipping_options[1]')));
+  assert.equal(p.get('line_items[0][quantity]'),String(quantity));
+  return reply({url:'https://checkout.stripe.com/test'});
+ };
+ const r=res();await checkout({method:'POST',headers:{},body:{items:{Black:quantity}}},r);assert.equal(r.code,200);
+});
