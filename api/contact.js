@@ -18,19 +18,28 @@ export default async function handler(req,res){
   if(recent.size>2000)for(const [k,t] of recent)if(now-t>120000)recent.delete(k);
   if(!process.env.SUPABASE_SERVICE_ROLE_KEY)return res.status(503).json({error:'Contact service temporarily unavailable.'});
   const record={name:name.trim(),email:email.trim(),order_number:order_number?.trim()||null,topic,message:message.trim()};
+  let ticketId=null;
   try{
-    const response=await fetch(SUPABASE_URL+'/rest/v1/customer_messages',{
-      method:'POST',headers:{apikey:process.env.SUPABASE_SERVICE_ROLE_KEY,Authorization:'Bearer '+process.env.SUPABASE_SERVICE_ROLE_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(record),signal:AbortSignal.timeout(9000)
+    const response=await fetch(SUPABASE_URL+'/rest/v1/customer_messages?select=id',{
+      method:'POST',headers:{apikey:process.env.SUPABASE_SERVICE_ROLE_KEY,Authorization:'Bearer '+process.env.SUPABASE_SERVICE_ROLE_KEY,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(record),signal:AbortSignal.timeout(9000)
     });
     if(!response.ok){console.error('Contact database insert failed',response.status);return res.status(503).json({error:'Unable to save your message. Please try again.'});}
+    const saved=await response.json();
+    if(!Array.isArray(saved)||!saved[0]?.id)throw new Error('Missing message reference');
+    ticketId='HN-'+String(saved[0].id).replace(/-/g,'').slice(0,10).toUpperCase();
   }catch(err){console.error('Contact database unavailable',err?.message);return res.status(503).json({error:'Unable to save your message. Please try again.'});}
-  let notified=false;
+  let notified=false,acknowledged=false;
   try{
     const {SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASSWORD,SMTP_SECURE}=process.env;
     if(!SMTP_HOST||!SMTP_USER||!SMTP_PASSWORD)throw new Error('SMTP configuration incomplete');
     const transport=nodemailer.createTransport({host:SMTP_HOST,port:Number(SMTP_PORT||465),secure:SMTP_SECURE==='true',auth:{user:SMTP_USER,pass:SMTP_PASSWORD},connectionTimeout:8000,greetingTimeout:8000,socketTimeout:12000});
-    await transport.sendMail({from:{name:'HALONAP Contact Form',address:SMTP_USER},to:'hello@halonap.com',replyTo:record.email,subject:'HALONAP contact: '+record.topic,text:['New contact form message','Name: '+record.name,'Email: '+record.email,'Order: '+(record.order_number||'Not provided'),'Topic: '+record.topic,'','Message:',record.message].join('\n')});
+    await transport.sendMail({from:{name:'HALONAP Contact Form',address:SMTP_USER},to:'hello@halonap.com',replyTo:record.email,subject:'HALONAP contact: '+record.topic+' ['+ticketId+']',text:['New contact form message','Reference: '+ticketId,'Name: '+record.name,'Email: '+record.email,'Order: '+(record.order_number||'Not provided'),'Topic: '+record.topic,'','Message:',record.message].join('\n')});
     notified=true;
+    try{
+      await transport.sendMail({from:{name:'HALONAP Customer Care',address:SMTP_USER},to:record.email,replyTo:'hello@halonap.com',subject:'We received your message | '+ticketId,text:['Hello '+record.name+',','','Thank you for contacting HALONAP. We have received your enquiry.','Your reference number: '+ticketId,'Topic: '+record.topic,'','Our customer care team will review your message and respond as soon as possible.','If you need to add information, reply to this email and include your reference number.','','Better sleep, brighter days.','HALONAP Customer Care','https://halonap.com'].join('\n')});
+      acknowledged=true;
+    }catch(err){console.error('Customer acknowledgement failed',err?.code||err?.message);}
+
   }catch(err){console.error('Contact notification failed',err?.code||err?.message);}
-  return res.status(200).json({saved:true,notified});
+  return res.status(200).json({saved:true,notified,acknowledged,reference:ticketId});
 }
