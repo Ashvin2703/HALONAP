@@ -1314,4 +1314,20 @@ const reviews=document.querySelector('#reviews');if(reviews){reviews.classList.a
 if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&window.innerWidth>380){const santa=make('span','hn-flying-santa','<svg viewBox="0 0 150 82" xmlns="http://www.w3.org/2000/svg"><path d="M25 55h88" stroke="#b88a4d" stroke-width="4" fill="none"/><path d="M50 40h62l-12 25H57z" fill="#bb4038" stroke="#fff" stroke-width="3"/><circle cx="77" cy="24" r="14" fill="#f2c6a4"/><path d="M61 17q18-28 31 2" fill="#b83d37" stroke="#fff" stroke-width="4"/><path d="M64 30q12 19 26 0" fill="#fff" stroke="#eee" stroke-width="2"/><path d="M17 39q-9-18-15-9m15 9 8-14" stroke="#8e633f" stroke-width="3" fill="none"/><ellipse cx="24" cy="51" rx="17" ry="12" fill="#b9895b"/><circle cx="11" cy="45" r="3" fill="#b63f39"/><path d="M42 52h12" stroke="#b88a4d" stroke-width="2"/></svg>');santa.addEventListener('animationend',()=>santa.remove(),{once:true});document.body.append(santa)}
 };if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init()})();
 </script>
+<!-- Holiday illustration polish: lighting, depth and controlled density. -->
+<style id="hn-holiday-polish">
+.hn-cutout-sticker{filter:drop-shadow(0 7px 5px rgba(50,35,20,.2)) drop-shadow(0 1px 1px rgba(255,255,255,.85));opacity:.98}
+.hn-cutout-sticker svg{filter:saturate(1.1) contrast(1.04)}
+.hn-cutout-sticker::after{content:"";position:absolute;left:22%;top:13%;width:35%;height:15%;border-radius:50%;background:linear-gradient(160deg,rgba(255,255,255,.46),transparent);transform:rotate(-28deg);pointer-events:none}
+.hn-santa-sticker{filter:drop-shadow(0 8px 7px rgba(35,20,10,.25))}
+.hn-snow-globe{filter:drop-shadow(0 7px 8px rgba(30,25,15,.24))}
+.hn-festive-sticker{filter:drop-shadow(0 6px 6px rgba(20,40,25,.2))}
+@media(max-width:650px){
+/* Keep product details and review copy unobstructed on narrow screens. */
+#shop .hn-cutout-sticker--candy,#shop .hn-festive-sticker--gift{display:none!important}
+#reviews .hn-cutout-sticker--reindeer{display:none!important}
+#faq .hn-holiday-dressing--bauble{display:none!important}
+.hn-flying-santa{z-index:2}
+}
+</style>
 <script defer src="/cookie-consent.js"></script></body></html>
