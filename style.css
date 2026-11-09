@@ -331,3 +331,19 @@ footer.site-footer{padding:32px clamp(18px,4vw,58px) 16px}
 #bagButton.hn-bag-bounce{animation:hn-bag-bounce .42s ease-out}
 #bagCount.hn-badge-pop{animation:hn-badge-pop .42s ease-out}
 @media(prefers-reduced-motion:reduce){#bagButton.hn-bag-bounce,#bagCount.hn-badge-pop{animation:none}}
+
+/* Customer-initiated product help: reuses existing accessible policy dialog. */
+#shop .hn-product-help-links{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0 6px}
+#shop .hn-product-help-links button{display:inline-flex;align-items:center;gap:7px;background:#fff;color:#111;border:1px solid #dedede;border-radius:999px;padding:10px 14px;font:600 12px 'DM Sans',sans-serif;cursor:pointer;min-height:42px}
+#shop .hn-product-help-links button:hover{border-color:#b18a37}
+#shop .hn-product-help-links button span{color:#b18a37;font-size:15px}
+#shop .hn-product-help-links button:focus-visible{outline:3px solid #b18a37;outline-offset:2px}
+#policyModal.account-panel:not([hidden]){z-index:100110!important}
+#policyModal .policy-card{max-height:calc(100dvh - 36px);overflow-y:auto}
+#policyModal .hn-fit-guide{display:grid;gap:17px;margin-top:14px}
+#policyModal .hn-fit-step{display:flex;align-items:flex-start;gap:14px}
+#policyModal .hn-fit-step-icon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:50%;background:#fff1cd;color:#111;font-size:20px}
+#policyModal .hn-fit-step h3{font:700 15px 'DM Sans',sans-serif;color:#111;margin:0 0 5px}
+#policyModal .hn-fit-step p,#policyModal .hn-fit-care{font-size:13px;line-height:1.65;color:#555;margin:0}
+#policyModal .hn-fit-care{border-top:1px solid #e5e5e5;padding-top:14px}
+@media(max-width:480px){#shop .hn-product-help-links{gap:8px}#shop .hn-product-help-links button{font-size:11px;padding:9px 12px}}
