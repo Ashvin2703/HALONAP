@@ -1257,4 +1257,26 @@ garland:'<svg viewBox="0 0 1200 28" preserveAspectRatio="none" xmlns="http://www
 <script id="hn-santa-accent-script">
 (()=>{const mount=()=>{const footer=document.querySelector('.site-footer');if(!footer||document.getElementById('hn-santa-sticker'))return;footer.classList.add('hn-santa-host');const santa=document.createElement('span');santa.id='hn-santa-sticker';santa.className='hn-santa-sticker';santa.setAttribute('aria-hidden','true');santa.innerHTML='<svg viewBox="0 0 110 135" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hn-santa-coat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d96559"/><stop offset="1" stop-color="#9b322e"/></linearGradient></defs><ellipse cx="55" cy="125" rx="37" ry="6" fill="#000" opacity=".10"/><path d="M30 91q-13 9-13 27h77q0-18-14-27" fill="url(#hn-santa-coat)"/><path d="M33 107h46" stroke="#fff8ed" stroke-width="8" stroke-linecap="round"/><path d="M48 100v18h15v-18" fill="#e9d7b0"/><path d="M25 99q-11 6-9 19" stroke="#b4443d" stroke-width="12" stroke-linecap="round"/><path d="M86 99q11 6 9 19" stroke="#b4443d" stroke-width="12" stroke-linecap="round"/><circle cx="16" cy="119" r="7" fill="#fff4e6"/><circle cx="95" cy="119" r="7" fill="#fff4e6"/><ellipse cx="55" cy="61" rx="33" ry="34" fill="#f2c7a9"/><path d="M20 51q3-28 36-35 28 6 34 35" fill="#b33e36"/><path d="M20 49q34-13 70 0" stroke="#fff8ef" stroke-width="12" stroke-linecap="round"/><path d="M78 22q15-5 18 12" stroke="#b33e36" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="97" cy="35" r="10" fill="#fff8ef"/><circle cx="43" cy="61" r="3" fill="#262323"/><circle cx="68" cy="61" r="3" fill="#262323"/><ellipse cx="55" cy="72" rx="8" ry="6" fill="#e4a18a"/><path d="M26 74q0 38 29 40 30-2 30-40-11 9-19 7-11 12-22 0-8 3-18-7" fill="#fff9f0"/><path d="M46 86q9 8 18 0" stroke="#9d5c51" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M39 112h32" stroke="#c9a05f" stroke-width="3" stroke-linecap="round"/></svg>';footer.append(santa)};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount()})();
 </script>
+<!-- Removable Christmas sticker collection, inspired by classic festive cutout stickers. -->
+<style id="hn-holiday-cutout-style">
+.hn-cutout-sticker{position:absolute;z-index:6;pointer-events:none;display:grid;place-items:center;width:58px;height:62px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.18));animation:hn-cutout-bob 6.5s ease-in-out infinite;transform-origin:center}
+.hn-cutout-sticker svg{width:100%;height:100%;overflow:visible}
+.hn-cutout-sticker--snowman{right:12px;bottom:12px}
+.hn-cutout-sticker--reindeer{left:10px;bottom:14px;animation-delay:-1.3s}
+.hn-cutout-sticker--candy{right:12px;top:13px;animation-delay:-2s}
+.hn-cutout-sticker--gift{right:12px;bottom:12px;animation-delay:-3.4s}
+.hn-cutout-sticker--bell{right:16px;bottom:16px;animation-delay:-1.9s}
+.hn-cutout-sticker--ginger{left:12px;bottom:12px;animation-delay:-4s}
+#shop .hn-cutout-sticker--candy{top:auto;bottom:14px;right:12px}
+#details .hn-cutout-sticker--gift{right:12px;bottom:12px}
+#reviews .hn-cutout-sticker--reindeer{bottom:12px;left:10px}
+#faq .hn-cutout-sticker--ginger{bottom:12px;left:12px}
+.site-footer .hn-cutout-sticker--bell{bottom:10px;right:82px}
+@keyframes hn-cutout-bob{0%,100%{translate:0 0;rotate:-3deg}50%{translate:0 -6px;rotate:3deg}}
+@media(max-width:650px){.hn-cutout-sticker{width:36px;height:40px;opacity:.94}#shop .hn-cutout-sticker--candy{bottom:8px;right:8px}#details .hn-cutout-sticker--gift,#reviews .hn-cutout-sticker--reindeer,#faq .hn-cutout-sticker--ginger{bottom:7px}.site-footer .hn-cutout-sticker--bell{right:52px;bottom:6px}}
+@media(prefers-reduced-motion:reduce){.hn-cutout-sticker{animation:none!important}}
+</style>
+<script id="hn-holiday-cutout-script">
+(()=>{const designs=[['#shop .product-images','candy','🍬'],['#details','gift','🎁'],['#reviews','reindeer','🦌'],['#faq','ginger','🍪'],['.site-footer','bell','🔔'],['.rest-hero','snowman','⛄']];const mount=()=>{if(document.getElementById('hn-cutouts-mounted'))return;const marker=document.createElement('i');marker.id='hn-cutouts-mounted';marker.hidden=true;document.body.append(marker);for(const [selector,type,emoji] of designs){const target=document.querySelector(selector);if(!target)continue;target.classList.add('hn-festive-anchor');const el=document.createElement('span');el.className='hn-cutout-sticker hn-cutout-sticker--'+type;el.setAttribute('aria-hidden','true');const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 72 76');const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x','36');t.setAttribute('y','58');t.setAttribute('text-anchor','middle');t.setAttribute('font-size','54');t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','4');t.setAttribute('stroke-linejoin','round');t.setAttribute('paint-order','stroke');t.textContent=emoji;svg.append(t);el.append(svg);target.append(el)}};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount()})();
+</script>
 <script defer src="/cookie-consent.js"></script></body></html>
