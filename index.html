@@ -1207,4 +1207,33 @@ ornament:'<svg viewBox="0 0 80 98" xmlns="http://www.w3.org/2000/svg"><defs><rad
 star:'<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="m40 4 10 24 26 2-20 17 7 26-23-14-23 14 7-26L4 30l26-2Z" fill="#d5ae68" stroke="#f8e5b9" stroke-width="3"/><path d="M40 13v42M18 32l43 15" stroke="#fff2d6" stroke-width="2" opacity=".6"/></svg>'
 };const mount=()=>{if(document.getElementById('hn-festive-mounted'))return;const marker=document.createElement('i');marker.id='hn-festive-mounted';marker.hidden=true;document.body.append(marker);[['.rest-hero','tree'],['#shop .product-images','gift'],['#reviews','ornament'],['#faq','star'],['.site-footer','ornament']].forEach(([selector,type])=>{const el=document.querySelector(selector);if(!el)return;el.classList.add('hn-festive-anchor');const sticker=document.createElement('span');sticker.className='hn-festive-sticker hn-festive-sticker--'+type;sticker.setAttribute('aria-hidden','true');sticker.innerHTML=art[type];el.append(sticker)})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount()})();
 </script>
+<!-- Removable Christmas shop dressing; decorative only, never intercepts clicks. -->
+<style id="hn-christmas-shop-dressing">
+.hn-holiday-garland{position:absolute;left:0;right:0;top:100%;height:23px;z-index:7;pointer-events:none;overflow:hidden;display:flex;justify-content:space-around;align-items:flex-start;opacity:.95}
+.hn-holiday-garland svg{width:100%;height:23px;display:block}
+.header{isolation:isolate}
+.hn-holiday-dressing{position:absolute;pointer-events:none;z-index:4;display:block;filter:drop-shadow(0 4px 5px #0002)}
+.hn-holiday-dressing svg{display:block;width:100%;height:100%}
+.hn-holiday-dressing--bauble{top:8px;left:12px;width:31px;height:54px;animation:hn-holiday-swing 7s ease-in-out infinite;transform-origin:50% 0}
+.hn-holiday-dressing--pine{top:8px;left:10px;width:83px;height:53px}
+.hn-holiday-dressing--sparkle{right:18px;top:14px;width:29px;height:29px;animation:hn-holiday-glow 4s ease-in-out infinite}
+#shop .hn-holiday-dressing--sparkle{top:12px;right:52px}
+#details .hn-holiday-dressing--pine{top:8px;left:8px}
+#reviews .hn-holiday-dressing--bauble{left:8px;top:10px}
+#faq .hn-holiday-dressing--pine{left:8px;top:12px}
+.site-footer .hn-holiday-dressing--pine{top:8px;left:8px}
+@keyframes hn-holiday-swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes hn-holiday-glow{0%,100%{opacity:.48;transform:scale(.88)}50%{opacity:1;transform:scale(1.1)}}
+@media(max-width:650px){.hn-holiday-garland{height:15px}.hn-holiday-garland svg{height:15px}.hn-holiday-dressing--pine{width:54px;height:36px}.hn-holiday-dressing--bauble{width:22px;height:40px}.hn-holiday-dressing--sparkle{width:20px;height:20px}#shop .hn-holiday-dressing--sparkle{right:40px}}
+@media(prefers-reduced-motion:reduce){.hn-holiday-dressing{animation:none!important}}
+</style>
+<script id="hn-christmas-shop-dressing-script">
+(()=>{const art={
+pine:'<svg viewBox="0 0 110 70" xmlns="http://www.w3.org/2000/svg"><path d="M5 10q39 22 100 3" fill="none" stroke="#8a6745" stroke-width="4"/><g stroke="#2d684b" stroke-width="4" stroke-linecap="round"><path d="M14 13 4 29M14 13l14 11M29 17 17 36M29 17l14 15M45 18 33 39M45 18l14 16M63 19 51 40M63 19l14 15M80 18 68 36M80 18l13 13M96 16 85 33"/></g><circle cx="30" cy="25" r="4" fill="#c49a56"/><circle cx="72" cy="28" r="4" fill="#b65c4c"/><circle cx="92" cy="20" r="3" fill="#e9d2a2"/></svg>',
+bauble:'<svg viewBox="0 0 40 70" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="hnbg"><stop stop-color="#f9e2b6"/><stop offset="1" stop-color="#ae7844"/></radialGradient></defs><path d="M20 0v22" stroke="#98764d" stroke-width="1.5"/><rect x="15" y="19" width="10" height="8" rx="2" fill="#d6b47a"/><circle cx="20" cy="45" r="18" fill="url(#hnbg)"/><path d="M9 46q11 9 22 0" stroke="#fff1d2" fill="none" stroke-width="1.5"/></svg>',
+sparkle:'<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="m20 1 5 14 14 5-14 5-5 14-5-14L1 20l14-5z" fill="#c49a56" stroke="#f1ddb1" stroke-width="1.5"/></svg>',
+garland:'<svg viewBox="0 0 1200 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 1Q150 29 300 1T600 1T900 1T1200 1" fill="none" stroke="#2c674c" stroke-width="7"/><path d="M0 1Q150 29 300 1T600 1T900 1T1200 1" fill="none" stroke="#548567" stroke-width="2" stroke-dasharray="4 9"/><g fill="#cba365"><circle cx="150" cy="15" r="4"/><circle cx="450" cy="15" r="4"/><circle cx="750" cy="15" r="4"/><circle cx="1050" cy="15" r="4"/></g><g fill="#b65d4b"><circle cx="280" cy="6" r="4"/><circle cx="580" cy="6" r="4"/><circle cx="880" cy="6" r="4"/></g></svg>'
+};const mount=()=>{if(document.getElementById('hn-holiday-dressing-mounted'))return;const marker=document.createElement('span');marker.id='hn-holiday-dressing-mounted';marker.hidden=true;document.body.append(marker);const header=document.querySelector('.header');if(header){const garland=document.createElement('span');garland.className='hn-holiday-garland';garland.setAttribute('aria-hidden','true');garland.innerHTML=art.garland;header.append(garland)}
+[['.rest-hero','bauble'],['#shop .product-images','sparkle'],['#details','pine'],['#reviews','bauble'],['#faq','pine'],['.site-footer','pine']].forEach(([selector,type])=>{const el=document.querySelector(selector);if(!el)return;el.classList.add('hn-festive-anchor');const decoration=document.createElement('span');decoration.className='hn-holiday-dressing hn-holiday-dressing--'+type;decoration.setAttribute('aria-hidden','true');decoration.innerHTML=art[type];el.append(decoration)})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount()})();
+</script>
 <script defer src="/cookie-consent.js"></script></body></html>
