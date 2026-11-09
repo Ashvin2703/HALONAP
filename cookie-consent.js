@@ -16,27 +16,27 @@
   function init(){
     const style=document.createElement('style');
     style.textContent=`
-#hn-cookie-panel{position:fixed;z-index:2147483000;bottom:16px;left:16px;width:min(430px,calc(100vw - 32px));box-sizing:border-box;background:#fffaf7;color:#34282b;border:1px solid #ead9df;border-radius:20px;box-shadow:0 16px 50px #241c2040;padding:22px;font-family:'DM Sans',sans-serif;transform:translateY(calc(100% + 40px));opacity:0;transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .42s ease;visibility:hidden}
+#hn-cookie-panel{position:fixed;z-index:2147483000;bottom:16px;left:16px;width:min(430px,calc(100vw - 32px));box-sizing:border-box;background:#fff;color:#102b53;border:1px solid #d9e3ee;border-radius:20px;box-shadow:0 16px 50px #241c2040;padding:22px;font-family:'DM Sans',sans-serif;transform:translateY(calc(100% + 40px));opacity:0;transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .42s ease;visibility:hidden}
 #hn-cookie-panel.hn-visible{transform:translateY(0);opacity:1;visibility:visible}
-#hn-cookie-panel h2{font-size:19px;line-height:1.3;margin:0 0 10px;font-weight:500;color:#34282b;font-family:'Playfair Display',serif}
-#hn-cookie-panel p{font-size:13px;line-height:1.65;margin:0 0 16px;color:#796b70}
+#hn-cookie-panel h2{font-size:19px;line-height:1.3;margin:0 0 10px;font-weight:700;color:#102b53;font-family:'DM Sans',sans-serif}
+#hn-cookie-panel p{font-size:13px;line-height:1.65;margin:0 0 16px;color:#586b80}
 #hn-cookie-panel .hn-cookie-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-#hn-cookie-panel button{min-height:43px;border-radius:10px;font-size:13px;font-weight:650;cursor:pointer;padding:10px;border:1px solid #34282b}
-#hn-cookie-accept,#hn-cookie-save{background:#34282b;color:#fff}
-#hn-cookie-reject{background:#fffaf7;color:#914d66}
-#hn-cookie-manage{grid-column:1/-1;border:0!important;background:transparent;color:#914d66;text-decoration:underline;text-underline-offset:3px}
-#hn-cookie-options{display:none;margin:0 0 14px;padding:12px;border:1px solid #ead9df;border-radius:10px}
+#hn-cookie-panel button{min-height:43px;border-radius:10px;font-size:13px;font-weight:650;cursor:pointer;padding:10px;border:1px solid #102b53}
+#hn-cookie-accept,#hn-cookie-save{background:#102b53;color:#fff}
+#hn-cookie-reject{background:#fff;color:#102b53}
+#hn-cookie-manage{grid-column:1/-1;border:0!important;background:transparent;color:#102b53;text-decoration:underline;text-underline-offset:3px}
+#hn-cookie-options{display:none;margin:0 0 14px;padding:12px;border:1px solid #d9e3ee;border-radius:10px}
 #hn-cookie-options.hn-open{display:block}
 #hn-cookie-options label{display:flex;justify-content:space-between;gap:14px;align-items:center;margin:9px 0;font-size:13px}
-#hn-cookie-options input{width:18px;height:18px;accent-color:#914d66}
-#hn-cookie-settings{position:fixed;z-index:2147482999;bottom:12px;left:12px;background:#fff;color:#914d66;border:1px solid #ead9df;border-radius:50%;width:36px;height:36px;box-shadow:0 4px 15px #091b3525;cursor:pointer;font-size:17px}
+#hn-cookie-options input{width:18px;height:18px;accent-color:#102b53}
+#hn-cookie-settings{position:fixed;z-index:2147482999;bottom:12px;left:12px;background:#fff;color:#102b53;border:1px solid #d9e3ee;border-radius:50%;width:36px;height:36px;box-shadow:0 4px 15px #091b3525;cursor:pointer;font-size:17px}
 @media(max-width:600px){#hn-cookie-panel{bottom:0;left:0;width:100%;border-radius:18px 18px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px))}#hn-cookie-settings{bottom:10px;left:10px}}
 @media(prefers-reduced-motion:reduce){#hn-cookie-panel{transition:none}}
 `;
     document.head.appendChild(style);
     const panel=document.createElement('section');
     panel.id='hn-cookie-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Cookie preferences');
-    panel.innerHTML='<h2>Your privacy matters</h2><p>We use essential cookies to run our shop. With your permission, we may also use analytics and marketing cookies. You can change your choice at any time. See our <a href="/privacy-policy" style="color:#914d66;text-decoration:underline">Privacy Policy</a>.</p><div id="hn-cookie-options"><label>Essential cookies <span>Always on</span></label><label>Analytics cookies <input id="hn-cookie-analytics" type="checkbox"></label><label>Marketing cookies <input id="hn-cookie-marketing" type="checkbox"></label></div><div class="hn-cookie-actions"><button type="button" id="hn-cookie-reject">Reject All</button><button type="button" id="hn-cookie-accept">Accept All</button><button type="button" id="hn-cookie-manage">Manage Preferences</button><button type="button" id="hn-cookie-save" style="display:none;grid-column:1/-1">Save Preferences</button></div>';
+    panel.innerHTML='<h2>Your privacy matters</h2><p>We use essential cookies to run our shop. With your permission, we may also use analytics and marketing cookies. You can change your choice at any time. See our <a href="/privacy-policy" style="color:#102b53;text-decoration:underline">Privacy Policy</a>.</p><div id="hn-cookie-options"><label>Essential cookies <span>Always on</span></label><label>Analytics cookies <input id="hn-cookie-analytics" type="checkbox"></label><label>Marketing cookies <input id="hn-cookie-marketing" type="checkbox"></label></div><div class="hn-cookie-actions"><button type="button" id="hn-cookie-reject">Reject All</button><button type="button" id="hn-cookie-accept">Accept All</button><button type="button" id="hn-cookie-manage">Manage Preferences</button><button type="button" id="hn-cookie-save" style="display:none;grid-column:1/-1">Save Preferences</button></div>';
     document.body.appendChild(panel);
     const settings=document.createElement('button');settings.id='hn-cookie-settings';settings.type='button';settings.textContent='⚙';settings.setAttribute('aria-label','Cookie settings');document.body.appendChild(settings); settings.style.display='none';
     const options=panel.querySelector('#hn-cookie-options'),save=panel.querySelector('#hn-cookie-save');
