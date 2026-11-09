@@ -1,5 +1,23 @@
 
 // Shared customer feedback: compact, accessible, no browser alert boxes.
+
+function halonapConfirm(message){
+ return new Promise(resolve=>{
+  const overlay=document.createElement('div');overlay.className='hn-confirm-overlay';
+  const dialog=document.createElement('section');dialog.className='hn-confirm-dialog';dialog.setAttribute('role','alertdialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-label','Confirm action');
+  const heading=document.createElement('h2');heading.textContent='Confirm action';
+  const detail=document.createElement('p');detail.textContent=message;
+  const actions=document.createElement('div');actions.className='hn-confirm-actions';
+  const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Cancel';
+  const accept=document.createElement('button');accept.type='button';accept.textContent='Delete review';
+  const previous=document.activeElement;
+  const finish=value=>{document.removeEventListener('keydown',onKey);overlay.remove();previous?.focus?.();resolve(value)};
+  const onKey=e=>{if(e.key==='Escape'){e.preventDefault();finish(false)}else if(e.key==='Tab'){const next=e.shiftKey?accept:cancel;if(document.activeElement===(e.shiftKey?cancel:accept)){e.preventDefault();next.focus()}}};
+  cancel.addEventListener('click',()=>finish(false));accept.addEventListener('click',()=>finish(true));overlay.addEventListener('click',e=>{if(e.target===overlay)finish(false)});
+  actions.append(cancel,accept);dialog.append(heading,detail,actions);overlay.append(dialog);document.body.append(overlay);document.addEventListener('keydown',onKey);cancel.focus();
+ });
+}
+
 function halonapNotice(message,type='error'){
  let node=document.getElementById('hn-customer-notice');
  if(!node){node=document.createElement('div');node.id='hn-customer-notice';node.setAttribute('role','alert');node.setAttribute('aria-live','assertive');document.body.appendChild(node)}
@@ -128,7 +146,7 @@ function showReviewThankYou(){
    const media=document.createElement(video?'video':'img');media.src=url;if(video){media.controls=true;media.preload='metadata'}else {media.alt='Customer review photo';media.tabIndex=0;media.setAttribute('role','button');media.setAttribute('aria-label','View review photo full size');const open=()=>{const viewer=document.createElement('div');viewer.className='review-lightbox';viewer.setAttribute('role','dialog');viewer.setAttribute('aria-label','Review photo');const image=document.createElement('img');image.src=url;image.alt=media.alt;const close=make('button','×','review-lightbox-close');close.setAttribute('aria-label','Close photo');const onKey=e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();dismiss()}else if(e.key==='Tab'){e.preventDefault();close.focus()}};const dismiss=()=>{document.removeEventListener('keydown',onKey,true);viewer.remove();media.focus()};document.addEventListener('keydown',onKey,true);close.onclick=dismiss;viewer.onclick=e=>{if(e.target===viewer)dismiss()};viewer.append(image,close);document.body.append(viewer);close.focus()};media.onclick=open;media.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}}}media.loading='lazy';gallery.append(media);
   }
   el.append(gallery);
-  if(moderation){el.append(make('small','Status: '+item.status+' · '+new Date(item.created_at).toLocaleDateString()));const actions=make('div',undefined,'review-actions');for(const [label,status] of [['Approve','approved'],['Reject','rejected'],['Delete','delete']]){const btn=make('button',label);btn.type='button';btn.onclick=async()=>{if(status==='delete'&&!confirm('Delete this review?'))return;btn.disabled=true;const result=status==='delete'?await client.from('product_reviews').delete().eq('id',item.id):await client.from('product_reviews').update({status}).eq('id',item.id);if(result.error)halonapNotice(result.error.message);await load();await loadAdmin()};actions.append(btn)}el.append(actions)}
+  if(moderation){el.append(make('small','Status: '+item.status+' · '+new Date(item.created_at).toLocaleDateString()));const actions=make('div',undefined,'review-actions');for(const [label,status] of [['Approve','approved'],['Reject','rejected'],['Delete','delete']]){const btn=make('button',label);btn.type='button';btn.onclick=async()=>{if(status==='delete'&&!(await halonapConfirm('Delete this review permanently?')))return;btn.disabled=true;const result=status==='delete'?await client.from('product_reviews').delete().eq('id',item.id):await client.from('product_reviews').update({status}).eq('id',item.id);if(result.error)halonapNotice(result.error.message);await load();await loadAdmin()};actions.append(btn)}el.append(actions)}
   return el;
  };
  async function load(){const {data,error}=await client.from('product_reviews').select('*').eq('status','approved').order('created_at',{ascending:false}).limit(60);host.replaceChildren();if(!error)for(const item of data||[])host.append(card(item));
