@@ -324,3 +324,10 @@ footer.site-footer{padding:32px clamp(18px,4vw,58px) 16px}
 .account-panel .account-card .eyebrow,#contactOverlay .hc-eyebrow{color:var(--hn-dialog-accent)!important}
 #contactOverlay .hc-form-panel button[type=submit]{background:#111111!important;color:#fff!important;border-color:#111111!important}
 @media(max-width:480px){.account-panel{padding:12px}.account-panel .account-card{max-height:calc(100dvh - 24px)}}
+
+/* Lightweight add-to-bag confirmation; respects reduced-motion preferences. */
+@keyframes hn-bag-bounce{0%,100%{transform:translateY(0) scale(1)}35%{transform:translateY(-5px) scale(1.07)}70%{transform:translateY(1px) scale(.98)}}
+@keyframes hn-badge-pop{0%,100%{transform:scale(1)}45%{transform:scale(1.24)}}
+#bagButton.hn-bag-bounce{animation:hn-bag-bounce .42s ease-out}
+#bagCount.hn-badge-pop{animation:hn-badge-pop .42s ease-out}
+@media(prefers-reduced-motion:reduce){#bagButton.hn-bag-bounce,#bagCount.hn-badge-pop{animation:none}}
