@@ -1,0 +1,25 @@
+/* Seasonal artwork only. Remove the two seasonal includes to disable. */
+.hn-xmas-host{position:relative}
+.hn-xmas{position:absolute;display:block;pointer-events:none!important;user-select:none;z-index:2;visibility:hidden;contain:layout style;line-height:0}
+.hn-xmas img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none!important}
+.hn-xmas[data-placed]{visibility:visible}
+.hn-xmas--garland-left,.hn-xmas--garland-right{width:180px;height:60px;top:calc(100% - 4px);visibility:visible;overflow:hidden}
+.hn-xmas--garland-left{left:0}.hn-xmas--garland-right{right:0;transform:scaleX(-1)}
+.hn-xmas-lights{position:absolute;left:0;right:0;top:100%;height:5px;pointer-events:none;z-index:2;background:radial-gradient(ellipse at center,#ffe9b3 0 1px,#ffd68a80 2px,transparent 5px) 0 0/66px 5px repeat-x;animation:hn-xmas-glow 5s ease-in-out 4}
+.hn-xmas--tree{width:160px;height:240px}.hn-xmas--lantern{width:92px;height:120px}
+.hn-xmas--gifts{width:70px;height:60px}.hn-xmas--pine{width:120px;height:42px}
+.hn-xmas--reindeer{width:76px;height:100px;overflow:hidden}.hn-xmas--reindeer img{animation:hn-xmas-peek 8s ease-in-out 2}
+.hn-xmas--santa{width:75px;height:113px}.hn-xmas--globe{width:78px;height:90px}
+.hn-xmas-snow{position:absolute;inset:7% 13% 30%;border-radius:50%;overflow:hidden;pointer-events:none}
+.hn-xmas-snow i{position:absolute;top:0;width:2px;height:2px;border-radius:50%;background:#fff;animation:hn-xmas-snow 4s linear 4;opacity:0}
+.hn-xmas-snow i:nth-child(1){left:23%}.hn-xmas-snow i:nth-child(2){left:70%;animation-delay:1.1s}.hn-xmas-snow i:nth-child(3){left:50%;animation-delay:2.3s}
+.hn-xmas-flight{position:absolute;top:90px;left:0;width:52px;height:78px;pointer-events:none;z-index:2;animation:hn-xmas-fly 8s ease-in-out both;will-change:transform;visibility:visible}
+.hn-xmas-flight img{animation:none}
+body.shop-open .hn-xmas-flight{display:none}
+@keyframes hn-xmas-fly{0%{transform:translateX(-90px) rotate(8deg);opacity:0}12%{opacity:.9}85%{opacity:.9}100%{transform:translateX(calc(100vw + 90px)) translateY(-30px) rotate(-6deg);opacity:0}}
+@keyframes hn-xmas-glow{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes hn-xmas-peek{0%,100%{transform:translateY(5px)}50%{transform:translateY(0)}}
+@keyframes hn-xmas-snow{0%{transform:translateY(-3px);opacity:0}25%{opacity:.7}100%{transform:translateY(48px);opacity:0}}
+@media(max-width:750px){.hn-xmas--tree{width:44px;height:66px}.hn-xmas--garland-left,.hn-xmas--garland-right{width:100px;height:34px;top:calc(100% - 3px)}.hn-xmas--pine{width:75px;height:26px}.hn-xmas--globe{width:48px;height:56px}.hn-xmas--lantern,.hn-xmas--santa,.hn-xmas--gifts,.hn-xmas--reindeer,.hn-xmas-flight{display:none}}
+@media(prefers-reduced-motion:reduce){.hn-xmas,.hn-xmas *,.hn-xmas-lights{animation:none!important;will-change:auto}.hn-xmas-flight{display:none}.hn-xmas-snow{display:none}}
+@media print{.hn-xmas,.hn-xmas-lights{display:none!important}}
