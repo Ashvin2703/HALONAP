@@ -760,6 +760,12 @@ body.shop-open #shopBagButton{display:flex!important;position:fixed!important;to
 body.shop-open #drawer{z-index:100003!important}
 body.shop-open #overlay:not([hidden]){z-index:100002!important}
 body.shop-open #shopBagButton:focus-visible{outline:3px solid #b18a37;outline-offset:2px}
+@keyframes hn-shop-bag-bounce{0%,100%{transform:translateY(0) scale(1)}35%{transform:translateY(-5px) scale(1.08)}70%{transform:translateY(1px) scale(.98)}}
+@keyframes hn-shop-badge-pop{0%,100%{transform:scale(1)}45%{transform:scale(1.28)}}
+body.shop-open #shopBagButton.hn-shop-bag-bounce{animation:hn-shop-bag-bounce .45s ease-out}
+body.shop-open #shopBagCount.hn-shop-badge-pop{animation:hn-shop-badge-pop .45s ease-out}
+@media(prefers-reduced-motion:reduce){body.shop-open #shopBagButton.hn-shop-bag-bounce,body.shop-open #shopBagCount.hn-shop-badge-pop{animation:none}}
+
 </style><script id="halonap-shop-page-navigation">
 document.addEventListener('DOMContentLoaded',function(){
  const shop=document.getElementById('shop');if(!shop)return;
