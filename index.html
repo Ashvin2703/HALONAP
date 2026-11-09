@@ -1182,29 +1182,29 @@ body.shop-open #shop .product-info .product-title{overflow-wrap:break-word!impor
  }
  body.shop-open #shop .product-images{overflow:visible!important}
 }
-</style><!-- HALONAP seasonal accents: self-contained; remove this block after the holidays. -->
-<style id="halonap-christmas-accents">
-.hn-xmas-star{position:absolute;pointer-events:none;z-index:2;color:#b18a37;font-size:15px;line-height:1;opacity:.7;animation:hn-xmas-twinkle 4.8s ease-in-out infinite}
-.hn-xmas-star:nth-child(2){animation-delay:1.6s;font-size:11px}
-.hn-xmas-star:nth-child(3){animation-delay:3.1s;font-size:12px}
-.header{position:relative}
-.header .hn-xmas-star{top:4px;right:9%;font-size:12px}
-.header .hn-xmas-star:nth-child(2){right:17%;top:12px}
-#shop .product-images{position:relative}
-#shop .hn-xmas-product-accent{position:absolute;top:5px;right:7px;width:34px;height:34px;pointer-events:none;z-index:3;opacity:.72}
-#shop .hn-xmas-product-accent svg{display:block;width:100%;height:100%;animation:hn-xmas-sway 7s ease-in-out infinite;transform-origin:50% 0}
-.site-footer{position:relative}
-.site-footer .hn-xmas-footer-note{font:500 12px/1.5 'DM Sans',sans-serif;letter-spacing:.05em;color:#b18a37;text-align:center;padding:12px 18px;border-top:1px solid #b18a3733}
-@keyframes hn-xmas-twinkle{0%,100%{opacity:.35;transform:scale(.88)}50%{opacity:.85;transform:scale(1.1)}}
-@keyframes hn-xmas-sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-@media(max-width:600px){.header .hn-xmas-star{right:18%;top:3px}.header .hn-xmas-star:nth-child(2){right:26%;top:12px}#shop .hn-xmas-product-accent{width:26px;height:26px;right:3px}}
-@media(prefers-reduced-motion:reduce){.hn-xmas-star,#shop .hn-xmas-product-accent svg{animation:none!important}}
+</style><!-- Removable festive sticker layer; no storefront content changes. -->
+<style id="hn-christmas-stickers">
+.hn-festive-anchor{position:relative}
+.hn-festive-sticker{position:absolute;z-index:3;pointer-events:none;display:block;width:clamp(38px,5vw,70px);height:auto;filter:drop-shadow(0 6px 7px #0002);animation:hn-festive-float 6s ease-in-out infinite}
+.hn-festive-sticker svg{display:block;width:100%;height:auto}
+.hn-festive-sticker--tree{top:12px;right:12px;transform:rotate(5deg)}
+.hn-festive-sticker--gift{bottom:12px;right:14px;animation-delay:-2s}
+.hn-festive-sticker--ornament{top:12px;right:12px;width:46px;animation-delay:-3s}
+.hn-festive-sticker--star{top:10px;right:12px;width:40px;animation-delay:-1s}
+#shop .hn-festive-sticker--gift{top:42px;bottom:auto;right:8px;width:46px}
+#reviews .hn-festive-sticker--ornament{top:14px;right:14px}
+#faq .hn-festive-sticker--star{top:12px;right:16px}
+.site-footer .hn-festive-sticker{top:14px;right:14px;width:46px}
+@keyframes hn-festive-float{0%,100%{translate:0 0;rotate:-3deg}50%{translate:0 -6px;rotate:3deg}}
+@media(max-width:650px){.hn-festive-sticker{width:38px;opacity:.88}.hn-festive-sticker--tree{top:8px;right:8px}#shop .hn-festive-sticker--gift{width:34px;top:8px;right:8px}#reviews .hn-festive-sticker--ornament,#faq .hn-festive-sticker--star{width:32px;top:7px;right:8px}.site-footer .hn-festive-sticker{width:34px}}
+@media(prefers-reduced-motion:reduce){.hn-festive-sticker{animation:none!important}}
 </style>
-<script id="halonap-christmas-accent-script">
-(()=>{const init=()=>{if(document.getElementById('hn-xmas-mounted'))return;const marker=document.createElement('span');marker.id='hn-xmas-mounted';marker.hidden=true;document.body.append(marker);
-const header=document.querySelector('.header');if(header){for(let i=0;i<2;i++){const star=document.createElement('span');star.className='hn-xmas-star';star.setAttribute('aria-hidden','true');star.textContent='✦';header.append(star)}}
-const gallery=document.querySelector('#shop .product-images');if(gallery){const accent=document.createElement('span');accent.className='hn-xmas-product-accent';accent.setAttribute('aria-hidden','true');accent.innerHTML='<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 3v6" stroke="#b18a37" stroke-width="1.5"/><path d="M12 8h12" stroke="#b18a37" stroke-width="1.5"/><circle cx="18" cy="21" r="10" stroke="#b18a37" stroke-width="1.5"/><path d="M13 18c3-3 7-3 10 0" stroke="#b18a37" stroke-width="1.2"/><circle cx="15" cy="24" r="1.2" fill="#b18a37"/><circle cx="22" cy="23" r="1.2" fill="#b18a37"/></svg>';gallery.append(accent)}
-const footer=document.querySelector('.site-footer');if(footer){const note=document.createElement('div');note.className='hn-xmas-footer-note';note.textContent='✦ Wishing you restful holidays ✦';footer.append(note)}
-};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init()})();
+<script id="hn-christmas-sticker-script">
+(()=>{const art={
+tree:'<svg viewBox="0 0 90 112" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="tg" x1="0" x2="1" y2="1"><stop stop-color="#4f8c71"/><stop offset="1" stop-color="#174734"/></linearGradient></defs><path d="M40 84h12v21H40z" fill="#a87550"/><path d="M45 7 16 49h12L8 83q37 22 74 0L62 49h12Z" fill="url(#tg)" stroke="#d8c7a1" stroke-width="1.5"/><path d="M20 66q25 18 49 0M25 43q20 13 40 0" fill="none" stroke="#e5c67c" stroke-width="3" stroke-linecap="round"/><circle cx="29" cy="70" r="4" fill="#ba5d4c"/><circle cx="59" cy="77" r="4" fill="#d9b25c"/><circle cx="53" cy="45" r="3" fill="#e9e0c7"/><path d="m45 0 4 7 8 1-6 6 1 8-7-4-7 4 1-8-6-6 8-1z" fill="#e6bd65"/></svg>',
+gift:'<svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg" x2="1" y2="1"><stop stop-color="#d2a774"/><stop offset="1" stop-color="#a76e51"/></linearGradient></defs><rect x="15" y="38" width="66" height="47" rx="7" fill="url(#gg)"/><rect x="11" y="31" width="74" height="17" rx="5" fill="#e8c99d"/><path d="M42 31h12v54H42z" fill="#f7e7c6"/><path d="M48 31C24 29 23 11 37 12c10 1 11 19 11 19Zm0 0c24-2 25-20 11-19-10 1-11 19-11 19Z" fill="#b64f46" stroke="#e8b7a1" stroke-width="2"/><path d="M48 31v54" stroke="#e5cda0" stroke-width="2"/></svg>',
+ornament:'<svg viewBox="0 0 80 98" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="og" cx=".3" cy=".2" r=".9"><stop stop-color="#f6dba6"/><stop offset=".5" stop-color="#c59659"/><stop offset="1" stop-color="#8c5d3e"/></radialGradient></defs><path d="M40 0v16" stroke="#a98a5c" stroke-width="2"/><rect x="32" y="14" width="16" height="11" rx="3" fill="#d3b478"/><circle cx="40" cy="57" r="31" fill="url(#og)"/><path d="M19 53q21 17 42 0M23 67q17-10 34 0" stroke="#fff2d6" stroke-width="2" fill="none" opacity=".8"/><circle cx="30" cy="43" r="5" fill="#fff8e7" opacity=".6"/></svg>',
+star:'<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="m40 4 10 24 26 2-20 17 7 26-23-14-23 14 7-26L4 30l26-2Z" fill="#d5ae68" stroke="#f8e5b9" stroke-width="3"/><path d="M40 13v42M18 32l43 15" stroke="#fff2d6" stroke-width="2" opacity=".6"/></svg>'
+};const mount=()=>{if(document.getElementById('hn-festive-mounted'))return;const marker=document.createElement('i');marker.id='hn-festive-mounted';marker.hidden=true;document.body.append(marker);[['.rest-hero','tree'],['#shop .product-images','gift'],['#reviews','ornament'],['#faq','star'],['.site-footer','ornament']].forEach(([selector,type])=>{const el=document.querySelector(selector);if(!el)return;el.classList.add('hn-festive-anchor');const sticker=document.createElement('span');sticker.className='hn-festive-sticker hn-festive-sticker--'+type;sticker.setAttribute('aria-hidden','true');sticker.innerHTML=art[type];el.append(sticker)})};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount()})();
 </script>
 <script defer src="/cookie-consent.js"></script></body></html>
