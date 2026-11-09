@@ -754,12 +754,22 @@ body.shop-open #shopOverlayClose{
  body.shop-open #shop .product-layout{display:block!important;width:100%!important;min-height:0!important}
  body.shop-open #shopOverlayClose{left:18px!important;top:16px!important}
 }
+body.shop-open #shopBagButton{display:flex!important;position:fixed!important;top:16px!important;right:18px!important;z-index:99993!important;align-items:center;justify-content:center;gap:6px;min-width:54px;height:42px;padding:0 10px;border:1px solid #e3e3e3;border-radius:999px;background:#fff;color:#111;box-shadow:0 2px 8px #00000012;cursor:pointer}
+#shopBagButton{display:none}
+#shopBagCount{display:grid;place-items:center;min-width:20px;height:20px;border-radius:50%;background:#111;color:#fff;font:600 11px Arial,sans-serif;padding:0 3px;box-sizing:border-box}
+body.shop-open #drawer{z-index:100003!important}
+body.shop-open #overlay:not([hidden]){z-index:100002!important}
+body.shop-open #shopBagButton:focus-visible{outline:3px solid #b18a37;outline-offset:2px}
 </style><script id="halonap-shop-page-navigation">
 document.addEventListener('DOMContentLoaded',function(){
  const shop=document.getElementById('shop');if(!shop)return;
  const back=document.createElement('button');back.type='button';back.id='shopOverlayClose';
  back.textContent='← Back';back.setAttribute('aria-label','Back to HALONAP homepage');
  shop.prepend(back);
+ const shopBag=document.createElement('button');shopBag.type='button';shopBag.id='shopBagButton';shopBag.setAttribute('aria-label','Open shopping bag');shopBag.innerHTML='<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span id="shopBagCount">0</span>';shop.prepend(shopBag);
+ shopBag.addEventListener('click',()=>document.getElementById('bagButton')?.click());
+ const originalBadge=document.getElementById('bagCount');if(originalBadge){const syncBadge=()=>{document.getElementById('shopBagCount').textContent=originalBadge.textContent};syncBadge();new MutationObserver(syncBadge).observe(originalBadge,{childList:true,characterData:true,subtree:true})}
+ 
  function sync(){const open=location.hash==='#shop';document.body.classList.toggle('shop-open',open);if(open)shop.scrollTop=0;}
  function hide(){if(location.hash==='#shop')history.pushState(null,'',location.pathname+location.search+'#home');document.body.classList.remove('shop-open');}
  back.addEventListener('click',hide);
