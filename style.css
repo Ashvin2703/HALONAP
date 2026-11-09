@@ -353,3 +353,12 @@ footer.site-footer{padding:32px clamp(18px,4vw,58px) 16px}
 #hn-customer-notice[hidden]{display:none!important}
 #hn-customer-notice[data-type="success"]{border-left-color:#b18a37}
 #accountStatus:not(:empty),#reviewStatus:not(:empty){display:block;box-sizing:border-box;margin-top:12px;padding:12px 14px;border:1px solid #e3e3e3;border-left:3px solid #b18a37;border-radius:10px;background:#fff;color:#111;font:500 13px/1.55 'DM Sans',sans-serif}
+
+.hn-confirm-overlay{position:fixed;inset:0;z-index:100220;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.65)}
+.hn-confirm-dialog{box-sizing:border-box;width:min(400px,100%);padding:30px 26px;border:1px solid #e3e3e3;border-radius:20px;background:#fff;color:#111;box-shadow:0 22px 65px #0003;font-family:'DM Sans',sans-serif}
+.hn-confirm-dialog h2{font-size:21px;margin:0 0 12px;color:#111}
+.hn-confirm-dialog p{font-size:14px;line-height:1.6;color:#626262;margin:0 0 24px}
+.hn-confirm-actions{display:flex;gap:10px;justify-content:flex-end}
+.hn-confirm-actions button{min-height:44px;padding:10px 18px;border-radius:10px;border:1px solid #dedede;background:#fff;color:#111;font:600 13px 'DM Sans',sans-serif;cursor:pointer}
+.hn-confirm-actions button:last-child{background:#111;color:#fff;border-color:#111}
+.hn-confirm-actions button:focus-visible{outline:3px solid #b18a37;outline-offset:2px}
