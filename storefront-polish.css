@@ -11,7 +11,7 @@ img,video{max-width:100%}
 .editorial-store .hero-shop,.editorial-store .mini-shop{transition:background .2s ease,transform .2s ease}
 .editorial-store .hero-shop:hover{background:#fff;transform:translateX(-50%) translateY(-2px)}
 .editorial-store .rest-hero-copy{text-wrap:balance}
-.editorial-store .rest-hero h1{max-width:900px;margin-inline:auto}
+.editorial-store .rest-hero .rest-hero-title{max-width:900px;margin-inline:auto}
 .editorial-store .design-facts p,.editorial-store .spec-grid p{font-size:clamp(12px,1.2vw,14px);line-height:1.6}
 .editorial-store .benefit-track article,.editorial-store .finish-track a{scroll-snap-stop:always}
 .editorial-store .halonap-video-feature{padding-block:clamp(35px,5vw,65px)}
@@ -25,7 +25,7 @@ img,video{max-width:100%}
 .editorial-store .header .mobile-menu-toggle{flex-shrink:0}
 .editorial-store .rest-hero{min-height:560px;height:100svh}
 .editorial-store .rest-hero-copy{top:32%;left:7%;right:7%}
-.editorial-store .rest-hero h1{font-size:clamp(38px,10vw,58px)}
+.editorial-store .rest-hero .rest-hero-title{font-size:clamp(38px,10vw,58px)}
 .editorial-store .introducing{min-height:530px;padding:65px 22px}
 .editorial-store .contour-stage{padding:50px 18px 48px}
 .editorial-store .contour-visual{height:clamp(240px,65vw,380px);border-radius:20px}
