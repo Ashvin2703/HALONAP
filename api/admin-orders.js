@@ -1,3 +1,4 @@
+import {pushSettings} from '../lib/order-push.js';
 import nodemailer from 'nodemailer';
 import {requireAdmin,database,stripe} from '../lib/commerce.js';
 import {dispatchEmail} from '../lib/customer-emails.js';
@@ -18,8 +19,9 @@ export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store');
  if(req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).end();}
  try{
-  await requireAdmin(req);
+  const user=await requireAdmin(req);
   const {action,order_id,resend,auto}=req.body||{};
+  if(['push_key','push_enable'].includes(action))return res.status(200).json(await pushSettings(action,req.body.subscription,user));
   if(action==='checkout_stats')return res.status(200).json(await checkoutStats());
   if(action!=='notify_dispatch'||!/^[-0-9a-f]{36}$/i.test(order_id||''))return res.status(400).json({error:'Invalid request'});
   const rows=await database('customer_orders?select=id,order_number,items,customer_name,customer_email,tracking_number,fulfillment_status,dispatch_email_sent_at&id=eq.'+encodeURIComponent(order_id));

@@ -1,4 +1,5 @@
 import {database, syncOrderRefund} from '../lib/commerce.js';
+import {notifyPaidOrder} from '../lib/order-push.js';
 import {sendOrderConfirmation} from '../lib/customer-emails.js';
 export const config = { api: { bodyParser: false } };
 import crypto from 'node:crypto';
@@ -34,7 +35,9 @@ export default async function handler(req,res){
   if(!result.ok){const detail=await result.text();console.error('Order transaction failed',result.status,detail.slice(0,300));throw Error('Paid order transaction failed: '+result.status)}
   // The order is saved; a confirmation email problem must not make Stripe retry the payment event.
   // Unsent confirmations show up in the daily brief.
-  try{const saved=await result.json();if(saved?.order_id)await sendOrderConfirmation(saved.order_id)}catch(err){console.error('Order confirmation email failed',err?.code||err?.message)}
+  const saved=await result.json();
+  try{if(saved?.order_id)await sendOrderConfirmation(saved.order_id)}catch(err){console.error('Order confirmation email failed',err?.code||err?.message)}
+  if(saved?.order_id)await notifyPaidOrder(saved.order_id,row,new Date(event.created*1000+999).toISOString());
   return res.status(200).json({received:true});
  }catch(error){console.error('Order webhook:',error.message);return res.status(500).send('Retry later')}
 }
