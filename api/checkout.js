@@ -30,11 +30,8 @@ export default async function handler(req,res){
   if(verifiedUserId)params.set('client_reference_id',verifiedUserId);
   params.set('mode','payment');
   params.set('allow_promotion_codes','true');
-  // Abandoned-checkout recovery: an expired session gets a recovery link; Stripe emails it only
-  // to customers who ticked promotional consent, and only once recovery emails are enabled in the Stripe Dashboard.
-  params.set('after_expiration[recovery][enabled]','true');
-  params.set('after_expiration[recovery][allow_promotion_codes]','true');
-  params.set('consent_collection[promotions]','auto');
+  // Do not set consent_collection[promotions] or after_expiration recovery here: Stripe only supports
+  // promotional consent for US businesses, and this UK account rejected every checkout while it was set.
   for(const key of ['utm_source','utm_medium','utm_campaign']){const value=req.body?.attribution?.[key];if(typeof value==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(value))params.set('metadata['+key+']',value);}
   params.set('success_url','https://halonap.com/?checkout=success');
   params.set('cancel_url','https://halonap.com/?checkout=cancelled#shop');
