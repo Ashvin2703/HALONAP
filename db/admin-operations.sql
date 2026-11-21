@@ -81,3 +81,15 @@ alter table public.store_settings
  add column if not exists dispatch_email_enabled boolean not null default true,
  add column if not exists dispatch_email_note text not null default '' check (length(dispatch_email_note) <= 300);
 grant update (price_compare_at_pence,standard_delivery_pence,express_delivery_pence,shop_paused,pause_message,low_stock_threshold,dispatch_email_enabled,dispatch_email_note) on public.store_settings to authenticated;
+-- Customer emails: order confirmation (sent by the Stripe webhook) and a review request 7 days after dispatch
+-- (sent by the daily Vercel cron). Opt-outs from review requests are kept by email address, server-side only.
+alter table public.customer_orders
+ add column if not exists confirmation_email_sent_at timestamptz,
+ add column if not exists review_request_sent_at timestamptz;
+create table if not exists public.email_opt_outs (
+ email text primary key check (email = lower(email) and length(email) <= 254),
+ created_at timestamptz not null default now()
+);
+alter table public.email_opt_outs enable row level security;
+revoke all on public.email_opt_outs from anon, authenticated;
+grant all on public.email_opt_outs to service_role;
