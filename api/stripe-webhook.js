@@ -3,6 +3,8 @@ export const config = { api: { bodyParser: false } };
 import crypto from 'node:crypto';
 const SUPABASE='https://ufhobvpuwhainuheewxb.supabase.co';
 const PRICES={price_1URLHq24vjMaecFfE01eVMSh:'Black',price_1URNCd24vjMaecFfShkLBUKY:'Pink',price_1URNGr24vjMaecFfnovZJiLp:'Grey'};
+// Prices change when the admin updates the price, so colours are also resolved from the Stripe product.
+const PRODUCTS={prod_VSFnEph0uuMBdj:'Black',prod_VSHmKiUMfy7aJj:'Pink',prod_VSHqLuIAtpcaNz:'Grey'};
 async function rawBody(req){if(Buffer.isBuffer(req.body))return req.body;if(typeof req.body==='string')return Buffer.from(req.body);const parts=[];for await(const chunk of req)parts.push(Buffer.from(chunk));return Buffer.concat(parts)}
 function verified(payload,header,secret){const fields=Object.fromEntries((header||'').split(',').map(p=>p.split('=')));const t=Number(fields.t);if(!t||Math.abs(Date.now()/1000-t)>300)return false;const expected=crypto.createHmac('sha256',secret).update(t+'.'+payload.toString('utf8')).digest('hex');return (header||'').split(',').some(part=>{if(!part.startsWith('v1='))return false;const actual=part.slice(3);return actual.length===expected.length&&crypto.timingSafeEqual(Buffer.from(actual),Buffer.from(expected))})}
 export default async function handler(req,res){
@@ -20,7 +22,7 @@ export default async function handler(req,res){
   const request=await fetch('https://api.stripe.com/v1/checkout/sessions/'+encodeURIComponent(session.id)+'/line_items?limit=100',{headers:{Authorization:'Bearer '+process.env.STRIPE_SECRET_KEY}});
   if(!request.ok)throw Error('Stripe line items unavailable');
   const lines=(await request.json()).data||[];
-  const items=lines.map(i=>({colour:PRICES[i.price?.id]||i.description||'Mask',quantity:i.quantity||1}));
+  const items=lines.map(i=>({colour:PRICES[i.price?.id]||PRODUCTS[typeof i.price?.product==='string'?i.price.product:i.price?.product?.id]||i.price?.metadata?.colour||i.description||'Mask',quantity:i.quantity||1}));
   const address=session.collected_information?.shipping_details||session.shipping_details||{};
   const customer=session.customer_details||{};
   const userId=session.metadata?.supabase_user_id||session.client_reference_id;
