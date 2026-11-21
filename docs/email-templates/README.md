@@ -1,8 +1,20 @@
 # HALONAP email templates
 
-Customer emails sent by the website (order confirmation, dispatch, review request, enquiry received) are built in `lib/customer-emails.js` and share the design of the Supabase signup "Verify Your Email" template.
+Every HALONAP email uses one design, defined in `lib/customer-emails.js` (cream page, "Halonap" wordmark with a gold "o", serif headline, dark pill button).
 
-Supabase Auth emails are set in the Supabase Dashboard, not in this repo:
+## Sent by the website
+Order confirmation, dispatch, review request and enquiry received. These are built in code, so there is nothing to paste.
 
-- **Confirm signup**: already uses the HALONAP design.
-- **Reset password**: paste `reset-password.html` into Supabase Dashboard → Authentication → Emails → **Reset Password** (subject: `HALONAP | Reset Your Password`).
+## Supabase Auth emails
+Supabase sends these. Paste each file into **Supabase Dashboard → Authentication → Emails**, in the template with the same name, and set the subject:
+
+| Supabase template | File | Subject |
+|---|---|---|
+| Confirm signup | `confirm-signup.html` | Confirm your HALONAP account |
+| Invite user | `invite.html` | You've been invited to HALONAP |
+| Magic link | `magic-link.html` | Your HALONAP sign-in link |
+| Change email address | `change-email.html` | Confirm your new HALONAP email address |
+| Reset password | `reset-password.html` | Reset your HALONAP password |
+| Reauthentication | `reauthentication.html` | Your HALONAP verification code |
+
+To change the design, edit `layout()` in `lib/customer-emails.js`, run `node scripts/build_auth_email_templates.mjs`, and paste the files again.
