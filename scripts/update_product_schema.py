@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh the static Product JSON-LD snapshot from public approved reviews only."""
+"""Refresh the static Product JSON-LD snapshot (approved reviews, price, delivery) and price in meta descriptions."""
 import json
 import os
 import pathlib
@@ -22,12 +22,39 @@ if not isinstance(rows, list):
 valid = [r for r in rows if type(r.get("rating")) is int and 1 <= r["rating"] <= 5]
 if len(rows) >= 1000:
     raise ValueError("Pagination required: refusing to publish an incomplete review count")
+settings_req = urllib.request.Request(
+    "https://ufhobvpuwhainuheewxb.supabase.co/rest/v1/store_settings?select=price_pence,standard_delivery_pence&id=eq.true",
+    headers={"apikey": KEY, "Accept": "application/json"})
+with urllib.request.urlopen(settings_req, timeout=20) as response:
+    settings_rows = json.load(response)
+settings = settings_rows[0] if isinstance(settings_rows, list) and settings_rows else {}
+
+def pounds(value, low, high):
+    """Admin Studio stores pence; return '12.99' or None when missing or out of range."""
+    if type(value) is int and low <= value <= high:
+        return f"{value / 100:.2f}"
+    return None
+
+price = pounds(settings.get("price_pence"), 100, 100000)
+standard = pounds(settings.get("standard_delivery_pence"), 0, 2000)
 text = HTML.read_text(encoding="utf-8")
+if price:
+    # Search snippets in the description meta tags mention the price, so keep them in step.
+    def fix_meta(m):
+        return re.sub(r"£\d+(?:\.\d{2})?", "£" + price, m.group(0))
+    text = re.sub(r'<meta (?:name="description"|property="og:description") content="[^"]*">', fix_meta, text)
 pattern = r'(<script type="application/ld\+json">)(.*?)(</script>)'
 match = re.search(pattern, text, re.DOTALL)
 if not match:
     raise ValueError("Product JSON-LD not found")
 schema = json.loads(match.group(2))
+offer = schema.get("offers") if isinstance(schema.get("offers"), dict) else None
+if offer is not None and price:
+    offer["price"] = price
+if offer is not None and standard:
+    rate = offer.get("shippingDetails", {}).get("shippingRate")
+    if isinstance(rate, dict):
+        rate["value"] = standard
 if schema.get("@type") != "Product":
     raise ValueError("Unexpected JSON-LD type")
 if valid:
@@ -54,4 +81,4 @@ encoded = json.dumps(schema, ensure_ascii=False, separators=(",", ":")).replace(
 updated = text[:match.start(2)] + encoded + text[match.end(2):]
 if updated != text:
     HTML.write_text(updated, encoding="utf-8")
-print(f"Updated Product schema from {len(valid)} approved reviews")
+print(f"Updated Product schema from {len(valid)} approved reviews; price {price}, standard delivery {standard}")

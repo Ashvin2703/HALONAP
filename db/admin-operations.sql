@@ -67,3 +67,17 @@ alter table public.customer_orders add column if not exists dispatch_email_sent_
 -- Free standard delivery threshold, editable in Admin Studio → Settings and enforced by /api/checkout.
 alter table public.store_settings add column if not exists free_delivery_threshold_pence integer not null default 2500 check (free_delivery_threshold_pence between 0 and 20000);
 grant update (free_delivery_threshold_pence) on public.store_settings to authenticated;
+-- Admin Studio settings: price (changed only through /api/admin-settings so Stripe and the site stay in step),
+-- sale "was" price, delivery charges, shop pause, low-stock alert and dispatch email options.
+alter table public.store_settings
+ add column if not exists price_pence integer not null default 1299 check (price_pence between 100 and 100000),
+ add column if not exists price_compare_at_pence integer check (price_compare_at_pence is null or price_compare_at_pence > price_pence),
+ add column if not exists stripe_prices jsonb not null default '{"Black":"price_1URLHq24vjMaecFfE01eVMSh","Pink":"price_1URNCd24vjMaecFfShkLBUKY","Grey":"price_1URNGr24vjMaecFfnovZJiLp"}'::jsonb,
+ add column if not exists standard_delivery_pence integer not null default 299 check (standard_delivery_pence between 0 and 2000),
+ add column if not exists express_delivery_pence integer not null default 399 check (express_delivery_pence between 0 and 3000),
+ add column if not exists shop_paused boolean not null default false,
+ add column if not exists pause_message text not null default '' check (length(pause_message) <= 200),
+ add column if not exists low_stock_threshold integer not null default 20 check (low_stock_threshold between 0 and 10000),
+ add column if not exists dispatch_email_enabled boolean not null default true,
+ add column if not exists dispatch_email_note text not null default '' check (length(dispatch_email_note) <= 300);
+grant update (price_compare_at_pence,standard_delivery_pence,express_delivery_pence,shop_paused,pause_message,low_stock_threshold,dispatch_email_enabled,dispatch_email_note) on public.store_settings to authenticated;
