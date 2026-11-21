@@ -21,6 +21,11 @@ export default async function handler(req,res){
   if(verifiedUserId)params.set('client_reference_id',verifiedUserId);
   params.set('mode','payment');
   params.set('allow_promotion_codes','true');
+  // Abandoned-checkout recovery: an expired session gets a recovery link; Stripe emails it only
+  // to customers who ticked promotional consent, and only once recovery emails are enabled in the Stripe Dashboard.
+  params.set('after_expiration[recovery][enabled]','true');
+  params.set('after_expiration[recovery][allow_promotion_codes]','true');
+  params.set('consent_collection[promotions]','auto');
   for(const key of ['utm_source','utm_medium','utm_campaign']){const value=req.body?.attribution?.[key];if(typeof value==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(value))params.set('metadata['+key+']',value);}
   params.set('success_url','https://halonap.com/?checkout=success');
   params.set('cancel_url','https://halonap.com/?checkout=cancelled#shop');
@@ -28,10 +33,10 @@ export default async function handler(req,res){
   params.set('shipping_address_collection[allowed_countries][0]','GB');
   // Stripe Checkout presents both UK shipping choices; free shipping is limited to eligible baskets.
   const ukShipping=[{name:'UK Standard Delivery (3 business days)',amount:299},{name:'UK Express Delivery (1–2 business days)',amount:399}];
-  // GBP product prices are resolved from Stripe so the £70 threshold cannot be spoofed by the browser.
+  // GBP product prices are resolved from Stripe so the £25 threshold cannot be spoofed by the browser.
   const prices=await Promise.all(selected.map(async item=>{const response=await fetch('https://api.stripe.com/v1/prices/'+encodeURIComponent(item.price),{headers:{Authorization:`Bearer ${process.env.STRIPE_SECRET_KEY}`}});const data=await response.json();if(!response.ok||data.currency!=='gbp'||!Number.isInteger(data.unit_amount))throw Error('Unable to verify product price');return data.unit_amount*item.quantity}));
   const subtotal=prices.reduce((sum,n)=>sum+n,0);
-  if(subtotal>=7000)ukShipping.unshift({name:'Free UK Delivery (3 business days)',amount:0});
+  if(subtotal>=2500)ukShipping.unshift({name:'Free UK Delivery (3 business days)',amount:0});
   ukShipping.forEach((option,i)=>{params.set(`shipping_options[${i}][shipping_rate_data][type]`,'fixed_amount');params.set(`shipping_options[${i}][shipping_rate_data][display_name]`,option.name);params.set(`shipping_options[${i}][shipping_rate_data][fixed_amount][amount]`,String(option.amount));params.set(`shipping_options[${i}][shipping_rate_data][fixed_amount][currency]`,'gbp')});
   params.set('phone_number_collection[enabled]','true');
   selected.forEach((item,i)=>{params.set(`line_items[${i}][price]`,item.price);params.set(`line_items[${i}][quantity]`,String(item.quantity));});
