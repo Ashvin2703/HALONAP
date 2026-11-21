@@ -6,7 +6,7 @@ function alertPreferences(root){
  const panel=section(root,'Phone notifications');
  const message=node('p','muted',panel,'Receive a private alert when a new order is paid.');
  const list=section(panel,'Connected devices');
- let button;
+ let button,existing;
  async function refreshDevices(){
   try{
    const reg=await navigator.serviceWorker?.getRegistration('/admin.html').catch(()=>null);
@@ -25,7 +25,7 @@ function alertPreferences(root){
      remove.disabled=true;
      try{
       await adminApi('/api/admin-orders',{action:'push_disconnect',deviceId:device.id});
-      if(device.current)await subscription?.unsubscribe().catch(()=>false);
+      if(device.current){existing=null;await subscription?.unsubscribe().catch(()=>false)}
       message.textContent='Disconnected '+label+'.';await refreshDevices();
      }catch(err){message.textContent=err.message;remove.disabled=false}
     };
@@ -37,21 +37,46 @@ function alertPreferences(root){
   message.textContent='On iPhone, add this admin page to your Home Screen from Safari, then open it there. On Android, open this page in Chrome.';return;
  }
  button=node('button','btn',panel,'Enable order alerts');
+ panel.insertBefore(button,list);
+ message.setAttribute('role','status');
+ let registration,applicationServerKey;
+ const blockedHelp=/Safari/.test(navigator.userAgent)&&!/Chrome|Chromium|Edg/.test(navigator.userAgent)
+  ? 'In Safari, open Settings → Websites → Notifications and allow halonap.com.'
+  : 'Open the site settings beside the address bar and allow Notifications for halonap.com.';
+ async function prepare(){
+  button.disabled=true;
+  message.textContent='Preparing notifications on this device…';
+  let timeout;
+  try{
+   await navigator.serviceWorker.register('/order-alerts-worker.js',{scope:'/admin.html'});
+   const ready=Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>{
+    timeout=setTimeout(()=>reject(Error('Notification setup timed out. Open /admin.html directly and try again.')),15000);
+   })]);
+   const [reg,{key}]=await Promise.all([ready,adminApi('/api/admin-orders',{action:'push_key'})]);
+   applicationServerKey=Uint8Array.from(atob(key.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+   existing=await reg.pushManager.getSubscription();
+   registration=reg;
+   message.textContent=Notification.permission==='denied'?blockedHelp:'Receive an alert on this device when a new order is paid.';
+  }catch(err){message.textContent=err.message;button.textContent='Retry setup'}
+  finally{clearTimeout(timeout);button.disabled=false}
+ }
  button.onclick=async()=>{
+  if(!registration){await prepare();return}
   button.disabled=true;
   try{
-   if(await Notification.requestPermission()!=='granted')throw Error('Allow notifications in your device settings to receive order alerts.');
-   await navigator.serviceWorker.register('/order-alerts-worker.js',{scope:'/admin.html'});
-   const reg=await navigator.serviceWorker.ready;
-   const {key}=await adminApi('/api/admin-orders',{action:'push_key'});
-   const bytes=Uint8Array.from(atob(key.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
-   const subscription=await reg.pushManager.getSubscription()||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:bytes});
+   if(Notification.permission==='denied')throw Error(blockedHelp);
+   message.textContent='Waiting for notification permission…';
+   // Subscribe directly in the click handler so Safari retains the user gesture.
+   const subscription=existing||await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey});
+   message.textContent='Registering this device and sending a test alert…';
    await adminApi('/api/admin-orders',{action:'push_enable',subscription:subscription.toJSON()});
+   existing=subscription;
    message.textContent='Enabled. A test notification has been sent to this device.';
    await refreshDevices();
-  }catch(err){message.textContent=err.message}
+  }catch(err){message.textContent=err.name==='NotAllowedError'?blockedHelp:err.message}
   finally{button.disabled=false}
  };
+ prepare();
 }
 async function check(){if(!sb){$('loginMsg').textContent='Unable to load secure sign-in. Refresh this page.';return}const {data:{user:u}}=await sb.auth.getUser();if(!u){user=null;$('app').classList.add('hide');$('login').classList.remove('hide');return}const {data:member,error}=await sb.from('review_admins').select('user_id').eq('user_id',u.id).maybeSingle();if(error||!member){await sb.auth.signOut();$('loginMsg').textContent='This account does not have administrator access.';return}user=u;$('login').classList.add('hide');$('app').classList.remove('hide');$('adminEmail').textContent=u.email||'Admin';
  const target=new URLSearchParams(location.search).get('order');
