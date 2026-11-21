@@ -64,3 +64,6 @@ grant execute on function public.record_paid_halonap_order(jsonb) to service_rol
 commit;
 -- Dispatch email: set by /api/admin-orders (service role) so a customer is emailed at most once.
 alter table public.customer_orders add column if not exists dispatch_email_sent_at timestamptz;
+-- Free standard delivery threshold, editable in Admin Studio → Settings and enforced by /api/checkout.
+alter table public.store_settings add column if not exists free_delivery_threshold_pence integer not null default 2500 check (free_delivery_threshold_pence between 0 and 20000);
+grant update (free_delivery_threshold_pence) on public.store_settings to authenticated;

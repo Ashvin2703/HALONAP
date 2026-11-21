@@ -13,6 +13,9 @@ export default async function handler(req,res){
   const inventoryResponse=await fetch('https://ufhobvpuwhainuheewxb.supabase.co/rest/v1/product_inventory?select=colour,stock_quantity,is_active',{headers:{apikey:'sb_publishable_upE73V2Ve1wcxj8gXZ9U0A_e5EmKhNy'},cache:'no-store'});
   if(!inventoryResponse.ok)return res.status(503).json({error:'Stock availability is temporarily unavailable. Please try again.'});
   const inventory=await inventoryResponse.json();
+  // Free-delivery threshold is set in Admin Studio → Settings; fall back to £25 if settings are unreachable.
+  let freeDeliveryFrom=2500;
+  try{const settings=await fetch('https://ufhobvpuwhainuheewxb.supabase.co/rest/v1/store_settings?select=free_delivery_threshold_pence&id=eq.true',{headers:{apikey:'sb_publishable_upE73V2Ve1wcxj8gXZ9U0A_e5EmKhNy'},cache:'no-store'});const value=settings.ok?(await settings.json())[0]?.free_delivery_threshold_pence:undefined;if(Number.isInteger(value)&&value>=0)freeDeliveryFrom=value;}catch{}
   for(const item of selected){const record=inventory.find(v=>v.colour===item.colour);if(!record||!record.is_active)return res.status(409).json({error:item.colour+' is currently unavailable.'});if(record.stock_quantity!==null&&record.stock_quantity<item.quantity)return res.status(409).json({error:'Only '+record.stock_quantity+' '+item.colour+' masks available.'});}
   let verifiedUserId=null;
   const bearer=(req.headers.authorization||'').match(/^Bearer (.+)$/i);
@@ -33,10 +36,10 @@ export default async function handler(req,res){
   params.set('shipping_address_collection[allowed_countries][0]','GB');
   // Stripe Checkout presents both UK shipping choices; free shipping is limited to eligible baskets.
   const ukShipping=[{name:'UK Standard Delivery (3 business days)',amount:299},{name:'UK Express Delivery (1–2 business days)',amount:399}];
-  // GBP product prices are resolved from Stripe so the £25 threshold cannot be spoofed by the browser.
+  // GBP product prices are resolved from Stripe so the free-delivery threshold cannot be spoofed by the browser.
   const prices=await Promise.all(selected.map(async item=>{const response=await fetch('https://api.stripe.com/v1/prices/'+encodeURIComponent(item.price),{headers:{Authorization:`Bearer ${process.env.STRIPE_SECRET_KEY}`}});const data=await response.json();if(!response.ok||data.currency!=='gbp'||!Number.isInteger(data.unit_amount))throw Error('Unable to verify product price');return data.unit_amount*item.quantity}));
   const subtotal=prices.reduce((sum,n)=>sum+n,0);
-  if(subtotal>=2500)ukShipping.unshift({name:'Free UK Delivery (3 business days)',amount:0});
+  if(subtotal>=freeDeliveryFrom)ukShipping.unshift({name:'Free UK Delivery (3 business days)',amount:0});
   ukShipping.forEach((option,i)=>{params.set(`shipping_options[${i}][shipping_rate_data][type]`,'fixed_amount');params.set(`shipping_options[${i}][shipping_rate_data][display_name]`,option.name);params.set(`shipping_options[${i}][shipping_rate_data][fixed_amount][amount]`,String(option.amount));params.set(`shipping_options[${i}][shipping_rate_data][fixed_amount][currency]`,'gbp')});
   params.set('phone_number_collection[enabled]','true');
   selected.forEach((item,i)=>{params.set(`line_items[${i}][price]`,item.price);params.set(`line_items[${i}][quantity]`,String(item.quantity));});
