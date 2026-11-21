@@ -5,10 +5,38 @@ const ukDate=v=>new Date(v).toLocaleString('en-GB',{day:'numeric',month:'short',
 function alertPreferences(root){
  const panel=section(root,'Phone notifications');
  const message=node('p','muted',panel,'Receive a private alert when a new order is paid.');
+ const list=section(panel,'Connected devices');
+ let button;
+ async function refreshDevices(){
+  try{
+   const reg=await navigator.serviceWorker?.getRegistration('/admin.html').catch(()=>null);
+   const subscription=await reg?.pushManager?.getSubscription().catch(()=>null);
+   const {devices}=await adminApi('/api/admin-orders',{action:'push_devices',currentEndpoint:subscription?.endpoint});
+   list.replaceChildren();node('h3','',list,'Connected devices');
+   if(button)button.textContent=devices.some(device=>device.current)?'Send test alert':'Enable order alerts';
+   if(!devices.length)node('p','muted',list,'No devices connected.');
+   for(const device of devices){
+    const row=node('div','toolbar',list);
+    const label=(device.current?'This device · ':'')+device.label+' · '+device.id.slice(0,6);
+    node('span','',row,label+' · Added '+ukDate(device.added));
+    const remove=node('button','btn',row,'Disconnect');
+    remove.onclick=async()=>{
+     if(!confirm('Stop HALONAP order alerts on '+label+'?'))return;
+     remove.disabled=true;
+     try{
+      await adminApi('/api/admin-orders',{action:'push_disconnect',deviceId:device.id});
+      if(device.current)await subscription?.unsubscribe().catch(()=>false);
+      message.textContent='Disconnected '+label+'.';await refreshDevices();
+     }catch(err){message.textContent=err.message;remove.disabled=false}
+    };
+   }
+  }catch(err){notice(list,'Unable to load connected devices: '+err.message)}
+ }
+ refreshDevices();
  if(!('PushManager' in window)||!('serviceWorker' in navigator)||!('Notification' in window)){
   message.textContent='On iPhone, add this admin page to your Home Screen from Safari, then open it there. On Android, open this page in Chrome.';return;
  }
- const button=node('button','btn',panel,'Enable order alerts');
+ button=node('button','btn',panel,'Enable order alerts');
  button.onclick=async()=>{
   button.disabled=true;
   try{
@@ -20,7 +48,7 @@ function alertPreferences(root){
    const subscription=await reg.pushManager.getSubscription()||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:bytes});
    await adminApi('/api/admin-orders',{action:'push_enable',subscription:subscription.toJSON()});
    message.textContent='Enabled. A test notification has been sent to this device.';
-   button.textContent='Send test alert';
+   await refreshDevices();
   }catch(err){message.textContent=err.message}
   finally{button.disabled=false}
  };
