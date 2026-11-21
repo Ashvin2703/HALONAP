@@ -18,7 +18,7 @@ grant update (announcement,support_email,updated_at) on public.store_settings to
 grant all on public.store_settings to service_role;
 create policy "Public storefront settings" on public.store_settings for select to anon,authenticated using (true);
 create policy "Admin settings changes" on public.store_settings for update to authenticated using (exists(select 1 from public.review_admins where user_id=(select auth.uid()))) with check (exists(select 1 from public.review_admins where user_id=(select auth.uid())));
-insert into public.store_settings(id,announcement,support_email) values(true,'✦ FREE UK DELIVERY OVER £70 · 30-DAY RETURNS ✦','hello@halonap.com') on conflict do nothing;
+insert into public.store_settings(id,announcement,support_email) values(true,'✦ FREE UK DELIVERY OVER £25 · 30-DAY RETURNS ✦','hello@halonap.com') on conflict do nothing;
 create table if not exists public.marketing_campaigns (
  id uuid primary key default gen_random_uuid(),
  name text not null check(length(name) between 1 and 100),
@@ -62,3 +62,5 @@ end $$;
 revoke all on function public.record_paid_halonap_order(jsonb) from public,anon,authenticated;
 grant execute on function public.record_paid_halonap_order(jsonb) to service_role;
 commit;
+-- Dispatch email: set by /api/admin-orders (service role) so a customer is emailed at most once.
+alter table public.customer_orders add column if not exists dispatch_email_sent_at timestamptz;
