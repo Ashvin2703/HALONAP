@@ -38,6 +38,8 @@ const ICONS={
  money:'<path d="M12 3v18M17 7.5c-.8-1.5-2.6-2.5-5-2.5-3 0-4.5 1.6-4.5 3.4 0 4.6 10 2.4 10 7.2 0 1.9-1.8 3.4-5 3.4-2.6 0-4.5-1.1-5.3-2.8"/>',
  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+ packing:'<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',
+ returns:'<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
  cart:'<circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.3"/>'
 };
 function icon(name){const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('class','i');s.setAttribute('aria-hidden','true');s.innerHTML=ICONS[name]||'';return s}
@@ -77,6 +79,12 @@ function field(parent,label,type,value,hint){
  if(hint)wrap.append(h('p',{class:'hint',text:hint}));parent.append(wrap);return input;
 }
 
+/* ---------- adapters for admin-workflows.js (packing, returns, inbox, timeline, sales export) ---------- */
+function node(tag,cls,parent,text){const x=h(tag,{class:cls||null,text:text===undefined?null:text});if(parent)parent.append(x);return x}
+function section(parent,title){const p=h('section',{class:'panel'},h('h2',{class:'panel-title',text:title}));parent.append(p);return p}
+function addNotice(parent,msg){parent.append(notice(msg))}
+function loadPanel(root,task){task.catch(err=>addNotice(root,err.message))}
+
 /* ---------- data ---------- */
 async function adminApi(path,body){const {data:{session}}=await sb.auth.getSession();const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session?.access_token},body:JSON.stringify(body)});const result=await r.json().catch(()=>({}));if(!r.ok)throw Error(result.error||'Request failed ('+r.status+')');return result}
 let orders=[],user=null,loadError='',lastSync=null,settingsCache=null,counts={messages:0,reviews:0};
@@ -91,7 +99,11 @@ async function check(){
  if(error||!member){await sb.auth.signOut();$('loginMsg').textContent='This account does not have administrator access.';return}
  user=u;$('login').classList.add('hide');$('app').classList.remove('hide');
  $('adminEmail').textContent=u.email||'Admin';$('adminAvatar').textContent=initials(u.user_metadata?.full_name||u.email);
+ // Links like /admin.html?order=<id> (packing queue, returns, inbox, push alerts) open that order.
+ const target=new URLSearchParams(location.search).get('order');
+ if(target){page='orders';history.replaceState(null,'',location.pathname+'#orders')}
  await reload();
+ if(target){const found=await sb.from('customer_orders').select('*').eq('id',target).maybeSingle();if(found.data)details(found.data);else toast('This order could not be loaded.')}
 }
 async function reload(){
  const {data,error}=await sb.from('customer_orders').select('id,order_number,items,total_pence,currency,payment_status,fulfillment_status,tracking_number,customer_name,customer_email,customer_phone,shipping_address,created_at,dispatched_at,refunded_pence,refund_status,attribution,inventory_issue,dispatch_email_sent_at,confirmation_email_sent_at,review_request_sent_at').order('created_at',{ascending:false}).limit(500);
@@ -115,6 +127,8 @@ const PAGES=[
  {id:'customers',label:'Customers',icon:'customers',group:'Store',sub:'Everyone who has ordered, and what they spent.'},
  {id:'products',label:'Products & Stock',icon:'products',group:'Store',sub:'Stock levels and availability per colour.'},
  {id:'payments',label:'Payments',icon:'payments',group:'Store',sub:'Stripe receipts, refund status and refunds.'},
+ {id:'packing',label:'Packing & Dispatch',icon:'packing',group:'Store',sub:'Paid orders waiting to be packed. Print packing slips in one go.'},
+ {id:'returns',label:'Returns',icon:'returns',group:'Store',sub:'Return requests and where each one is up to.'},
  {id:'reviews',label:'Reviews',icon:'reviews',group:'Customers',sub:'Approve customer reviews before they go live.'},
  {id:'messages',label:'Customer Messages',icon:'messages',group:'Customers',sub:'Contact form enquiries and replies.'},
  {id:'marketing',label:'Marketing',icon:'marketing',group:'Growth',sub:'Campaign links and the sales they bring in.'},
@@ -263,6 +277,8 @@ function details(o,flash,opener){
   resend.onclick=async()=>{if(o.dispatch_email_sent_at&&!confirm('Send the dispatch email to '+o.customer_email+' again?'))return;resend.disabled=true;msg.textContent='Sending dispatch email…';try{const result=await adminApi('/api/admin-orders',{action:'notify_dispatch',order_id:o.id,resend:true});const t=result.sent?'Dispatch email sent to '+o.customer_email:'Another admin just sent it. Nothing more was sent.';toast(t);await afterOrderChange(o.id,t)}catch(err){msg.textContent='Dispatch email failed: '+err.message;resend.disabled=false}};
  }
  body.append(mails);
+ const extra=h('div',{class:'drawer-extra'});body.append(extra);
+ loadPanel(extra,ops.timeline(extra,o));loadPanel(extra,ops.returnCase(extra,o));
 
  save.onclick=async()=>{
   save.disabled=true;msg.textContent='Saving…';
@@ -319,7 +335,7 @@ async function products(root){
 /* ---------- Payments ---------- */
 async function paymentAction(action,o,button,msg,refundCell,payCell){
  button.disabled=true;msg.textContent='Contacting Stripe…';
- try{const result=await adminApi('/api/admin-payments',{action,order_id:o.id});Object.assign(o,result);msg.textContent='Stripe checked · Refunded '+money(result.refunded_pence)+' · '+(result.refund_status||'No refunds');refundCell.textContent=money(o.refunded_pence||0);if(o.payment_status)payCell.replaceChildren(badge(o.payment_status));if(action==='refund')toast('Refund requested for '+orderRef(o))}
+ try{const result=await adminApi('/api/admin-payments',{action,order_id:o.id});Object.assign(o,result);msg.textContent='Stripe checked · Refunded '+money(result.refunded_pence)+' · '+(result.refund_status||'No refunds');if(refundCell)refundCell.textContent=money(o.refunded_pence||0);if(payCell&&o.payment_status)payCell.replaceChildren(badge(o.payment_status));if(action==='refund')toast('Refund requested for '+orderRef(o))}
  catch(error){msg.textContent=error.message}finally{button.disabled=false}
 }
 function payments(root){
@@ -381,6 +397,7 @@ const TEMPLATES={
 };
 let messageFilter='all';
 async function messages(root){
+ loadPanel(root,ops.inbox(root));
  await loadSettings();
  const p=panel(null);root.append(p);
  const bar=h('div',{class:'toolbar',style:'margin-bottom:18px'}),area=h('div',{class:'card-list'});p.append(bar,area);let items=[];
@@ -397,6 +414,7 @@ async function messages(root){
     h('div',{class:'person'},h('span',{class:'avatar',text:initials(m.name)}),h('div',null,h('h3',{text:m.name||'Customer'}),h('a',{href:'mailto:'+encodeURIComponent(m.email)+'?subject='+encodeURIComponent('Re: HALONAP enquiry '+ticket(m)),text:m.email}))),
     h('p',{class:'muted',text:'Topic: '+(m.topic||'General enquiry')+(m.order_number?' · Order: '+m.order_number:'')+(m.phone?' · Phone: '+m.phone:'')}),
     h('div',{class:'message-body',text:m.message}));
+   ops.correspondence(box,m,'form');
    const statusSelect=h('select',{'aria-label':'Message status'},...[['new','New'],['in_progress','In Progress'],['resolved','Resolved']].map(([value,text])=>h('option',{value,text})));statusSelect.value=state;
    const tpl=h('select',{'aria-label':'Reply template'},...[['','Reply with template…'],...Object.keys(TEMPLATES).map(k=>[k,k])].map(([value,text])=>h('option',{value,text})));
    const del=btn('Delete',{sm:true,kind:'danger'}),status=h('span',{class:'msg',role:'status'});
@@ -444,6 +462,7 @@ async function marketing(root){
 
 /* ---------- Analytics ---------- */
 function analytics(root){
+ ops.sales(root);
  const counts={};
  orders.forEach(o=>{const d=(o.created_at||'').slice(0,7)||'Unknown';counts[d]??={orders:0,revenue:0};counts[d].orders++;if(PAID.includes(o.payment_status))counts[d].revenue+=netPaid(o)});
  const months=Object.entries(counts).sort((a,b)=>b[0].localeCompare(a[0]));
@@ -471,6 +490,8 @@ async function settings(root){
  const priceIn=field(pp,'New price (£)','number',pounds(data.price_pence),'Saving creates a new price in Stripe for Black, Pink and Grey. New checkouts use it straight away and the website price updates on the next page load. Orders already paid are not affected. Google’s product listing is refreshed within about 6 hours.');
  const priceBtn=btn('Change price',{kind:'gold'}),priceMsg=h('p',{class:'msg',role:'status'});pp.append(h('div',{class:'toolbar'},priceBtn),priceMsg);
  priceBtn.onclick=async()=>{const pence=toPence(priceIn.value);if(!Number.isInteger(pence)||pence<100||pence>100000){priceMsg.textContent='Enter a price between £1.00 and £1,000.00.';return}if(pence===data.price_pence){priceMsg.textContent='That is already the current price.';return}if(!confirm('Change the price from '+money(data.price_pence)+' to '+money(pence)+'? New customers will be charged '+money(pence)+' per mask.'))return;priceBtn.disabled=true;priceMsg.textContent='Updating Stripe…';try{const r=await adminApi('/api/admin-settings',{action:'set_price',price_pence:pence});const t='Price changed to '+money(r.price_pence)+'.'+(r.compare_cleared?' The sale “was” price was cleared because it was not above the new price.':'')+(r.warnings?.length?' Note: '+r.warnings.join(', ')+'.':'');toast(t);render()}catch(err){priceMsg.textContent='Price not changed: '+err.message;priceBtn.disabled=false}};
+
+ alertPreferences(root);
 
  const form=h('form',{class:'view'});root.append(form);
  const cols=h('div',{class:'grid-2'});form.append(cols);
@@ -512,7 +533,86 @@ async function settings(root){
   msg.textContent=error?'Save failed: '+error.message:'Saved. '+(patch.shop_paused?'The shop is PAUSED. ':'')+'New website page loads and checkouts use these settings.';save.disabled=false};
 }
 
-const VIEWS={overview,orders:ordersPage,customers,products,payments,reviews,messages,marketing,analytics,settings};
+/* ---------- Phone order alerts (web push), unchanged from main ---------- */
+function alertPreferences(root){
+ const panel=section(root,'Phone notifications');
+ const message=node('p','muted',panel,'Receive a private alert when a new order is paid.');
+ const list=section(panel,'Connected devices');
+ let button,existing;
+ async function refreshDevices(){
+  try{
+   const reg=await navigator.serviceWorker?.getRegistration('/admin.html').catch(()=>null);
+   const subscription=await reg?.pushManager?.getSubscription().catch(()=>null);
+   const {devices}=await adminApi('/api/admin-orders',{action:'push_devices',currentEndpoint:subscription?.endpoint});
+   list.replaceChildren();node('h3','',list,'Connected devices');
+   if(button)button.textContent=devices.some(device=>device.current)?'Send test alert':'Enable order alerts';
+   if(!devices.length)node('p','muted',list,'No devices connected.');
+   for(const device of devices){
+    const row=node('div','toolbar',list);
+    const label=(device.current?'This device · ':'')+device.label+' · '+device.id.slice(0,6);
+    node('span','',row,label+' · Added '+ukDate(device.added));
+    const remove=node('button','btn',row,'Disconnect');
+    remove.onclick=async()=>{
+     if(!confirm('Stop HALONAP order alerts on '+label+'?'))return;
+     remove.disabled=true;
+     try{
+      await adminApi('/api/admin-orders',{action:'push_disconnect',deviceId:device.id});
+      if(device.current){existing=null;await subscription?.unsubscribe().catch(()=>false)}
+      message.textContent='Disconnected '+label+'.';await refreshDevices();
+     }catch(err){message.textContent=err.message;remove.disabled=false}
+    };
+   }
+  }catch(err){addNotice(list,'Unable to load connected devices: '+err.message)}
+ }
+ refreshDevices();
+ if(!('PushManager' in window)||!('serviceWorker' in navigator)||!('Notification' in window)){
+  message.textContent='On iPhone, add this admin page to your Home Screen from Safari, then open it there. On Android, open this page in Chrome.';return;
+ }
+ button=node('button','btn',panel,'Enable order alerts');
+ panel.insertBefore(button,list);
+ message.setAttribute('role','status');
+ let registration,applicationServerKey;
+ const blockedHelp=/Safari/.test(navigator.userAgent)&&!/Chrome|Chromium|Edg/.test(navigator.userAgent)
+  ? 'In Safari, open Settings → Websites → Notifications and allow halonap.com.'
+  : 'Open the site settings beside the address bar and allow Notifications for halonap.com.';
+ async function prepare(){
+  button.disabled=true;
+  message.textContent='Preparing notifications on this device…';
+  let timeout;
+  try{
+   await navigator.serviceWorker.register('/order-alerts-worker.js',{scope:'/admin.html'});
+   const ready=Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>{
+    timeout=setTimeout(()=>reject(Error('Notification setup timed out. Open /admin.html directly and try again.')),15000);
+   })]);
+   const [reg,{key}]=await Promise.all([ready,adminApi('/api/admin-orders',{action:'push_key'})]);
+   applicationServerKey=Uint8Array.from(atob(key.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+   existing=await reg.pushManager.getSubscription();
+   registration=reg;
+   message.textContent=Notification.permission==='denied'?blockedHelp:'Receive an alert on this device when a new order is paid.';
+  }catch(err){message.textContent=err.message;button.textContent='Retry setup'}
+  finally{clearTimeout(timeout);button.disabled=false}
+ }
+ button.onclick=async()=>{
+  if(!registration){await prepare();return}
+  button.disabled=true;
+  try{
+   if(Notification.permission==='denied')throw Error(blockedHelp);
+   message.textContent='Waiting for notification permission…';
+   // Subscribe directly in the click handler so Safari retains the user gesture.
+   const subscription=existing||await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey});
+   message.textContent='Registering this device and sending a test alert…';
+   await adminApi('/api/admin-orders',{action:'push_enable',subscription:subscription.toJSON()});
+   existing=subscription;
+   message.textContent='Enabled. A test notification has been sent to this device.';
+   await refreshDevices();
+  }catch(err){message.textContent=err.name==='NotAllowedError'?blockedHelp:err.message}
+  finally{button.disabled=false}
+ };
+ prepare();
+}
+
+const ops=createAdminWorkflows({sb,node,section,notice:addNotice,details:(parent,o)=>details(o),adminApi,ukDate,paymentAction});
+const VIEWS={overview,orders:ordersPage,customers,products,payments,reviews,messages,marketing,analytics,settings,packing:root=>loadPanel(root,ops.packing(root)),returns:root=>loadPanel(root,ops.returns(root))};
 
 /* ---------- wiring ---------- */
 $('menuBtn').append(icon('menu'));

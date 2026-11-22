@@ -2,6 +2,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "nodemailer": "7.0.10"
+    "imapflow": "2.12.2",
+    "mailparser": "3.15.0",
+    "nodemailer": "7.0.10",
+    "web-push": "3.6.7"
   }
 }

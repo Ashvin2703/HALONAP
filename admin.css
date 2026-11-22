@@ -253,6 +253,31 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .toast{max-width:min(560px,calc(100% - 32px));position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;max-width:calc(100% - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
+/* Workflow panels (packing, returns, inbox, timeline, sales export, phone alerts) */
+.panel-title,.panel>h2{font-size:16px;font-weight:700;letter-spacing:-.01em;margin:0 0 14px}
+.panel .panel{box-shadow:none;background:var(--surface-2);margin-top:12px;padding:16px}
+.panel>p,.panel>pre,.panel>strong,.panel>small{display:block;margin:8px 0}
+.panel>.toolbar,.panel .panel>.toolbar{margin:10px 0}
+.panel>.btn{margin:6px 8px 6px 0}
+.panel label:not(.toggle):not(.search){display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2);flex-wrap:wrap}
+.panel input[type=checkbox]{width:17px;height:17px;min-height:0;accent-color:var(--ink)}
+.mail-text,.panel pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;margin:8px 0;background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.panel details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:8px 0;background:var(--surface)}
+.panel details.panel{padding:14px 16px}
+.panel summary{cursor:pointer;overflow-wrap:anywhere;font-weight:600}
+.panel h3{font-size:13px;margin:14px 0 8px}
+.reply-draft{display:block;width:100%;margin:8px 0}
+.drawer-extra{display:flex;flex-direction:column;gap:16px}
+.drawer-extra>.panel{box-shadow:none;padding:16px;border-radius:12px}
+.btn[hidden],#packingPrint{display:none}
+@media print{
+  body:has(#packingPrint)>:not(#packingPrint){display:none!important}
+  #packingPrint{display:block;font-family:var(--sans);color:#000}
+  #packingPrint article{padding:12mm;break-after:page}
+  #packingPrint article:last-child{break-after:auto}
+  #packingPrint pre{font:inherit;white-space:pre-wrap}
+}
+
 /* Responsive */
 @media(max-width:1180px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-main{grid-template-columns:1fr}}
 @media(max-width:900px){
