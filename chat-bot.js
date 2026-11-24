@@ -53,7 +53,8 @@
   reviews:{chip:'Reviews',words:{'review*':6,'rating*':5,'stars':4,'what do people say':6,'customers say':6,'worth it':5,'any good':5,'happy with':5,'people happy':6,'any good reviews':6,'testimonials':6,'people like':6,'do people like':7}},
   vat:{chip:'VAT',words:{'vat':7,'tax':5,'invoice':5,'receipt':5}},
   privacy:{chip:'Privacy',words:{'privacy':7,'my data':6,'personal data':6,'gdpr':7,'delete my':5,'unsubscribe':6,'marketing email*':5}},
-  contact:{chip:'Contact details',words:{'email':3,'phone number':5,'whatsapp':5,'contact':4,'number':2,'address':2,'opening hours':4,'your number':6,'phone':3,'call you':5,'reach you':5,'get in touch':6}}
+  hours:{chip:'Opening hours',words:{'opening hours':8,'open hours':8,'what time':4,'when are you open':8,'are you open':7,'what are your hours':8,'your hours':6,'hours':4,'available':2,'online now':6,'anyone there':6,'is anyone':5,'working hours':8,'support hours':8,'open today':7,'open on sunday':8,'open at the weekend':8,'weekend':3,'bank holiday':4,'team online':8,'what time can i':8,'when can i talk':8,'when can i speak':8}},
+  contact:{chip:'Contact details',words:{'email':3,'phone number':5,'whatsapp':5,'contact':4,'number':2,'address':2,'your number':6,'phone':3,'call you':5,'reach you':5,'get in touch':6}}
  };
 
  function ctx(s){s=s||{};const price=Number.isInteger(s.price_pence)?s.price_pence:999;return {price,
@@ -91,7 +92,8 @@
   reviews:()=>'Customers rate it highly. Reviewers mention it feels soft and comfortable, the adjustable strap makes it easy to wear and it blocks out light well. You can read every review, or write your own, in the Reviews section of our homepage.',
   vat:()=>'HALONAP isn’t registered for VAT, so there’s no VAT on our prices. Your order confirmation email shows what you paid. If you need a receipt, email hello@halonap.com with your order number.',
   privacy:()=>'We only collect what we need to run the shop (like your name, email, address and order), under UK GDPR. Card payments are handled securely by Stripe. To ask about or delete your data, email hello@halonap.com with “Privacy” in the subject. Full details: halonap.com/privacy.html',
-  contact:()=>'You can email us at hello@halonap.com or message us on WhatsApp (button above). Or type “talk to a person” to chat with the team now.'
+  hours:()=>'I’m here 24/7. A person from the HALONAP team is available in this chat from 8am to 10pm UK time, every day. Outside those hours, email hello@halonap.com and we’ll reply when we’re back.',
+  contact:()=>'You can email us at hello@halonap.com or message us on WhatsApp (button above). Or type “talk to a person” to chat with the team (8am–10pm UK time, every day).'
  };
 
  function score(text,words){let s=0;for(const [k,w] of Object.entries(words)){

@@ -157,3 +157,6 @@
 .lc-back svg{width:15px;height:15px}
 .lc-connect-note{margin:0;text-align:center;font-size:11px;color:#a19e95}
 .lc-connect-note a{color:#77756e}
+
+/* team offline (outside 8am-10pm UK): amber dot, assistant still online */
+.lc[data-team="off"][data-status="bot"] .lc-dot{background:#e0a43a;animation:none}
