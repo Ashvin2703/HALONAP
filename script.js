@@ -34,7 +34,7 @@ const paymentLinks = {"Black":"https://buy.stripe.com/9B6cMY9D10Ad7Xt1ezasg02","
 // SHOP SETTINGS — replace these with your real details before accepting orders.
 const SHOP = {
   productName: 'HALONAP Sleep Eye Mask',
-  priceGBP: 12.99, // Current selling price.
+  priceGBP: 9.99, // Current selling price.
   whatsappNumber: '447733967306', // Country code and digits only.
 };
 let quantity = 1;
