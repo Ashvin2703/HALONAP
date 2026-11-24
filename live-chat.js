@@ -46,24 +46,42 @@
  const homeChips=()=>setChips([...CHIPS,['person','Talk to a person']]);
  function botSay(text,after){typing(500+Math.min(900,text.length*6),()=>{bubble('bot',text,{name:'HALONAP Assistant'});transcript.push({sender:'bot',body:text});after&&after()})}
  function ask(label,key){bubble('customer',label);transcript.push({sender:'customer',body:label});botSay(reply(key),()=>after(key))}
- function answerFree(q){
-  bubble('customer',q);transcript.push({sender:'customer',body:q});
+ // Typed questions go to the Claude agent (/api/chat-ai). If it isn't set up or is down, the keyword bot answers.
+ let aiOff=false,aiBusy=false;
+ function keywordAnswer(q){
   const m=Bot.match(q);
   if(m.intent==='person'){askPerson();return}
   if(m.intent){botSay(reply(m.intent),()=>after(m.intent));return}
   if(m.choices){botSay('Happy to help. Which of these is it about?',()=>setChips([...m.choices.map(k=>[k,Bot.chip(k)]),['person','Talk to a person']]));return}
   botSay('Sorry, I didn’t quite get that. Try a topic below, or talk to a person from the HALONAP team.',()=>setChips([['person','Talk to a person'],...CHIPS.slice(0,4)]));
  }
+ async function answerFree(q){
+  bubble('customer',q);transcript.push({sender:'customer',body:q});
+  if(aiOff){keywordAnswer(q);return}
+  aiBusy=true;sendBtn.disabled=true;chips.replaceChildren();
+  const t=el('div','lc-msg lc-bot lc-typing');t.append(el('span'),el('span'),el('span'));list.append(t);list.scrollTop=list.scrollHeight;
+  try{
+   const history=transcript.slice(-16).map(m=>({role:m.sender==='bot'?'assistant':'user',text:m.body}));
+   const r=await fetch('/api/chat-ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history})});
+   const j=await r.json().catch(()=>({}));t.remove();
+   if(r.status===503||j.fallback){aiOff=true;keywordAnswer(q);return}
+   if(!r.ok){bubble('system',j.error||'Sorry, something went wrong. Please try again.');return}
+   if(j.reply){bubble('bot',j.reply,{name:'HALONAP Assistant'});transcript.push({sender:'bot',body:j.reply})}
+   if(j.handoff){askPerson(j.handoff.topic);return}
+   setChips([['person','Talk to a person'],...CHIPS.slice(0,3)]);
+  }catch{t.remove();aiOff=true;keywordAnswer(q)}
+  finally{aiBusy=false;sendBtn.disabled=false;input.focus()}
+ }
 
  // ---------- talk to a person ----------
- function askPerson(){
+ function askPerson(preTopic){
   if(state?.chat_id)return;
   chips.replaceChildren();form.hidden=true;
   const card=el('form','lc-card');
   card.append(el('p','lc-card-title','Connect with our team'),el('p','lc-card-sub','We’ll ring the HALONAP team now. Please keep this window open.'));
   const name=el('input');name.placeholder='Your name';name.required=true;name.maxLength=120;name.autocomplete='name';name.setAttribute('aria-label','Your name');
   const email=el('input');email.type='email';email.placeholder='Email (so we can follow up)';email.maxLength=254;email.autocomplete='email';email.setAttribute('aria-label','Email address');
-  const topic=el('select');topic.setAttribute('aria-label','What is it about?');for(const o of ['Order or delivery','Returns or refund','Product question','Something else']){topic.append(el('option',null,o))}
+  const topic=el('select');topic.setAttribute('aria-label','What is it about?');for(const o of ['Order or delivery','Returns or refund','Product question','Something else']){topic.append(el('option',null,o))}if(preTopic){const t=String(preTopic).toLowerCase();topic.value=/return|refund/.test(t)?'Returns or refund':/order|deliver|track|parcel|dispatch|cancel|address/.test(t)?'Order or delivery':/mask|product|size|fit|material/.test(t)?'Product question':'Something else'}
   const go=el('button','lc-go','Call the team');go.type='submit';const back=el('button','lc-back','Back to quick answers');back.type='button';
   const msg=el('p','lc-err');msg.setAttribute('role','status');
   card.append(name,email,topic,go,back,msg);list.append(card);list.scrollTop=list.scrollHeight;name.focus();
@@ -123,7 +141,7 @@
  }
  function reset(){clearInterval(timer);timer=null;state=null;sessionStorage.removeItem(KEY);list.replaceChildren();foot.replaceChildren();form.hidden=false;input.placeholder='Type your question…';box.dataset.status='bot';t1.textContent='Chat with HALONAP';t2.textContent='Instant answers, or talk to our team';greet()}
 
- form.onsubmit=async e=>{e.preventDefault();const q=input.value.trim();if(!q)return;input.value='';
+ form.onsubmit=async e=>{e.preventDefault();const q=input.value.trim();if(!q||aiBusy)return;input.value='';
   if(!state?.chat_id){answerFree(q);return}
   const row=bubble('customer',q);row.classList.add('lc-sending');
   try{const r=await api({action:'send',chat_id:state.chat_id,token:state.token,body:q});row.dataset.local=r.message.id;row.classList.remove('lc-sending')}
