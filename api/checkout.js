@@ -20,7 +20,7 @@ export default async function handler(req,res){
   const s=await storeSettings();
   if(s.shop_paused===true)return res.status(409).json({error:(typeof s.pause_message==='string'&&s.pause_message.trim())||'HALONAP is not taking new orders right now. Please check back soon.'});
   const pick=(value,fallback,max)=>Number.isInteger(value)&&value>=0&&value<=max?value:fallback;
-  const freeDeliveryFrom=pick(s.free_delivery_threshold_pence,2500,20000),standardPence=pick(s.standard_delivery_pence,299,2000),expressPence=pick(s.express_delivery_pence,399,3000);
+  const freeDeliveryFrom=pick(s.free_delivery_threshold_pence,2500,200000),standardPence=pick(s.standard_delivery_pence,299,2000),expressPence=pick(s.express_delivery_pence,399,3000);
   for(const item of selected){const id=s.stripe_prices?.[item.colour];if(typeof id==='string'&&/^price_[A-Za-z0-9]+$/.test(id))item.price=id;}
   for(const item of selected){const record=inventory.find(v=>v.colour===item.colour);if(!record||!record.is_active)return res.status(409).json({error:item.colour+' is currently unavailable.'});if(record.stock_quantity!==null&&record.stock_quantity<item.quantity)return res.status(409).json({error:'Only '+record.stock_quantity+' '+item.colour+' masks available.'});}
   let verifiedUserId=null;

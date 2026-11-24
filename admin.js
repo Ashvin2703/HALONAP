@@ -538,7 +538,7 @@ async function settings(root){
  pp.append(h('div',{class:'price-now'},h('strong',{text:money(data.price_pence)}),h('span',{class:'muted',text:'per mask · current price'})));
  const priceIn=field(pp,'New price (£)','number',pounds(data.price_pence),'Saving creates a new price in Stripe for Black, Pink and Grey. New checkouts use it straight away and the website price updates on the next page load. Orders already paid are not affected. Google’s product listing is refreshed within about 6 hours.');
  const priceBtn=btn('Change price',{kind:'gold'}),priceMsg=h('p',{class:'msg',role:'status'});pp.append(h('div',{class:'toolbar'},priceBtn),priceMsg);
- priceBtn.onclick=async()=>{const pence=toPence(priceIn.value);if(!Number.isInteger(pence)||pence<100||pence>100000){priceMsg.textContent='Enter a price between £1.00 and £1,000.00.';return}if(pence===data.price_pence){priceMsg.textContent='That is already the current price.';return}if(!confirm('Change the price from '+money(data.price_pence)+' to '+money(pence)+'? New customers will be charged '+money(pence)+' per mask.'))return;priceBtn.disabled=true;priceMsg.textContent='Updating Stripe…';try{const r=await adminApi('/api/admin-settings',{action:'set_price',price_pence:pence});const t='Price changed to '+money(r.price_pence)+'.'+(r.compare_cleared?' The sale “was” price was cleared because it was not above the new price.':'')+(r.warnings?.length?' Note: '+r.warnings.join(', ')+'.':'');toast(t);render()}catch(err){priceMsg.textContent='Price not changed: '+err.message;priceBtn.disabled=false}};
+ priceBtn.onclick=async()=>{const pence=toPence(priceIn.value);if(!Number.isInteger(pence)||pence<100||pence>100000){priceMsg.textContent='Enter a price between £1.00 and £1,000.00.';return}if(pence===data.price_pence){priceMsg.textContent='That is already the current price.';return}if(!confirm('Change the price from '+money(data.price_pence)+' to '+money(pence)+'? New customers will be charged '+money(pence)+' per mask.'))return;priceBtn.disabled=true;priceMsg.textContent='Updating Stripe…';try{const r=await adminApi('/api/admin-settings',{action:'set_price',price_pence:pence});const t='Price changed to '+money(r.price_pence)+'.'+(r.compare_cleared?' The sale “was” price was cleared because it was not above the new price.':'')+(r.free_delivery_threshold_pence?' Free delivery now starts at '+money(r.free_delivery_threshold_pence)+' (2 masks).':'')+(r.warnings?.length?' Note: '+r.warnings.join(', ')+'.':'');toast(t);render()}catch(err){priceMsg.textContent='Price not changed: '+err.message;priceBtn.disabled=false}};
 
  alertPreferences(root);
 
@@ -555,7 +555,7 @@ async function settings(root){
  const d=panel('Delivery');left.append(d);
  const stdIn=field(d,'UK Standard delivery (£)','number',pounds(data.standard_delivery_pence));
  const expIn=field(d,'UK Express delivery (£)','number',pounds(data.express_delivery_pence));
- const freeIn=field(d,'Free standard delivery from (£)','number',pounds(data.free_delivery_threshold_pence??2500),'Checkout gives free standard delivery when the basket is at least this amount. Delivery prices on the website update automatically.');
+ const freeIn=field(d,'Free standard delivery from (£)','number',pounds(data.free_delivery_threshold_pence??(data.price_pence*2)),'Set automatically to the price of 2 masks ('+money(data.price_pence)+' × 2). It changes by itself when you change the price.');freeIn.readOnly=true;freeIn.setAttribute('aria-readonly','true');
 
  const ps=panel('Pause the shop',{sub:'Stop new orders while you are away.'});right.append(ps);
  const pausedIn=field(ps,'Pause the shop: stop new orders','checkbox',data.shop_paused);
@@ -571,12 +571,12 @@ async function settings(root){
  const save=btn('Save settings',{kind:'gold',type:'submit'}),msg=h('span',{class:'msg',role:'status',text:'Changes apply to new page loads and checkouts.'});
  form.append(h('div',{class:'save-bar'},msg,save));
  form.onsubmit=async ev=>{ev.preventDefault();
-  const free=toPence(freeIn.value),std=toPence(stdIn.value),exp=toPence(expIn.value),was=toPence(wasIn.value),low=Number(lowIn.value);
-  const bad=!Number.isInteger(free)||free<0||free>20000?'Free delivery amount must be between £0 and £200.':!Number.isInteger(std)||std<0||std>2000?'Standard delivery must be between £0 and £20.':!Number.isInteger(exp)||exp<0||exp>3000?'Express delivery must be between £0 and £30.':was!==null&&(!Number.isInteger(was)||was<=data.price_pence)?'The “was” price must be higher than the current price ('+money(data.price_pence)+').':!Number.isSafeInteger(low)||low<0||low>10000?'Stock alert must be a whole number from 0 to 10,000.':'';
+  const std=toPence(stdIn.value),exp=toPence(expIn.value),was=toPence(wasIn.value),low=Number(lowIn.value);
+  const bad=!Number.isInteger(std)||std<0||std>2000?'Standard delivery must be between £0 and £20.':!Number.isInteger(exp)||exp<0||exp>3000?'Express delivery must be between £0 and £30.':was!==null&&(!Number.isInteger(was)||was<=data.price_pence)?'The “was” price must be higher than the current price ('+money(data.price_pence)+').':!Number.isSafeInteger(low)||low<0||low>10000?'Stock alert must be a whole number from 0 to 10,000.':'';
   if(bad){msg.textContent=bad;return}
   if(pausedIn.checked&&!data.shop_paused&&!confirm('Pause the shop? Customers will not be able to check out until you turn this off.'))return;
   save.disabled=true;msg.textContent='Saving…';
-  const patch={announcement:fields.announcement.value.trim(),support_email:fields.support_email.value.trim(),free_delivery_threshold_pence:free,standard_delivery_pence:std,express_delivery_pence:exp,price_compare_at_pence:was,shop_paused:pausedIn.checked,pause_message:pauseMsgIn.value.trim(),low_stock_threshold:low,dispatch_email_enabled:dispIn.checked,dispatch_email_note:noteIn.value.trim(),updated_at:new Date().toISOString()};
+  const patch={announcement:fields.announcement.value.trim(),support_email:fields.support_email.value.trim(),standard_delivery_pence:std,express_delivery_pence:exp,price_compare_at_pence:was,shop_paused:pausedIn.checked,pause_message:pauseMsgIn.value.trim(),low_stock_threshold:low,dispatch_email_enabled:dispIn.checked,dispatch_email_note:noteIn.value.trim(),updated_at:new Date().toISOString()};
   const {error}=await sb.from('store_settings').update(patch).eq('id',true);
   if(!error){Object.assign(data,patch);settingsCache={...settingsCache,...patch};toast('Settings saved')}
   msg.textContent=error?'Save failed: '+error.message:'Saved. '+(patch.shop_paused?'The shop is PAUSED. ':'')+'New website page loads and checkouts use these settings.';save.disabled=false};
