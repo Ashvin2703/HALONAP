@@ -175,7 +175,28 @@ function overview(root){
   kpi('Customers',String(new Set(orders.map(o=>o.customer_email).filter(Boolean)).size),'Unique emails in orders',{iconName:'customers',onclick:()=>go('customers')})
  ));
  const alerts=h('div',{class:'stack'});root.append(alerts);
- (async()=>{const s=await loadSettings();const low=s?.low_stock_threshold??20;if(s?.shop_paused)alerts.append(notice('The shop is paused: customers cannot check out. Turn it back on in Settings.','danger'));const {data:inv}=await sb.from('product_inventory').select('colour,stock_quantity,is_active');for(const i of inv||[]){if(i.stock_quantity!==null&&i.stock_quantity<low)alerts.append(notice('Low stock: '+i.colour+' has '+i.stock_quantity+' left.'));if(i.is_active===false)alerts.append(notice(i.colour+' is hidden from the shop.','info'))}})();
+ // Today's to-do: one place for everything waiting on the team. Each box opens the page that clears it.
+ const todo=panel('Today’s to-do',{sub:'What needs you now. Click a box to open it.'});const todoGrid=h('div',{class:'kpis todo-grid'});todo.append(todoGrid);root.append(todo);
+ const tile=(label,n,doneText,waitText,iconName,target)=>{const k=kpi(label,String(n),n?waitText:doneText,{iconName,onclick:target});if(n)k.classList.add('todo-on');else k.classList.add('todo-done');return k};
+ const toPack=orders.filter(o=>['paid','partially_refunded'].includes(o.payment_status)&&['pending','processing'].includes(o.fulfillment_status||'pending')).length;
+ todoGrid.append(tile('Orders to pack',toPack,'All packed ✓','Open packing →','packing',()=>go('packing')));
+ (async()=>{const s=await loadSettings();const low=s?.low_stock_threshold??20;if(s?.shop_paused)alerts.append(notice('The shop is paused: customers cannot check out. Turn it back on in Settings.','danger'));
+  const [inv,ret]=await Promise.all([sb.from('product_inventory').select('colour,stock_quantity,is_active'),sb.from('order_returns').select('order_id',{count:'exact',head:true}).neq('stage','Closed'),loadCounts()]);
+  for(const i of inv.data||[])if(i.is_active===false)alerts.append(notice(i.colour+' is hidden from the shop.','info'));
+  const lowList=(inv.data||[]).filter(i=>i.stock_quantity!==null&&i.stock_quantity<low);
+  todoGrid.append(
+   tile('New messages',counts.messages,'Inbox clear ✓','Reply now →','messages',()=>go('messages')),
+   tile('Open returns',ret.error?0:(ret.count||0),'No returns ✓','Check returns →','returns',()=>go('returns')),
+   tile('Reviews to approve',counts.reviews,'Nothing to approve ✓','Approve →','reviews',()=>go('reviews')),
+   tile('Low stock',lowList.length,'Stock is fine ✓',lowList.map(i=>i.colour+' '+i.stock_quantity+' left').join(' · ')+' →','products',()=>go('products')));
+ })();
+ // Amazon UK sits beside website figures so total stock is visible in one place.
+ const amz=panel('Amazon UK & total stock',{sub:'Amazon figures are entered by hand on Products & Stock.',actions:btn('Update Amazon figures →',{sm:true,onclick:()=>go('products')})});const amzGrid=h('div',{class:'kpis'},h('p',{class:'muted',text:'Loading…'}));amz.append(amzGrid);root.append(amz);
+ Promise.all([loadAmazon(),sb.from('product_inventory').select('colour,stock_quantity')]).then(([a,inv])=>{if(a.error){amzGrid.replaceChildren(notice('Amazon figures could not be loaded: '+a.error.message,'danger'));return}const site=(inv.data||[]).reduce((n,i)=>n+(Number(i.stock_quantity)||0),0),fba=a.inventory.reduce((n,i)=>n+(Number(i.fba_stock)||0),0),m=a.sales.find(x=>x.month===monthKey());amzGrid.replaceChildren(
+  kpi('Amazon sales this month',money(m?.revenue_pence),(m?.units||0)+' units',{iconName:'cart'}),
+  kpi('Amazon FBA stock',String(fba),a.inventory.map(i=>i.colour+' '+(i.fba_stock??'—')).join(' · '),{iconName:'orders'}),
+  kpi('Website stock',String(site),(inv.data||[]).map(i=>i.colour+' '+(i.stock_quantity??'—')).join(' · '),{iconName:'products'}),
+  kpi('Total stock',String(site+fba),'Website + Amazon FBA',{iconName:'packing'}))});
 
  const grid=h('div',{class:'grid-main'});root.append(grid);
  // Last 30 days chart
@@ -330,6 +351,34 @@ async function products(root){
   card.append(h('div',{class:'form-grid'},h('div',{class:'field'},h('label',{text:'Stock quantity'}),stock),h('div',{class:'field'},h('label',{text:'Availability'}),status)),h('div',{class:'toolbar'},save,msg));
   save.onclick=async()=>{const qty=stock.value.trim()===''?null:Number(stock.value);if(qty!==null&&(!Number.isSafeInteger(qty)||qty<0)){msg.textContent='Enter a valid whole number';return}save.disabled=true;const {error}=await sb.from('product_inventory').update({stock_quantity:qty,is_active:status.value==='true',updated_at:new Date().toISOString()}).eq('colour',item.colour);msg.textContent=error?'Save failed: '+error.message:'Saved successfully';if(!error)toast(item.colour+' stock saved');save.disabled=false};
  }
+ await amazonPanel(root);
+}
+
+/* ---------- Amazon UK (entered by hand from Seller Central) ---------- */
+async function loadAmazon(){const [inv,sales]=await Promise.all([sb.from('amazon_inventory').select('colour,fba_stock,updated_at').order('colour'),sb.from('amazon_sales').select('month,units,revenue_pence,updated_at').order('month',{ascending:false}).limit(24)]);return {inventory:inv.data||[],sales:sales.data||[],error:inv.error||sales.error}}
+function monthKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-01'}
+const wholeOrNull=v=>{if(v.trim()==='')return null;const n=Number(v);return Number.isSafeInteger(n)&&n>=0?n:undefined};
+async function amazonPanel(root){
+ const p=panel('Amazon UK',{sub:'Enter these from Amazon Seller Central. They appear on the Overview next to website sales and stock.'});root.append(p);
+ const a=await loadAmazon();if(a.error){p.append(notice('Amazon figures could not be loaded: '+a.error.message,'danger'));return}
+ const stockGrid=h('div',{class:'form-grid amazon-stock'});
+ for(const colour of ['Black','Pink','Grey']){
+  const item=a.inventory.find(i=>i.colour===colour)||{fba_stock:null};
+  const input=h('input',{type:'number',min:'0',step:'1',placeholder:'Units at Amazon','aria-label':colour+' Amazon FBA stock'});input.value=item.fba_stock==null?'':String(item.fba_stock);
+  const save=btn('Save',{sm:true,kind:'primary'}),msg=h('span',{class:'msg',role:'status',text:item.updated_at?'Updated '+ukDate(item.updated_at):''});
+  save.onclick=async()=>{const v=wholeOrNull(input.value);if(v===undefined){msg.textContent='Enter a valid whole number';return}save.disabled=true;const {error}=await sb.from('amazon_inventory').upsert({colour,fba_stock:v,updated_at:new Date().toISOString()});msg.textContent=error?'Save failed: '+error.message:'Saved';if(!error)toast(colour+' Amazon stock saved');save.disabled=false};
+  stockGrid.append(h('div',{class:'field'},h('label',null,h('span',{class:'swatch',style:'background:'+(SWATCH[colour]||'#ddd')}),' '+colour+' · FBA stock'),input,h('div',{class:'toolbar'},save,msg)));
+ }
+ p.append(h('h3',{class:'sub-title',text:'Stock at Amazon'}),stockGrid);
+ const month=h('input',{type:'month','aria-label':'Month'});month.value=monthKey().slice(0,7);
+ const units=h('input',{type:'number',min:'0',step:'1',placeholder:'Units sold','aria-label':'Units sold'});
+ const revenue=h('input',{type:'number',min:'0',step:'0.01',placeholder:'Sales £ after refunds','aria-label':'Amazon sales in pounds'});
+ const fill=()=>{const r=a.sales.find(x=>x.month===month.value+'-01');units.value=r?String(r.units):'';revenue.value=r?(r.revenue_pence/100).toFixed(2):''};month.onchange=fill;fill();
+ const save=btn('Save month',{kind:'primary'}),msg=h('span',{class:'msg',role:'status'});
+ const list=h('div');
+ const draw=()=>{list.replaceChildren();if(!a.sales.length){list.append(empty('No Amazon sales entered yet.'));return}const {wrap,body}=table(['Month',['Units','num'],['Sales','num']]);for(const r of a.sales)body.append(h('tr',null,h('td',{text:new Date(r.month+'T00:00:00').toLocaleDateString('en-GB',{month:'long',year:'numeric'})}),h('td',{class:'num',text:String(r.units)}),h('td',{class:'num',text:money(r.revenue_pence)})));list.append(wrap)};
+ save.onclick=async()=>{const u=wholeOrNull(units.value),pence=revenue.value.trim()===''?undefined:Math.round(Number(revenue.value)*100);if(!/^\d{4}-\d{2}$/.test(month.value)||u==null||!Number.isSafeInteger(pence)||pence<0){msg.textContent='Enter the month, units and sales';return}save.disabled=true;const {error}=await sb.from('amazon_sales').upsert({month:month.value+'-01',units:u,revenue_pence:pence,updated_at:new Date().toISOString()});msg.textContent=error?'Save failed: '+error.message:'Saved';if(!error){toast('Amazon sales saved');const fresh=await loadAmazon();a.sales=fresh.sales;draw()}save.disabled=false};
+ p.append(h('h3',{class:'sub-title',text:'Monthly Amazon sales'}),h('div',{class:'form-grid'},h('div',{class:'field'},h('label',{text:'Month'}),month),h('div',{class:'field'},h('label',{text:'Units sold'}),units),h('div',{class:'field'},h('label',{text:'Sales (£)'}),revenue)),h('div',{class:'toolbar'},save,msg),list);draw();
 }
 
 /* ---------- Payments ---------- */
