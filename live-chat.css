@@ -1,0 +1,59 @@
+/* HALONAP live chat (inside "How can we help?") */
+.lc{display:flex;flex-direction:column;min-height:0;height:min(540px,62vh);border:1px solid #e3e3e3;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.06);text-align:left;font-size:14px;color:#111}
+.lc-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#111;color:#fff}
+.lc-title{display:grid;gap:2px;min-width:0}
+.lc-title strong{font-size:15px;font-weight:700}
+.lc-sub{font-size:12px;color:#c9c9c9}
+.lc-dot{width:10px;height:10px;border-radius:50%;background:#3ccf6e;box-shadow:0 0 0 0 rgba(60,207,110,.6);animation:lc-live 2s infinite;flex:none}
+.lc[data-status="waiting"] .lc-dot{background:#e4b04a;animation:lc-live-gold 1.2s infinite}
+.lc[data-status="closed"] .lc-dot{background:#888;animation:none}
+.lc-list{flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#faf9f7;scroll-behavior:smooth}
+.lc-msg{max-width:84%;display:grid;gap:3px;animation:lc-in .25s ease-out}
+.lc-msg p{margin:0;padding:10px 13px;border-radius:16px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.lc-name{font-size:11px;color:#777;padding:0 4px}
+.lc-bot p,.lc-agent p{background:#fff;border:1px solid #ebe8e2;border-bottom-left-radius:5px}
+.lc-agent p{border-color:#e2c98f;background:#fffaf0}
+.lc-customer{align-self:flex-end}
+.lc-customer p{background:#111;color:#fff;border-bottom-right-radius:5px}
+.lc-sending{opacity:.6}.lc-failed p{background:#9a2c1f}
+.lc-system{align-self:center;max-width:100%}
+.lc-system p{padding:4px 10px;background:none;color:#777;font-size:12px;text-align:center}
+.lc-typing{flex-direction:row;display:flex;gap:4px;padding:12px 14px;background:#fff;border:1px solid #ebe8e2;border-radius:16px;border-bottom-left-radius:5px;width:max-content}
+.lc-typing span{width:6px;height:6px;border-radius:50%;background:#aaa;animation:lc-bounce 1s infinite}
+.lc-typing span:nth-child(2){animation-delay:.15s}.lc-typing span:nth-child(3){animation-delay:.3s}
+.lc-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 0;background:#fff}
+.lc-chips:empty{display:none}
+.lc-chip{border:1px solid #d8d4cc;background:#fff;color:#111;border-radius:99px;padding:7px 12px;font-size:13px;cursor:pointer;transition:background .15s,border-color .15s}
+.lc-chip:hover{background:#f4f1ea;border-color:#b9b2a4}
+.lc-chip-person{background:#111;color:#fff;border-color:#111}
+.lc-chip-person:hover{background:#333;color:#fff}
+.lc-input{display:flex;gap:8px;padding:12px;background:#fff;border-top:1px solid #eee}
+.lc-input[hidden]{display:none}
+.lc-input input{flex:1;min-width:0;border:1px solid #d8d4cc;border-radius:99px;padding:10px 14px;font:inherit}
+.lc-send{border:0;border-radius:99px;background:#111;color:#fff;padding:0 18px;font-weight:700;cursor:pointer}
+.lc-foot{display:flex;justify-content:center;padding:0 12px 10px;background:#fff}
+.lc-foot:empty{display:none}
+.lc-end{border:0;background:none;color:#777;font-size:12px;text-decoration:underline;cursor:pointer}
+.lc-card{display:grid;gap:8px;padding:16px;border:1px solid #ebe8e2;border-radius:16px;background:#fff;animation:lc-in .25s ease-out}
+.lc-card-title{margin:0;font-weight:700;font-size:15px}
+.lc-card-sub{margin:0 0 4px;color:#666;font-size:13px}
+.lc-card input,.lc-card select{border:1px solid #d8d4cc;border-radius:10px;padding:10px 12px;font:inherit;background:#fff}
+.lc-go{border:0;border-radius:99px;background:#111;color:#fff;padding:12px;font-weight:700;cursor:pointer}
+.lc-go:disabled{opacity:.6}
+.lc-back{border:0;background:none;color:#666;font-size:12.5px;text-decoration:underline;cursor:pointer}
+.lc-err{margin:0;color:#9a2c1f;font-size:12.5px}
+.lc-err:empty{display:none}
+.lc-waiting{align-self:center;display:grid;justify-items:center;gap:10px;padding:18px 10px;text-align:center;color:#555;font-size:13px}
+.lc-waiting p{margin:0;max-width:280px}
+.lc-ring{position:relative;width:54px;height:54px;border-radius:50%;background:#111;display:grid;place-items:center}
+.lc-ring::after{content:"☎";color:#e4b04a;font-size:22px;animation:lc-shake 1s infinite}
+.lc-ring span{position:absolute;inset:0;border-radius:50%;border:2px solid #e4b04a;animation:lc-wave 1.8s infinite;opacity:0}
+.lc-ring span:nth-child(2){animation-delay:.6s}.lc-ring span:nth-child(3){animation-delay:1.2s}
+@keyframes lc-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes lc-bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+@keyframes lc-live{70%{box-shadow:0 0 0 8px rgba(60,207,110,0)}100%{box-shadow:0 0 0 0 rgba(60,207,110,0)}}
+@keyframes lc-live-gold{0%{box-shadow:0 0 0 0 rgba(228,176,74,.7)}70%{box-shadow:0 0 0 8px rgba(228,176,74,0)}100%{box-shadow:0 0 0 0 rgba(228,176,74,0)}}
+@keyframes lc-wave{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.9);opacity:0}}
+@keyframes lc-shake{0%,50%,100%{transform:rotate(0)}10%,30%{transform:rotate(-14deg)}20%,40%{transform:rotate(14deg)}}
+@media(max-width:560px){.lc{height:min(520px,70vh);border-radius:14px}.lc-msg{max-width:92%}}
+@media(prefers-reduced-motion:reduce){.lc *,.lc{animation:none!important}}

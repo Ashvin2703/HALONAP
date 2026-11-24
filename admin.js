@@ -40,6 +40,7 @@ const ICONS={
  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
  packing:'<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',
  returns:'<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+ chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/>',
  cart:'<circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.3"/>'
 };
 function icon(name){const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('class','i');s.setAttribute('aria-hidden','true');s.innerHTML=ICONS[name]||'';return s}
@@ -100,9 +101,11 @@ async function check(){
  user=u;$('login').classList.add('hide');$('app').classList.remove('hide');
  $('adminEmail').textContent=u.email||'Admin';$('adminAvatar').textContent=initials(u.user_metadata?.full_name||u.email);
  // Links like /admin.html?order=<id> (packing queue, returns, inbox, push alerts) open that order.
+ const chatTarget=new URLSearchParams(location.search).get('chat');
+ if(chatTarget&&/^[0-9a-f-]{36}$/i.test(chatTarget)){chatSelected=chatTarget;page='live-chat';history.replaceState(null,'',location.pathname+'#live-chat')}
  const target=new URLSearchParams(location.search).get('order');
  if(target){page='orders';history.replaceState(null,'',location.pathname+'#orders')}
- await reload();
+ await reload();watchChats();
  if(target){const found=await sb.from('customer_orders').select('*').eq('id',target).maybeSingle();if(found.data)details(found.data);else toast('This order could not be loaded.')}
 }
 async function reload(){
@@ -116,7 +119,7 @@ async function loadCounts(){
    sb.from('customer_messages').select('id',{count:'exact',head:true}).or('support_status.is.null,support_status.eq.new'),
    sb.from('product_reviews').select('id',{count:'exact',head:true}).eq('status','pending')
   ]);
-  counts={messages:m.count||0,reviews:r.count||0};renderNav();
+  counts={...counts,messages:m.count||0,reviews:r.count||0};renderNav();
  }catch(e){/* counts are a convenience only */}
 }
 
@@ -129,6 +132,7 @@ const PAGES=[
  {id:'payments',label:'Payments',icon:'payments',group:'Store',sub:'Stripe receipts, refund status and refunds.'},
  {id:'packing',label:'Packing & Dispatch',icon:'packing',group:'Store',sub:'Paid orders waiting to be packed. Print packing slips in one go.'},
  {id:'returns',label:'Returns',icon:'returns',group:'Store',sub:'Return requests and where each one is up to.'},
+ {id:'live-chat',label:'Live Chat',icon:'chat',group:'Customers',sub:'Answer customers who asked to talk to a person.'},
  {id:'reviews',label:'Reviews',icon:'reviews',group:'Customers',sub:'Approve customer reviews before they go live.'},
  {id:'messages',label:'Customer Messages',icon:'messages',group:'Customers',sub:'Contact form enquiries and replies.'},
  {id:'marketing',label:'Marketing',icon:'marketing',group:'Growth',sub:'Campaign links and the sales they bring in.'},
@@ -142,7 +146,7 @@ window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(PAG
 function renderNav(){
  const nav=$('nav');nav.replaceChildren();let group='';
  const pending=orders.filter(o=>(o.fulfillment_status||'pending')==='pending').length;
- const badgeFor={orders:pending,messages:counts.messages,reviews:counts.reviews};
+ const badgeFor={orders:pending,messages:counts.messages,reviews:counts.reviews,'live-chat':counts.chats};
  for(const p of PAGES){
   if(p.group!==group){group=p.group;nav.append(h('div',{class:'nav-group',text:group}))}
   const a=h('a',{href:'#'+p.id,class:'nav'+(page===p.id?' active':''),'aria-current':page===p.id?'page':null},icon(p.icon),h('span',{text:p.label}));
@@ -661,7 +665,100 @@ function alertPreferences(root){
 }
 
 const ops=createAdminWorkflows({sb,node,section,notice:addNotice,details:(parent,o)=>details(o),adminApi,ukDate,paymentAction});
-const VIEWS={overview,orders:ordersPage,customers,products,payments,reviews,messages,marketing,analytics,settings,packing:root=>loadPanel(root,ops.packing(root)),returns:root=>loadPanel(root,ops.returns(root))};
+
+/* ---------- Live Chat ---------- */
+// Customers reach this from "How can we help?" -> "Talk to a person". While any chat waits, every open
+// Admin Studio tab rings (looping tone + banner) and phones/laptops with alerts on get repeated pushes.
+let chatWaiting=[],chatSelected=null,chatAfter=0,chatTimer=null,ringMutedUntil=0;
+const agentName=()=>(user?.user_metadata?.full_name||'').split(' ')[0]||'HALONAP team';
+const since=v=>{const s=Math.max(0,Math.round((Date.now()-new Date(v))/1000));return s<60?s+'s':Math.floor(s/60)+'m '+String(s%60).padStart(2,'0')+'s'};
+const Ring={ctx:null,timer:null,
+ start(){if(this.timer)return;try{this.ctx=this.ctx||new (window.AudioContext||window.webkitAudioContext)()}catch{return}
+  const burst=()=>{const c=this.ctx;if(c.state==='suspended')c.resume().catch(()=>{});const t=c.currentTime;for(const [at,len] of [[0,.4],[.6,.4]]){for(const f of [440,480]){const o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.setValueAtTime(0,t+at);g.gain.linearRampToValueAtTime(.12,t+at+.02);g.gain.setValueAtTime(.12,t+at+len-.03);g.gain.linearRampToValueAtTime(0,t+at+len);o.connect(g).connect(c.destination);o.start(t+at);o.stop(t+at+len)}}};
+  burst();this.timer=setInterval(burst,3000)},
+ stop(){clearInterval(this.timer);this.timer=null},
+ get blocked(){return this.ctx?.state==='suspended'}};
+document.addEventListener('pointerdown',()=>{if(Ring.ctx?.state==='suspended')Ring.ctx.resume().catch(()=>{})});
+let titleBase=document.title,titleFlash=null;
+function incoming(){
+ let bar=$('chatCall');
+ const show=user&&chatWaiting.length&&Date.now()>ringMutedUntil&&!(page==='live-chat'&&chatSelected&&chatWaiting.some(c=>c.id===chatSelected));
+ if(!show){bar?.remove();Ring.stop();clearInterval(titleFlash);titleFlash=null;return}
+ const c=chatWaiting[0];
+ if(!bar){bar=h('div',{id:'chatCall',class:'chat-call',role:'alertdialog','aria-label':'Customer waiting for live chat'});document.body.append(bar)}
+ bar.replaceChildren(
+  h('div',{class:'chat-call-icon','aria-hidden':'true'},h('span'),h('span'),'☎'),
+  h('div',{class:'chat-call-text'},h('strong',{text:(c.customer_name||'A customer')+' wants to chat'}),h('span',{text:(c.topic?c.topic+' · ':'')+'waiting '+since(c.created_at)+(chatWaiting.length>1?' · '+(chatWaiting.length-1)+' more waiting':'')}),Ring.blocked?h('span',{class:'chat-call-hint',text:'Click anywhere to turn the ring sound on'}):null),
+  btn('Answer',{kind:'gold',onclick:()=>answerChat(c.id)}),
+  btn('Mute 1 min',{sm:true,onclick:()=>{ringMutedUntil=Date.now()+60000;incoming()}}));
+ Ring.start();
+ if(!titleFlash)titleFlash=setInterval(()=>{document.title=document.title.startsWith('☎')?titleBase:'☎ Customer waiting · HALONAP'},1000);
+}
+async function watchChats(){
+ if(!user)return;
+ const {data,error}=await sb.from('live_chats').select('id,customer_name,topic,created_at').eq('status','waiting').order('created_at');
+ if(error)return;
+ chatWaiting=data||[];
+ if(counts.chats!==chatWaiting.length){counts.chats=chatWaiting.length;renderNav()}
+ incoming();
+}
+setInterval(watchChats,4000);
+async function answerChat(id){
+ const {data,error}=await sb.from('live_chats').update({status:'active',agent_id:user.id,agent_name:agentName(),accepted_at:new Date().toISOString()}).eq('id',id).eq('status','waiting').select('id');
+ if(error){toast('Could not answer: '+error.message);return}
+ if(!data?.length)toast('Someone else already answered this chat.');
+ chatSelected=id;chatAfter=0;chatWaiting=chatWaiting.filter(c=>c.id!==id);incoming();
+ if(page==='live-chat')render();else go('live-chat');
+}
+async function liveChat(root){
+ clearInterval(chatTimer);
+ const wrap=h('div',{class:'chat-admin'});root.append(wrap);
+ const listPanel=panel('Conversations',{flush:true});const threadPanel=panel(null,{flush:true});threadPanel.classList.add('chat-thread-panel');
+ wrap.append(listPanel,threadPanel);
+ const listBody=h('div',{class:'chat-list'});listPanel.append(listBody);
+ let chats=[];
+ const drawList=()=>{listBody.replaceChildren();
+  if(!chats.length){listBody.append(h('div',{style:'padding:0 20px 20px'},empty('No chats yet. When a customer taps “Talk to a person”, it appears here and rings.')));return}
+  for(const c of chats){const it=h('button',{type:'button',class:'chat-item'+(c.id===chatSelected?' active':'')+(c.status==='waiting'?' waiting':'')},
+   h('div',{class:'chat-item-top'},h('strong',{text:c.customer_name}),badge(c.status==='waiting'?'pending':c.status==='active'?'approved':'cancelled',c.status==='waiting'?'Waiting':c.status==='active'?'Live':'Ended')),
+   h('span',{class:'muted',text:(c.topic||'Chat')+' · '+ukDate(c.created_at)}));
+   it.onclick=()=>{chatSelected=c.id;chatAfter=0;drawList();openThread()};listBody.append(it)}};
+ const thread=h('div',{class:'chat-thread'});threadPanel.append(thread);
+ let msgs,head,form,input,current=null;
+ function openThread(){
+  current=chats.find(c=>c.id===chatSelected);thread.replaceChildren();
+  if(!current){thread.append(h('div',{class:'chat-empty'},empty('Choose a conversation on the left.')));return}
+  head=h('div',{class:'chat-thread-head'});msgs=h('div',{class:'chat-msgs',role:'log','aria-live':'polite'});
+  input=h('input',{type:'text',maxLength:2000,placeholder:'Type your reply…','aria-label':'Reply to customer'});
+  form=h('form',{class:'chat-reply'},input,btn('Send',{kind:'gold',type:'submit'}));
+  thread.append(head,msgs,form);drawHead();
+  form.onsubmit=async e=>{e.preventDefault();const body=input.value.trim();if(!body||current.status!=='active')return;input.value='';
+   const {error}=await sb.from('live_chat_messages').insert({chat_id:current.id,sender:'agent',body});if(error){toast('Not sent: '+error.message);input.value=body}else tick()};
+  tick();
+ }
+ function drawHead(){
+  const c=current;const seen=c.customer_seen_at&&Date.now()-new Date(c.customer_seen_at)<20000;
+  head.replaceChildren(h('div',null,h('h3',{text:c.customer_name}),h('p',{class:'muted',text:[c.customer_email,c.topic,c.status==='active'?(seen?'Customer is here':'Customer may have left'):null].filter(Boolean).join(' · ')})),
+   h('div',{class:'toolbar'},c.status==='waiting'?btn('Answer',{kind:'gold',onclick:()=>answerChat(c.id)}):null,
+    c.status==='active'?btn('End chat',{sm:true,onclick:async()=>{if(!confirm('End this chat?'))return;const {error}=await sb.from('live_chats').update({status:'closed',closed_at:new Date().toISOString(),closed_by:'agent'}).eq('id',c.id);if(error)toast(error.message);else{toast('Chat ended');tick()}}}):null,
+    c.customer_email?linkBtn('Email',`mailto:${c.customer_email}`,'messages'):null));
+  form.hidden=c.status!=='active';
+ }
+ async function tick(){
+  const r=await sb.from('live_chats').select('id,customer_name,customer_email,topic,status,agent_name,created_at,customer_seen_at').order('created_at',{ascending:false}).limit(60);
+  if(!r.error){chats=r.data||[];chats.sort((a,b)=>({waiting:0,active:1,closed:2}[a.status]-{waiting:0,active:1,closed:2}[b.status]));drawList();
+   const fresh=chats.find(c=>c.id===chatSelected);if(fresh&&current&&fresh.id===current.id){current=fresh;drawHead()}}
+  if(!current||!msgs)return;
+  const m=await sb.from('live_chat_messages').select('id,sender,body,created_at').eq('chat_id',current.id).gt('id',chatAfter).order('id').limit(200);
+  for(const x of m.data||[]){chatAfter=Math.max(chatAfter,x.id);
+   msgs.append(h('div',{class:'chat-msg chat-'+x.sender},x.sender==='system'?null:h('span',{class:'chat-who',text:x.sender==='agent'?'You':x.sender==='bot'?'Assistant':current.customer_name}),h('p',{text:x.body}),h('time',{text:clock(new Date(x.created_at))})));
+   msgs.scrollTop=msgs.scrollHeight}
+ }
+ await tick();if(chatSelected)openThread();else thread.append(h('div',{class:'chat-empty'},empty('Choose a conversation on the left.')));
+ chatTimer=setInterval(()=>{if(page!=='live-chat'){clearInterval(chatTimer);return}tick()},2500);
+}
+
+const VIEWS={'live-chat':liveChat,overview,orders:ordersPage,customers,products,payments,reviews,messages,marketing,analytics,settings,packing:root=>loadPanel(root,ops.packing(root)),returns:root=>loadPanel(root,ops.returns(root))};
 
 /* ---------- wiring ---------- */
 $('menuBtn').append(icon('menu'));
