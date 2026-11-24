@@ -14,9 +14,10 @@
    if(el.matches('[data-free-threshold]')&&free!==null)el.textContent=money(free);
    else if(el.matches('[data-ship="standard"]')&&standard!==null)el.textContent=money(standard);
    else if(el.matches('[data-ship="express"]')&&express!==null)el.textContent=money(express);
+   else if(el.matches('[data-one-mask]')&&price!==null&&standard!==null)el.textContent=free!==null&&price>=free?money(price)+' with free UK delivery':money(price+standard)+' including standard UK delivery';
    else if(el.matches('[data-price]')&&price!==null){el.textContent=money(price);if(onSale){const old=document.createElement('s');old.textContent=money(was);old.style.opacity='.6';el.prepend(old,' ')}}
   };
-  const selector='[data-free-threshold],[data-ship],[data-price]';
+  const selector='[data-free-threshold],[data-ship],[data-price],[data-one-mask]';
   const apply=root=>{if(root.matches?.(selector))fill(root);for(const el of root.querySelectorAll?root.querySelectorAll(selector):[])fill(el)};
   apply(document);
   /* Policy modals are rendered later from script.js. */

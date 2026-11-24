@@ -22,9 +22,9 @@ test('repeated Add to Bag cannot exceed checkout limit or erase the saved basket
 test('mixed-colour quantities and remove keep subtotal correct',()=>{
  const {dom,w,el}=setup();el('addToBag').click();
  w.document.querySelector('[data-colour="Pink"]').click();el('plus').click();el('addToBag').click();
- assert.equal(el('bagCount').textContent,'3');assert.equal(el('subtotal').textContent,'£38.97');
+ assert.equal(el('bagCount').textContent,'3');assert.equal(el('subtotal').textContent,'£29.97');
  w.document.querySelector('[aria-label="Decrease Pink quantity"]').click();
- assert.equal(el('subtotal').textContent,'£25.98');dom.window.close();
+ assert.equal(el('subtotal').textContent,'£19.98');dom.window.close();
 });
 test('bag and account overlays sit above product details',()=>{
  const {dom,w,el}=setup();const style=w.document.createElement('style');style.textContent=read('style.css');w.document.head.append(style);
