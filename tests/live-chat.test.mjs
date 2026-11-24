@@ -9,9 +9,8 @@ const reply=(b,s=200)=>new Response(b==null?null:JSON.stringify(b),{status:s});
 function res(){return {code:200,setHeader(){},status(c){this.code=c;return this},json(x){this.body=x;return this},end(){return this}}}
 const call=(body,headers={'x-forwarded-for':'203.0.113.9'})=>{const r=res();return handler({method:'POST',headers,body},r).then(()=>r)};
 
-test('start needs a name and a valid email when given',async()=>{
+test('start checks the email when given (name is optional)',async()=>{
  global.fetch=()=>{throw Error('must not fetch')};
- assert.equal((await call({action:'start',name:' '})).code,400);
  assert.equal((await call({action:'start',name:'Amy',email:'nope'})).code,400);
 });
 test('start saves the chat with a hashed secret, keeps the bot transcript and rings',async()=>{
@@ -49,4 +48,9 @@ test('customer cannot send to an ended chat',async()=>{
  const token='customer-secret-token-abc123';
  global.fetch=async url=>{if(url.includes('live_chats?select='))return reply([{id:ID,status:'closed',token_hash:sha(token),customer_name:'Amy'}]);throw Error('must not insert')};
  assert.equal((await call({action:'send',chat_id:ID,token,body:'hello?'})).code,409);
+});
+test('a customer can connect without giving a name',async()=>{
+ let saved;global.fetch=async(url,opt={})=>{if(url.includes('ip_hash'))return reply([]);if(url.endsWith('/live_chats')&&opt.method==='POST'){saved=JSON.parse(opt.body);return reply([{id:ID,customer_name:saved.customer_name}])}return reply(url.includes('order_push_devices')?[]:[{id:ID}])};
+ const r=await call({action:'start',topic:'Order or delivery',transcript:[{sender:'customer',body:'talk to a person please'}]});
+ assert.equal(r.code,200);assert.equal(saved.customer_name,'Website customer');assert.equal(saved.customer_email,null);
 });

@@ -45,8 +45,8 @@ export default async function handler(req,res){
   const body=req.body||{};const action=body.action;
 
   if(action==='start'){
-   const name=text(body.name,120),email=text(body.email,254),topic=text(body.topic,80);
-   if(!name)throw fail(400,'Please tell us your name');
+   // Customers connect without a form, so the name is optional.
+   const name=text(body.name,120)||'Website customer',email=text(body.email,254),topic=text(body.topic,80);
    if(email&&!EMAIL.test(email))throw fail(400,'Please check your email address');
    const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'').split(',')[0].trim();
    const ipHash=ip?sha('halonap-chat:'+ip):null;
