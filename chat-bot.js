@@ -42,6 +42,10 @@
   cleaning:{chip:'Cleaning',words:{'clean':5,'wash':5,'washing machine':6,'dry':3,'dryer':4,'iron':4,'dirty':3,'hygiene':2}},
   colours:{chip:'Colours',words:{'color*':4,'black':3,'pink':3,'grey':3,'which color':4}},
   account:{chip:'My account',words:{'account':4,'log in':4,'login':4,'sign in':4,'password':5,'forgot':3,'register':3,'sign up':4}},
+  sleep:{chip:'Sleep tips',words:{'sleep tip*':6,"can't sleep":6,'cant sleep':6,'insomnia':5,'jet lag':6,'jetlag':6,'night shift*':6,'shift work*':6,'shifts':4,'nights':3,'light sleeper':6,'fall asleep':5,'wake up':3,'better sleep':5,'sleep better':5,'tired':3,'snoring partner':4}},
+  warranty:{chip:'Warranty',words:{'warranty':7,'guarantee':6,'guaranteed':5,'how long does it last':5}},
+  gift:{chip:'Gifts',words:{'gift*':6,'present':5,'christmas':4,'birthday':4,'wrap*':3,'for my mum':4,'for my wife':4,'for my husband':4,'for my girlfriend':4,'for my boyfriend':4}},
+  stock:{chip:'Stock',words:{'in stock':7,'out of stock':7,'sold out':7,'restock':7,'back in stock':7,'available':3,'availability':4}},
   contact:{chip:'Contact details',words:{'email':3,'phone number':5,'whatsapp':5,'contact':4,'number':2,'address':2,'opening hours':4}}
  };
 
@@ -69,6 +73,10 @@
   cleaning:()=>'Hand wash gently in cold water (maximum 30°C), then air dry flat. Please don’t tumble dry or iron it.',
   colours:c=>'You can choose Black, Pink or Grey, all '+money(c.price)+'.',
   account:()=>'Use “Sign In” at the top of the page to log in or create an account. If you’ve forgotten your password, choose “Forgot password” there and we’ll email you a reset link.',
+  sleep:()=>'A few things that help: keep a regular bedtime, avoid screens and bright light for the last hour, keep the room cool and dark, and cut caffeine after lunch. A contoured mask like HALONAP keeps light out without pressing on your eyes, which helps for naps, shift work and travel. If poor sleep goes on for weeks, it’s worth talking to your GP.',
+  warranty:()=>'You have your full UK consumer-law rights if your mask is faulty, damaged or not as described, and we’ll put it right. We don’t advertise an extra fixed-term warranty. If there’s a problem, email hello@halonap.com with your order number and a short description (a photo helps).',
+  gift:c=>'It makes a lovely gift for anyone who travels, naps or works shifts, at '+money(c.price)+' in Black, Pink or Grey, and 2 masks ship free. For gift wrapping or a gift message, please ask the team (tap “Talk to a person” or email hello@halonap.com) as I can’t confirm that here.',
+  stock:()=>'If you can add a colour to your bag on the product page, it’s in stock and ready to ship. For restock dates of a sold-out colour, tap “Talk to a person” or email hello@halonap.com.',
   contact:()=>'You can email us at hello@halonap.com or message us on WhatsApp (button above). Or tap “Talk to a person” to chat with the team now.'
  };
 

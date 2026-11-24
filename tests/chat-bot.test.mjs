@@ -26,7 +26,11 @@ const CASES={
  contact:['what is your whatsapp','whats your email'],
  person:['can I talk to a person','I want to speak to someone','human please','customer service'],
  greet:['hi','hello there'],
- thanks:['thanks','thank you so much']
+ thanks:['thanks','thank you so much'],
+ sleep:['any tips to sleep better','I cant sleep at night','help with jet lag','I work night shifts'],
+ warranty:['is there a warranty','is it guaranteed'],
+ gift:['is it good as a christmas gift','do you do gift wrapping'],
+ stock:['is pink in stock','when will grey be back in stock']
 };
 for(const [want,qs] of Object.entries(CASES))test('understands: '+want,()=>{for(const q of qs)assert.equal(intent(q),want,'"'+q+'"')});
 
