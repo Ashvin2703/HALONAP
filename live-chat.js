@@ -14,28 +14,10 @@
  const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!=null)n.textContent=txt;return n};
 
  // ---------- quick answers ----------
- const ANSWERS={
-  delivery:()=>'UK Standard delivery is '+money(std())+' (about 3 business days) and free on orders of '+money(free())+' or more, so 2 masks ship free. UK Express is '+money(exp())+' (1–2 business days). Times are estimates.',
-  returns:()=>'You can request a return within 30 days of delivery for eligible items. Your UK statutory rights are not affected. Full details are on our Returns & Refunds page (halonap.com/returns.html).',
-  track:()=>'When your order is dispatched we email you the tracking number. If you can’t find that email (check spam too), tap “Talk to a person” and we’ll look it up.',
-  price:()=>'The HALONAP 3D Contoured Sleep Mask is '+money(price())+' per mask, in Black, Pink or Grey.'+(S().price_compare_at_pence>price()?' That’s down from '+money(S().price_compare_at_pence)+'.':'')+' Free UK delivery from '+money(free())+'.',
-  cleaning:()=>'Hand wash gently in cold water (maximum 30°C), then air dry flat. Please don’t iron it.',
-  product:()=>'It’s a 3D contoured sleep mask: soft eye pockets give your eyes and lashes space, the adjustable strap fits most heads, and the shape is designed to block light at home or while travelling.',
-  colours:()=>'Choose from Black, Pink and Grey, all '+money(price())+'.',
-  faulty:()=>'Sorry about that. Please tap “Talk to a person” with your order number and we’ll put it right. Your UK statutory rights for faulty goods are unaffected.'
- };
- const CHIPS=[['delivery','Delivery'],['track','Track my order'],['returns','Returns'],['price','Price & offers'],['product','About the mask'],['cleaning','Cleaning']];
- const MATCH=[
-  ['track',/track|where.*order|dispatch|tracking|not (arrived|received)|hasn.?t arrived|late/i],
-  ['returns',/return|refund|exchange|send.*back|cancel/i],
-  ['faulty',/faulty|broken|damaged|defect|ripped|wrong item/i],
-  ['delivery',/deliver|shipping|postage|courier|express|how long|arrive/i],
-  ['price',/price|cost|how much|discount|offer|sale|black friday|code|coupon|cheap/i],
-  ['cleaning',/clean|wash|dry|iron/i],
-  ['colours',/colou?r|black|pink|grey|gray/i],
-  ['product',/fit|size|strap|lash|makeup|light|side sleep|comfort|material|travel/i]
- ];
- const PERSON=/human|person|agent|someone|real|staff|call|speak|talk to/i;
+ const Bot=window.HalonapChatBot;if(!Bot)return;
+ const CHIPS=['delivery','track','returns','price','product','cleaning'].map(k=>[k,Bot.chip(k)]);
+ const reply=key=>Bot.answer(key,S());
+ const after=key=>setChips([['person','Talk to a person'],...CHIPS.filter(c=>c[0]!==key).slice(0,4)]);
 
  // ---------- UI ----------
  panel.hidden=true;
@@ -63,13 +45,14 @@
  function setChips(items){chips.replaceChildren();for(const [key,label] of items){const c=el('button','lc-chip'+(key==='person'?' lc-chip-person':''),label);c.type='button';c.onclick=()=>key==='person'?askPerson():ask(label,key);chips.append(c)}}
  const homeChips=()=>setChips([...CHIPS,['person','Talk to a person']]);
  function botSay(text,after){typing(500+Math.min(900,text.length*6),()=>{bubble('bot',text,{name:'HALONAP Assistant'});transcript.push({sender:'bot',body:text});after&&after()})}
- function ask(label,key){bubble('customer',label);transcript.push({sender:'customer',body:label});botSay(ANSWERS[key](),()=>setChips([['person','Talk to a person'],...CHIPS.filter(c=>c[0]!==key).slice(0,4)]))}
+ function ask(label,key){bubble('customer',label);transcript.push({sender:'customer',body:label});botSay(reply(key),()=>after(key))}
  function answerFree(q){
   bubble('customer',q);transcript.push({sender:'customer',body:q});
-  if(PERSON.test(q)){askPerson();return}
-  const hit=MATCH.find(([,re])=>re.test(q));
-  if(hit)botSay(ANSWERS[hit[0]](),()=>setChips([['person','Talk to a person'],...CHIPS.filter(c=>c[0]!==hit[0]).slice(0,4)]));
-  else botSay('I’m not sure about that one. Would you like to talk to a person from the HALONAP team?',()=>setChips([['person','Talk to a person'],...CHIPS.slice(0,4)]));
+  const m=Bot.match(q);
+  if(m.intent==='person'){askPerson();return}
+  if(m.intent){botSay(reply(m.intent),()=>after(m.intent));return}
+  if(m.choices){botSay('Happy to help. Which of these is it about?',()=>setChips([...m.choices.map(k=>[k,Bot.chip(k)]),['person','Talk to a person']]));return}
+  botSay('Sorry, I didn’t quite get that. Try a topic below, or talk to a person from the HALONAP team.',()=>setChips([['person','Talk to a person'],...CHIPS.slice(0,4)]));
  }
 
  // ---------- talk to a person ----------
