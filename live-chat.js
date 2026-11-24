@@ -52,7 +52,8 @@
   const m=Bot.match(q);
   if(m.intent==='person'){askPerson();return}
   if(m.intent){botSay(reply(m.intent),()=>after(m.intent));return}
-  if(m.choices){botSay('Happy to help. Which of these is it about?',()=>setChips([...m.choices.map(k=>[k,Bot.chip(k)]),['person','Talk to a person']]));return}
+  // Two topics in one message: answer both rather than asking which.
+  if(m.choices){const [a,b]=m.choices;botSay(reply(a),()=>botSay(reply(b),()=>after(b)));return}
   botSay('Sorry, I didn’t quite get that. Try a topic below, or talk to a person from the HALONAP team.',()=>setChips([['person','Talk to a person'],...CHIPS.slice(0,4)]));
  }
  async function answerFree(q){
