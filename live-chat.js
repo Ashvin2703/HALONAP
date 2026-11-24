@@ -28,9 +28,12 @@
   returns:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h11a5 5 0 010 10h-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   product:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 11c0-2 2-4 5-4h10c3 0 5 2 5 4s-2 4-4 4c-2 0-3-2-6-2s-4 2-6 2c-2 0-4-2-4-4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
   price:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.4" fill="currentColor"/></svg>',
+ phone:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+  back:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   person:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'};
  const svg=(name)=>{const s=el('span','lc-ico');s.innerHTML=ICON[name]||'';return s};   // static icons only, never customer text
- const brandAvatar=()=>{const a=el('span','lc-avatar lc-avatar-brand');a.setAttribute('aria-hidden','true');a.append('H',el('span','lc-avatar-o','o'));return a};
+ // The HALONAP gold "o" (same mark as halonap-o.svg and the logo), on black.
+ const brandAvatar=()=>{const a=el('span','lc-avatar lc-avatar-brand');a.setAttribute('aria-hidden','true');a.append(el('span','lc-o'));return a};
  const head=el('div','lc-head');const title=el('div','lc-title');
  const t1=el('strong',null,'HALONAP Support');const t2=el('span','lc-sub');const dot=el('span','lc-dot');const t2text=el('span',null,'Online · replies instantly');t2.append(dot,t2text);
  title.append(t1,t2);const headEnd=el('button','lc-head-btn','End chat');headEnd.type='button';headEnd.hidden=true;
@@ -114,14 +117,29 @@
  function askPerson(preTopic){
   if(state?.chat_id)return;
   chips.replaceChildren();form.hidden=true;
-  const card=el('form','lc-card');
-  card.append(el('p','lc-card-title','Connect with our team'),el('p','lc-card-sub','We’ll ring the HALONAP team now. Please keep this window open.'));
-  const name=el('input');name.placeholder='Your name';name.required=true;name.maxLength=120;name.autocomplete='name';name.setAttribute('aria-label','Your name');
-  const email=el('input');email.type='email';email.placeholder='Email (so we can follow up)';email.maxLength=254;email.autocomplete='email';email.setAttribute('aria-label','Email address');
-  const topic=el('select');topic.setAttribute('aria-label','What is it about?');for(const o of ['Order or delivery','Returns or refund','Product question','Something else']){topic.append(el('option',null,o))}if(preTopic){const t=String(preTopic).toLowerCase();topic.value=/return|refund/.test(t)?'Returns or refund':/order|deliver|track|parcel|dispatch|cancel|address/.test(t)?'Order or delivery':/mask|product|size|fit|material/.test(t)?'Product question':'Something else'}
-  const go=el('button','lc-go','Call the team');go.type='submit';const back=el('button','lc-back','Back to quick answers');back.type='button';
+  list.querySelector('.lc-welcome')?.remove();   // give the form the room
+  const card=el('form','lc-card lc-connect');card.setAttribute('aria-labelledby','lcConnectTitle');
+  const top=el('div','lc-connect-head');const ic=el('span','lc-connect-icon');ic.append(svg('person'));
+  const tt=el('div');const h=el('p','lc-card-title','Talk to our team');h.id='lcConnectTitle';
+  tt.append(h,el('p','lc-card-sub','A HALONAP team member will join this chat, usually within a few minutes. Please keep this window open.'));
+  top.append(ic,tt);card.append(top);
+  const field=(label,control,{optional,hint}={})=>{const f=el('label','lc-field');const l=el('span','lc-label',label);if(optional)l.append(el('span','lc-optional','Optional'));f.append(l,control);if(hint)f.append(el('span','lc-hint',hint));card.append(f);return control};
+  const name=field('Your name',Object.assign(el('input'),{required:true,maxLength:120,autocomplete:'name',placeholder:'e.g. Amy Smith'}));
+  const email=field('Email',Object.assign(el('input'),{type:'email',maxLength:254,autocomplete:'email',placeholder:'you@example.com'}),{optional:true,hint:'So we can reply if you need to leave the chat.'});
+  const topicWrap=el('div','lc-field');topicWrap.append(el('span','lc-label','What’s it about?'));
+  const pills=el('div','lc-pills');pills.setAttribute('role','radiogroup');pills.setAttribute('aria-label','What is it about?');
+  const OPTIONS=['Order or delivery','Returns or refund','Product question','Something else'];
+  const topic={value:OPTIONS[0]};
+  const pick=v=>{topic.value=v;for(const b of pills.children){const on=b.dataset.value===v;b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on));b.tabIndex=on?0:-1}};
+  for(const o of OPTIONS){const b=el('button','lc-pill',o);b.type='button';b.dataset.value=o;b.setAttribute('role','radio');b.onclick=()=>pick(o);pills.append(b)}
+  if(preTopic){const t=String(preTopic).toLowerCase();pick(/return|refund/.test(t)?OPTIONS[1]:/order|deliver|track|parcel|dispatch|cancel|address/.test(t)?OPTIONS[0]:/mask|product|size|fit|material/.test(t)?OPTIONS[2]:OPTIONS[3])}else pick(OPTIONS[0]);
+  pills.onkeydown=e=>{if(!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(e.key))return;e.preventDefault();const i=OPTIONS.indexOf(topic.value),n=OPTIONS[(i+(e.key==='ArrowRight'||e.key==='ArrowDown'?1:OPTIONS.length-1))%OPTIONS.length];pick(n);pills.querySelector('.on')?.focus()};
+  topicWrap.append(pills);card.append(topicWrap);
+  const go=el('button','lc-go lc-go-call');go.type='submit';go.append(svg('phone'),el('span',null,'Connect me now'));
   const msg=el('p','lc-err');msg.setAttribute('role','status');
-  card.append(name,email,topic,go,back,msg);list.append(card);list.scrollTop=list.scrollHeight;name.focus();
+  const back=el('button','lc-back');back.type='button';back.append(svg('back'),el('span',null,'Back to quick answers'));
+  const note=el('p','lc-connect-note');const pv=el('a',null,'Privacy');pv.href='privacy.html';pv.target='_blank';pv.rel='noopener';note.append('We only use these details to help you with this chat. ',pv);
+  card.append(go,msg,back,note);list.append(card);list.scrollTop=Math.max(0,card.offsetTop-12);name.focus({preventScroll:true});
   back.onclick=()=>{card.remove();form.hidden=false;homeChips()};
   card.onsubmit=async e=>{e.preventDefault();if(!card.reportValidity())return;go.disabled=true;msg.textContent='';
    try{
