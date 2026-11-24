@@ -394,5 +394,16 @@
   "can i call you",
   "whats the best way to contact you",
   "what is your email address"
+ ],
+ "hours": [
+  "what are your opening hours",
+  "when are you open",
+  "are you open now",
+  "what time does support close",
+  "is anyone there",
+  "are you open on sunday",
+  "what are your support hours",
+  "is the team online",
+  "what time can i talk to someone"
  ]
 }

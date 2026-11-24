@@ -1,4 +1,6 @@
-import test from 'node:test';
+import test,{mock} from 'node:test';
+// Run as if it's midday UK time, inside live-support hours (8am-10pm), whatever time the tests run.
+mock.timers.enable({apis:['Date'],now:Date.parse('2026-11-24T12:00:00Z')});
 import assert from 'node:assert/strict';
 import {runChat,runTool} from '../lib/chat-agent.js';
 process.env.SUPABASE_SERVICE_ROLE_KEY='test-service';

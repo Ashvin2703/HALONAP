@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import {database} from '../lib/commerce.js';
 import {notifyLiveChat} from '../lib/order-push.js';
+import {teamOnline,HOURS_TEXT} from '../lib/support-hours.js';
 
 // Customer side of HALONAP live chat. No sign-in: each chat gets a random secret that only the
 // customer's browser holds; we store its SHA-256. Admins reply from Admin Studio (RLS).
@@ -45,6 +46,8 @@ export default async function handler(req,res){
   const body=req.body||{};const action=body.action;
 
   if(action==='start'){
+   // Live agents only during support hours; never ring the team at night.
+   if(!teamOnline())return res.status(409).json({offline:true,error:'Our team is available '+HOURS_TEXT+'. Our assistant can still help now, or email hello@halonap.com and we’ll reply when we’re back.'});
    // Customers connect without a form, so the name is optional.
    const name=text(body.name,120)||'Website customer',email=text(body.email,254),topic=text(body.topic,80);
    if(email&&!EMAIL.test(email))throw fail(400,'Please check your email address');

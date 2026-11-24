@@ -15,6 +15,10 @@
 
  // ---------- quick answers ----------
  const Bot=window.HalonapChatBot;if(!Bot)return;
+ // Live-agent hours in UK time - keep in step with lib/support-hours.js (the server enforces them too).
+ const OPEN_HOUR=8,CLOSE_HOUR=22,HOURS='8am–10pm UK time';
+ const teamOnline=()=>{const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date());const h=Number(p.find(x=>x.type==='hour').value)%24+Number(p.find(x=>x.type==='minute').value)/60;return h>=OPEN_HOUR&&h<CLOSE_HOUR};
+ const OFFLINE_MSG='Our team is offline right now. A person is available here '+HOURS.replace('–',' to ')+', every day. I can keep helping you now, or you can email hello@halonap.com and we’ll reply when we’re back.';
  const CHIPS=['delivery','track','returns','price','product','cleaning'].map(k=>[k,Bot.chip(k)]);
  const reply=key=>Bot.answer(key,S());
  const after=key=>setChips(CHIPS.filter(c=>c[0]!==key).slice(0,4));
@@ -35,7 +39,7 @@
  // The HALONAP gold "o" (same mark as halonap-o.svg and the logo), on black.
  const brandAvatar=()=>{const a=el('span','lc-avatar lc-avatar-brand');a.setAttribute('aria-hidden','true');a.append(el('span','lc-o'));return a};
  const head=el('div','lc-head');const title=el('div','lc-title');
- const t1=el('strong',null,'HALONAP Support');const t2=el('span','lc-sub');const dot=el('span','lc-dot');const t2text=el('span',null,'Online · replies instantly');t2.append(dot,t2text);
+ const t1=el('strong',null,'HALONAP Support');const t2=el('span','lc-sub');const dot=el('span','lc-dot');const t2text=el('span',null,'Online');t2.append(dot,t2text);
  title.append(t1,t2);const headEnd=el('button','lc-head-btn','End chat');headEnd.type='button';headEnd.hidden=true;
  head.append(brandAvatar(),title,headEnd);
  const list=el('div','lc-list');list.setAttribute('role','log');list.setAttribute('aria-live','polite');
@@ -45,7 +49,7 @@
  input.addEventListener('input',()=>{sendBtn.disabled=aiBusy||!input.value.trim()});
  const foot=el('div','lc-foot');
  const legal=el('p','lc-legal');const pl=el('a',null,'Privacy');pl.href='privacy.html';pl.target='_blank';pl.rel='noopener';
- legal.append('HALONAP Assistant · Ask for a person any time · ',pl);
+ legal.append('Assistant 24/7 · Team '+HOURS+' · ',pl);
  box.append(head,list,chips,form,foot,legal);
  panel.before(box);
 
@@ -117,6 +121,7 @@
  let connecting=false;
  async function askPerson(preTopic){
   if(state?.chat_id||connecting)return;
+  if(!teamOnline()){chips.replaceChildren();botSay(OFFLINE_MSG,()=>setChips(CHIPS.slice(0,4)));return}
   connecting=true;chips.replaceChildren();list.querySelector('.lc-welcome')?.remove();
   const t=String(preTopic||transcript.filter(m=>m.sender==='customer').map(m=>m.body).join(' ')).toLowerCase();
   const topic=/return|refund/.test(t)?'Returns or refund':/order|deliver|track|parcel|dispatch|cancel|address|arriv/.test(t)?'Order or delivery':/mask|product|size|fit|material|colou?r/.test(t)?'Product question':'Something else';
@@ -129,6 +134,7 @@
    save();startLive();
   }catch(err){
    waitingRow?.remove();waitingRow=null;setHead('bot');
+   if(err.status===409){botSay(err.message,()=>setChips(CHIPS.slice(0,4)));return}
    bubble('system',err.message||'We couldn’t connect you just now. Please email hello@halonap.com.');
   }finally{connecting=false}
  }
@@ -141,7 +147,7 @@
  let timer=null,waitingRow=null;
  function setHead(status){
   box.dataset.status=status;
-  if(status==='bot'){t1.textContent='HALONAP Support';t2text.textContent='Online · replies instantly'}
+  if(status==='bot'){t1.textContent='HALONAP Support';t2text.textContent=teamOnline()?'Online · team here until 10pm':'Assistant online · team back at 8am';box.dataset.team=teamOnline()?'on':'off'}
   else if(status==='waiting'){t1.textContent='Connecting…';t2text.textContent='Finding a HALONAP team member for you'}
   else if(status==='active'){t1.textContent=(state.agent||'HALONAP team')+' is here';t2text.textContent='Live chat · HALONAP Customer Care'}
   else if(status==='closed'){t1.textContent='Chat ended';t2text.textContent='Thanks for chatting with HALONAP'}
@@ -179,7 +185,7 @@
   state=null;sessionStorage.removeItem(KEY);setHead('closed');form.hidden=true;headEnd.hidden=true;
   const again=el('button','lc-go','Start a new chat');again.type='button';again.onclick=()=>{reset()};foot.replaceChildren(again);
  }
- function reset(){clearInterval(timer);timer=null;state=null;sessionStorage.removeItem(KEY);clearList();foot.replaceChildren();form.hidden=false;input.placeholder='Type your question…';box.dataset.status='bot';t1.textContent='HALONAP Support';t2text.textContent='Online · replies instantly';headEnd.hidden=true;greet()}
+ function reset(){clearInterval(timer);timer=null;state=null;sessionStorage.removeItem(KEY);clearList();foot.replaceChildren();form.hidden=false;input.placeholder='Type your question…';headEnd.hidden=true;setHead('bot');greet()}
 
  form.onsubmit=async e=>{e.preventDefault();const q=input.value.trim();if(!q||aiBusy)return;input.value='';sendBtn.disabled=true;
   if(!state?.chat_id){answerFree(q);return}
@@ -198,5 +204,5 @@
   w.append(grid);list.append(w);chips.replaceChildren();lastSender=null;
  }
 
- if(state?.chat_id){state.after=0;box.dataset.status=state.status;startLive()}else{box.dataset.status='bot';greet()}
+ if(state?.chat_id){state.after=0;box.dataset.status=state.status;startLive()}else{setHead('bot');greet()}
 })();
