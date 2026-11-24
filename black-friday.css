@@ -1,0 +1,126 @@
+/* HALONAP Black Friday 2026. Only used while html.bf-on (set by black-friday.js). */
+:root{--bf-black:#0c0d10;--bf-ink:#f6f1e6;--bf-gold:#d9a83e;--bf-gold-2:#f3d48a;--bf-muted:#a9a59b}
+
+/* 1. Top sale bar */
+.bf-bar{position:relative;z-index:11;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 16px;padding:9px 16px;background:var(--bf-black);color:var(--bf-ink);font-size:13px;line-height:1.35;font-weight:500;text-align:center;overflow:hidden}
+.bf-bar::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(243,212,138,.18) 50%,transparent 70%);transform:translateX(-100%);animation:bf-sheen 4.5s 1s ease-in-out infinite;pointer-events:none}
+.bf-bar-tag{padding:3px 9px;border-radius:99px;background:var(--bf-gold);color:var(--bf-black);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;animation:bf-pulse 2.4s ease-in-out infinite}
+.bf-bar .bf-now{color:var(--bf-gold-2)}
+.bf-bar .bf-was{color:var(--bf-muted)}
+.bf-bar-count b{font-variant-numeric:tabular-nums;color:#fff}
+.bf-bar-cta{color:var(--bf-gold-2);font-weight:700;text-decoration:none;border-bottom:1px solid currentColor}
+.bf-bar-cta:hover{color:#fff}
+
+/* 2. Hero sticker */
+.bf-sticker{position:absolute;z-index:3;top:clamp(92px,9vw,118px);right:clamp(16px,4vw,48px);width:clamp(104px,12vw,138px);aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:radial-gradient(circle at 30% 25%,#23252c,var(--bf-black) 70%);color:var(--bf-ink);text-decoration:none;box-shadow:0 12px 30px rgba(0,0,0,.28),inset 0 0 0 2px var(--bf-gold),inset 0 0 0 6px var(--bf-black),inset 0 0 0 7px rgba(217,168,62,.55);animation:bf-pop .9s .6s cubic-bezier(.2,1.4,.4,1) both,bf-float 5s 1.6s ease-in-out infinite}
+.bf-sticker-top{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--bf-gold-2);font-weight:700}
+.bf-sticker-pct{font:700 clamp(26px,3vw,34px)/1 Georgia,serif;color:#fff}
+.bf-sticker-price{font-size:13px;font-weight:700;color:var(--bf-gold-2)}
+.bf-sticker:hover{transform:scale(1.05)}
+.bf-hero-line{display:block;margin-top:8px;font-size:15px;letter-spacing:.02em;animation:bf-rise .8s .5s cubic-bezier(.22,1,.36,1) both}
+.bf-hero-line b{color:var(--bf-gold-2,#f3d48a);font-weight:700}
+.bf-hero-line s{opacity:.7;margin-left:4px}
+
+/* 3. Black Friday section */
+.bf-promo{position:relative;overflow:hidden;background:var(--bf-black);color:var(--bf-ink);padding:clamp(48px,7vw,96px) 6%}
+.bf-promo::before{content:"";position:absolute;inset:-40% -10% auto auto;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(217,168,62,.22),transparent 62%);animation:bf-glow 9s ease-in-out infinite alternate;pointer-events:none}
+.bf-promo-inner{position:relative;max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:center}
+.bf-kicker{margin:0 0 14px;color:var(--bf-gold);font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+.bf-title{margin:0 0 22px;font:500 clamp(38px,5.4vw,68px)/1.02 Georgia,serif;letter-spacing:-.02em;color:#fff}
+.bf-price-drop{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 18px;margin-bottom:26px}
+.bf-drop-was{position:relative;font-size:clamp(20px,2.2vw,26px);color:var(--bf-muted)}
+.bf-drop-was::after{content:"";position:absolute;left:-4%;right:-4%;top:52%;height:2px;background:var(--bf-gold);transform:scaleX(0);transform-origin:left}
+.bf-played .bf-drop-was::after{animation:bf-strike .45s ease-out forwards}
+.bf-drop-now{font-weight:700;font-size:clamp(46px,6vw,76px);line-height:1;color:var(--bf-gold-2);font-variant-numeric:tabular-nums}
+.bf-drop-save{align-self:center;padding:6px 12px;border-radius:99px;background:var(--bf-gold);color:var(--bf-black);font-weight:800;font-size:13px;opacity:0;transform:scale(.6)}
+.bf-played .bf-drop-save{animation:bf-pop .6s 1.5s cubic-bezier(.2,1.5,.4,1) forwards}
+.bf-perks{list-style:none;margin:0 0 30px;padding:0;display:grid;gap:10px;font-size:15px;color:#e4ded1}
+.bf-perks li{display:flex;align-items:center;gap:12px}
+.bf-perk-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid rgba(217,168,62,.5);color:var(--bf-gold-2);font-size:13px;flex:none}
+.bf-cta{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 34px;border-radius:99px;background:var(--bf-gold);color:var(--bf-black);font-weight:800;font-size:15px;letter-spacing:.02em;text-decoration:none;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.bf-cta::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:bf-sheen 3.2s 2s ease-in-out infinite}
+.bf-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(217,168,62,.35)}
+.bf-promo-side{padding:clamp(22px,3vw,34px);border:1px solid rgba(217,168,62,.35);border-radius:20px;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}
+.bf-count-label{margin:0 0 14px;color:var(--bf-gold);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.bf-count{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.bf-count-cell{display:grid;justify-items:center;gap:6px;padding:16px 6px;border-radius:14px;background:#17181d;border:1px solid #2a2b31}
+.bf-count-num{font-weight:700;font-size:clamp(28px,3.4vw,42px);line-height:1;color:#fff;font-variant-numeric:tabular-nums}
+.bf-count-num.tick{animation:bf-tick .45s cubic-bezier(.2,1.2,.4,1)}
+.bf-count-unit{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bf-muted)}
+.bf-count-note{margin:14px 0 0;font-size:12.5px;color:var(--bf-muted)}
+.bf-promo .bf-promo-copy>*{animation:bf-rise .8s cubic-bezier(.22,1,.36,1) both;animation-play-state:paused}
+.bf-played .bf-promo-copy>*{animation-play-state:running}
+.bf-promo-copy>:nth-child(2){animation-delay:.08s}.bf-promo-copy>:nth-child(3){animation-delay:.16s}.bf-promo-copy>:nth-child(4){animation-delay:.24s}.bf-promo-copy>:nth-child(5){animation-delay:.32s}
+
+/* 4. Product price and gallery ribbon */
+.bf-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px}
+.bf-price .bf-was{font-size:.62em;color:#8a8f9e;font-weight:500}
+.bf-price .bf-now{color:#111}
+.bf-save-pill{align-self:center;padding:5px 11px;border-radius:99px;background:var(--bf-black);color:var(--bf-gold-2);font-size:12px;font-weight:700;letter-spacing:.04em;animation:bf-pop .6s .4s cubic-bezier(.2,1.5,.4,1) both}
+.bf-has-ribbon{position:relative;overflow:hidden}
+.bf-ribbon{position:absolute;z-index:2;top:22px;left:-46px;width:190px;padding:7px 0;transform:rotate(-45deg);background:var(--bf-black);color:var(--bf-gold-2);text-align:center;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+#hnStickyBuy .bf-was{opacity:.55;margin-right:4px;font-size:.9em}
+
+@keyframes bf-sheen{0%{transform:translateX(-100%)}55%,100%{transform:translateX(100%)}}
+@keyframes bf-pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,168,62,.55)}50%{box-shadow:0 0 0 6px rgba(217,168,62,0)}}
+@keyframes bf-pop{0%{opacity:0;transform:scale(.6) rotate(-8deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes bf-float{0%,100%{translate:0 0}50%{translate:0 -6px}}
+@keyframes bf-rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes bf-strike{to{transform:scaleX(1)}}
+@keyframes bf-tick{0%{transform:translateY(-35%);opacity:.2}100%{transform:none;opacity:1}}
+@keyframes bf-glow{from{transform:translate(0,0) scale(1)}to{transform:translate(-8%,10%) scale(1.15)}}
+
+@media(max-width:860px){
+ .bf-promo-inner{grid-template-columns:1fr}
+ .bf-bar{font-size:12px;gap:4px 10px;padding:8px 12px}
+ .bf-bar-text{order:3;flex-basis:100%}
+}
+@media(max-width:520px){
+ .bf-bar-cta{display:none}
+ .bf-count{gap:6px}.bf-count-cell{padding:12px 4px}
+ .bf-ribbon{top:16px;left:-52px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .bf-bar::after,.bf-bar-tag,.bf-sticker,.bf-hero-line,.bf-promo::before,.bf-cta::after,.bf-save-pill,.bf-count-num.tick,.bf-promo .bf-promo-copy>*{animation:none!important}
+ .bf-drop-save{opacity:1;transform:none}.bf-played .bf-drop-save{animation:none}
+ .bf-drop-was::after{transform:scaleX(1)}
+}
+
+/* The homepage header sits over the hero; keep it below the sale bar. */
+html.bf-on .header{top:var(--bf-bar-h,0px)!important}
+.bf-promo .bf-title{color:#fff!important}
+.bf-promo p,.bf-promo li{color:inherit}
+.bf-promo .bf-kicker,.bf-promo .bf-count-label{color:var(--bf-gold)!important}
+.bf-promo .bf-count-note{color:var(--bf-muted)!important}
+
+/* v2: richer Black Friday section */
+.bf-promo{padding-top:clamp(64px,8vw,110px);padding-bottom:clamp(64px,8vw,110px);background:radial-gradient(120% 90% at 85% 20%,#1d1a12 0%,var(--bf-black) 55%)}
+.bf-marquee{position:absolute;left:0;right:0;bottom:clamp(8px,2vw,24px);overflow:hidden;pointer-events:none;opacity:.5}
+.bf-marquee-track{display:flex;width:max-content;animation:bf-marquee 38s linear infinite}
+.bf-marquee span{font:700 clamp(64px,10vw,150px)/1 Georgia,serif;letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;color:transparent;-webkit-text-stroke:1px rgba(217,168,62,.22);padding-right:.3em}
+.bf-sparks{position:absolute;inset:0;pointer-events:none}
+.bf-spark{position:absolute;width:6px;height:6px;scale:var(--s,1);background:var(--bf-gold-2);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);opacity:0;animation:bf-twinkle 3s ease-in-out infinite}
+.bf-promo-inner{z-index:1}
+.bf-promo-side{padding:0;border:0;background:none;display:grid;gap:22px}
+.bf-fan{position:relative;height:clamp(170px,19vw,230px);display:flex;justify-content:center;align-items:flex-end}
+.bf-fan-item{position:relative;width:clamp(120px,13vw,160px);aspect-ratio:1;border-radius:50%;overflow:visible;text-decoration:none;margin:0 -22px;transition:transform .35s cubic-bezier(.2,1.3,.4,1),z-index 0s .1s;animation:bf-float 5s ease-in-out infinite}
+.bf-fan-item img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid var(--bf-black);box-shadow:0 0 0 1px rgba(217,168,62,.6),0 18px 40px rgba(0,0,0,.5),0 0 40px rgba(217,168,62,.18)}
+.bf-fan-pink{transform:rotate(-10deg) translateY(10px);animation-delay:.6s}
+.bf-fan-black{z-index:2;width:clamp(140px,15vw,184px);animation-delay:0s}
+.bf-fan-grey{transform:rotate(10deg) translateY(10px);animation-delay:1.2s}
+.bf-fan-item:hover,.bf-fan-item:focus-visible{z-index:3;transform:translateY(-14px) scale(1.07) rotate(0)}
+.bf-fan-label{position:absolute;left:50%;bottom:-12px;translate:-50% 0;padding:4px 10px;border-radius:99px;background:var(--bf-black);border:1px solid rgba(217,168,62,.55);color:var(--bf-gold-2);font-size:11.5px;font-weight:700;white-space:nowrap}
+.bf-count-card{position:relative;padding:clamp(20px,2.6vw,30px);border-radius:20px;background:linear-gradient(#121318,#121318) padding-box,conic-gradient(from var(--bf-angle,0deg),rgba(217,168,62,.15),var(--bf-gold-2),rgba(217,168,62,.15) 40%,rgba(217,168,62,.15) 60%,var(--bf-gold),rgba(217,168,62,.15)) border-box;border:1.5px solid transparent;animation:bf-spin 6s linear infinite;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+@property --bf-angle{syntax:'<angle>';inherits:false;initial-value:0deg}
+.bf-title{background:linear-gradient(100deg,#fff 30%,var(--bf-gold-2) 50%,#fff 70%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:bf-title-sheen 6s 1.5s ease-in-out infinite}
+.bf-promo .bf-title{color:#fff!important}
+@keyframes bf-marquee{to{transform:translateX(-50%)}}
+@keyframes bf-twinkle{0%,100%{opacity:0;transform:scale(.4) rotate(0)}50%{opacity:.9;transform:scale(1) rotate(45deg)}}
+@keyframes bf-spin{to{--bf-angle:360deg}}
+@keyframes bf-title-sheen{0%{background-position:100% 0}60%,100%{background-position:-50% 0}}
+@media(max-width:860px){.bf-fan{height:180px}.bf-marquee span{font-size:72px}}
+@media(prefers-reduced-motion:reduce){.bf-marquee-track,.bf-spark,.bf-fan-item,.bf-count-card,.bf-title{animation:none!important}.bf-spark{opacity:.6}}
+
+/* Gallery badge (replaces the diagonal ribbon) */
+.hn-gallery-label .bf-ribbon{position:static;display:inline-block;width:auto;transform:none;margin-left:10px;padding:4px 10px;border-radius:99px;font-size:10px;letter-spacing:.12em;box-shadow:none;vertical-align:middle;animation:bf-pulse 2.4s ease-in-out infinite}
+@media(max-width:520px){.bf-fan-label{font-size:10px;padding:3px 8px}.bf-fan-black .bf-fan-label{bottom:-30px}.bf-fan{margin-bottom:18px}}
