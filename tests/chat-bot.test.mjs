@@ -49,3 +49,14 @@ test('answers use live prices from Settings',()=>{
  assert.doesNotMatch(Bot.answer('price',{...s,price_compare_at_pence:null}),/down from/);
  assert.match(Bot.answer('abroad',s),/United Kingdom only/);
 });
+
+// The training bank: real-style customer questions (typos, slang, short and long) for every topic.
+// Add any question a customer asks that the bot gets wrong here, then add keywords until it passes.
+const BANK=JSON.parse(readFileSync(new URL('./fixtures/chat-questions.json',import.meta.url),'utf8'));
+test('training bank: every question reaches the right topic',()=>{
+ const wrong=[];let n=0;
+ for(const [want,qs] of Object.entries(BANK))for(const q of qs){n++;const m=Bot.match(q);if(!(m.intent===want||(m.choices&&m.choices[0]===want)))wrong.push(want+' <- '+(m.intent||m.choices||'none')+': '+q)}
+ assert.ok(n>=300,'bank has '+n+' questions');
+ assert.deepEqual(wrong,[]);
+});
+test('every topic in the bank has an answer',()=>{for(const k of Object.keys(BANK))if(!['person'].includes(k))assert.ok(Bot.answer(k,{price_pence:999}),k)});
