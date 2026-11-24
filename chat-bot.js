@@ -46,6 +46,13 @@
   warranty:{chip:'Warranty',words:{'warranty':7,'guarantee':6,'guaranteed':5,'how long does it last':5}},
   gift:{chip:'Gifts',words:{'gift*':6,'present':5,'christmas':4,'birthday':4,'wrap*':3,'for my mum':4,'for my wife':4,'for my husband':4,'for my girlfriend':4,'for my boyfriend':4}},
   stock:{chip:'Stock',words:{'in stock':7,'out of stock':7,'sold out':7,'restock':7,'back in stock':7,'available':3,'availability':4}},
+  about:{chip:'About HALONAP',words:{'about halonap':7,'who are you':6,'who runs':6,'who owns':6,'owner':4,'company':4,'brand':4,'where are you based':7,'where are you':4,'based':3,'uk company':5,'uk brand':5,'liverpool':5,'legit':5,'trust':4,'scam':5,'real company':6,'halonap mean':5}},
+  inbox:{chip:"What's in the box",words:{'in the box':7,"what's included":7,'whats included':7,'what do i get':6,'comes with':5,'case':3,'pouch':4,'earplug*':5}},
+  specs:{chip:'Size & details',words:{'dimension*':6,'measure*':5,'how big':5,'weight':5,'weigh*':6,'heavy':3,'cm':4,'specs':6,'specification*':6,'made in':5,'where is it made':6,'certif*':5,'100% blackout':6,'fully blackout':6,'cooling':5}},
+  compare:{chip:'Compared to others',words:{'compare*':6,'difference':5,'different from':6,'better than':6,'vs':4,'versus':5,'flat mask':6,'normal mask':5,'other masks':5,'why halonap':7,'why should i':5}},
+  reviews:{chip:'Reviews',words:{'review*':6,'rating*':5,'stars':4,'what do people say':6,'customers say':6,'worth it':5,'any good':5}},
+  vat:{chip:'VAT',words:{'vat':7,'tax':5,'invoice':5,'receipt':5}},
+  privacy:{chip:'Privacy',words:{'privacy':7,'my data':6,'personal data':6,'gdpr':7,'delete my':5,'unsubscribe':6,'marketing email*':5}},
   contact:{chip:'Contact details',words:{'email':3,'phone number':5,'whatsapp':5,'contact':4,'number':2,'address':2,'opening hours':4}}
  };
 
@@ -70,13 +77,20 @@
   payment:()=>'You pay securely at checkout through Stripe using a debit or credit card. Depending on your device and browser, Apple Pay or Google Pay may also be offered there. We never see your full card details.',
   product:()=>'It’s a 3D contoured sleep mask: the shaped eye cups sit away from your eyes so there’s room to blink and for lashes, the adjustable strap fits most heads, and the design blocks light for sleep at home, naps or travel.',
   material:()=>'Good question. For exact fabric and filling details (for example if you have sensitive skin or allergies), tap “Talk to a person” and we’ll confirm for you.',
-  cleaning:()=>'Hand wash gently in cold water (maximum 30°C), then air dry flat. Please don’t tumble dry or iron it.',
+  cleaning:()=>'Hand wash gently in cold water (up to 30°C), then air dry flat. Please don’t iron it.',
   colours:c=>'You can choose Black, Pink or Grey, all '+money(c.price)+'.',
   account:()=>'Use “Sign In” at the top of the page to log in or create an account. If you’ve forgotten your password, choose “Forgot password” there and we’ll email you a reset link.',
   sleep:()=>'A few things that help: keep a regular bedtime, avoid screens and bright light for the last hour, keep the room cool and dark, and cut caffeine after lunch. A contoured mask like HALONAP keeps light out without pressing on your eyes, which helps for naps, shift work and travel. If poor sleep goes on for weeks, it’s worth talking to your GP.',
   warranty:()=>'You have your full UK consumer-law rights if your mask is faulty, damaged or not as described, and we’ll put it right. We don’t advertise an extra fixed-term warranty. If there’s a problem, email hello@halonap.com with your order number and a short description (a photo helps).',
   gift:c=>'It makes a lovely gift for anyone who travels, naps or works shifts, at '+money(c.price)+' in Black, Pink or Grey, and 2 masks ship free. For gift wrapping or a gift message, please ask the team (tap “Talk to a person” or email hello@halonap.com) as I can’t confirm that here.',
   stock:()=>'If you can add a colour to your bag on the product page, it’s in stock and ready to ship. For restock dates of a sold-out colour, tap “Talk to a person” or email hello@halonap.com.',
+  about:()=>'HALONAP is a UK sleep brand, “Made for switching off”. It’s run by Ashvin Vattaparamban as a sole trader based at 81 Henry Street, Liverpool, L1 5BU. We sell one thing and focus on doing it well: the HALONAP 3D Contoured Sleep Mask. Questions any time at hello@halonap.com.',
+  inbox:()=>'In the box you get one HALONAP 3D sleep eye mask in the colour you chose. Nothing else is listed as included, so if you’re after earplugs or a pouch, I can’t promise those.',
+  specs:()=>'The mask has sculpted 3D eye pockets, an adjustable strap, a soft-feel finish and a design that reduces unwanted light. Exact measurements, weight, fabric and where it’s made aren’t listed on our website yet. Tap “Talk to a person” or email hello@halonap.com and the team will confirm.',
+  compare:()=>'Compared with basic flat masks, HALONAP has 3D contoured eye pockets that give your eyes and lashes room instead of pressing on them, plus an adjustable strap, a soft-feel finish and a travel-friendly design. (General comparison only: other masks vary.)',
+  reviews:()=>'Customers rate it highly. Reviewers mention it feels soft and comfortable, the adjustable strap makes it easy to wear and it blocks out light well. You can read every review, or write your own, in the Reviews section of our homepage.',
+  vat:()=>'HALONAP isn’t registered for VAT, so there’s no VAT on our prices. Your order confirmation email shows what you paid. If you need a receipt, email hello@halonap.com with your order number.',
+  privacy:()=>'We only collect what we need to run the shop (like your name, email, address and order), under UK GDPR. Card payments are handled securely by Stripe. To ask about or delete your data, email hello@halonap.com with “Privacy” in the subject. Full details: halonap.com/privacy.html',
   contact:()=>'You can email us at hello@halonap.com or message us on WhatsApp (button above). Or tap “Talk to a person” to chat with the team now.'
  };
 

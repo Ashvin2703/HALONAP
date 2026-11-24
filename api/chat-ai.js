@@ -13,7 +13,11 @@ function limited(ip){
 let settingsCache={at:0,data:null};
 async function settings(){
  if(Date.now()-settingsCache.at<60000)return settingsCache.data;
- try{const rows=await database('store_settings?select=price_pence,price_compare_at_pence,standard_delivery_pence,express_delivery_pence,free_delivery_threshold_pence,shop_paused&id=eq.true');settingsCache={at:Date.now(),data:rows?.[0]||null}}catch{}
+ try{
+  const [rows,reviews]=await Promise.all([database('store_settings?select=price_pence,price_compare_at_pence,standard_delivery_pence,express_delivery_pence,free_delivery_threshold_pence,shop_paused&id=eq.true'),database('product_reviews?select=rating&status=eq.approved').catch(()=>[])]);
+  const ratings=(reviews||[]).map(r=>Number(r.rating)).filter(n=>n>=1&&n<=5);
+  settingsCache={at:Date.now(),data:{...(rows?.[0]||{}),review_count:ratings.length,review_average:ratings.length?Math.round(ratings.reduce((a,b)=>a+b,0)/ratings.length*10)/10:null}};
+ }catch{}
  return settingsCache.data;
 }
 

@@ -30,7 +30,14 @@ const CASES={
  sleep:['any tips to sleep better','I cant sleep at night','help with jet lag','I work night shifts'],
  warranty:['is there a warranty','is it guaranteed'],
  gift:['is it good as a christmas gift','do you do gift wrapping'],
- stock:['is pink in stock','when will grey be back in stock']
+ stock:['is pink in stock','when will grey be back in stock'],
+ about:['who are you','where are you based','is halonap a real company','tell me about halonap'],
+ inbox:['what comes in the box','does it come with earplugs'],
+ specs:['what are the dimensions','how much does it weigh','where is it made'],
+ compare:['how is it different from a flat mask','why halonap'],
+ reviews:['what do customers say','is it worth it, any reviews'],
+ vat:['do you charge vat','can I get an invoice'],
+ privacy:['how do you use my data','delete my personal data gdpr']
 };
 for(const [want,qs] of Object.entries(CASES))test('understands: '+want,()=>{for(const q of qs)assert.equal(intent(q),want,'"'+q+'"')});
 
