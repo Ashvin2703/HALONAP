@@ -18,7 +18,10 @@ export async function changePrice(pricePence){
    created[colour]=price.id;
   }
  }catch(err){await archive(Object.values(created));throw Error('Stripe price could not be created: '+err.message)}
- const patch={price_pence:pricePence,stripe_prices:created};
+ // Free standard delivery always starts at two masks. Capped at £200 until db/free-delivery-two-masks.sql
+ // (database trigger + wider limit) is applied; after that the trigger keeps it at exactly 2 x price.
+ const freeFrom=Math.min(pricePence*2,20000);
+ const patch={price_pence:pricePence,stripe_prices:created,free_delivery_threshold_pence:freeFrom};
  // A sale "was" price must stay above the selling price, so clear it if the new price reaches it.
  const compareCleared=current.price_compare_at_pence!=null&&current.price_compare_at_pence<=pricePence;
  if(compareCleared)patch.price_compare_at_pence=null;
@@ -31,7 +34,7 @@ export async function changePrice(pricePence){
   const old=current.stripe_prices?.[colour];
   if(old&&old!==created[colour]){try{await stripe('prices/'+encodeURIComponent(old),form({active:'false'}))}catch(err){warnings.push(colour+' old price not archived')}}
  }
- return {price_pence:pricePence,previous_price_pence:current.price_pence,stripe_prices:created,compare_cleared:compareCleared,warnings};
+ return {price_pence:pricePence,previous_price_pence:current.price_pence,free_delivery_threshold_pence:freeFrom,stripe_prices:created,compare_cleared:compareCleared,warnings};
 }
 
 export default async function handler(req,res){
