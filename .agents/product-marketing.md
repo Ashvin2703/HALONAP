@@ -1,6 +1,6 @@
 # Product Marketing Context
 
-**Document version:** v2
+**Document version:** v3
 **Last updated:** 2026-11-27
 
 > Drafted from the halonap.com site files (`index.html`, `amazon/index.html`, `reviews.json`, `docs/support-replies.md`, policy pages) and the Amazon UK competitor report of 2026-11-27. Items marked **TBC** are not known yet. Confirm them before any skill treats them as fact.
@@ -10,7 +10,8 @@
 **What it does:** Shaped eye pockets leave room around the eyes and lashes. The contoured fit helps reduce unwanted light while you rest, and the adjustable strap lets each person find a comfortable fit.
 **Product category:** Sleep masks / eye masks for sleeping, in the 3D contoured sub-type. On Amazon UK this is Health & Personal Care > Sleep & Snoring Aids > Sleep Masks.
 **Product type:** D2C e-commerce, single product in 3 colours. Sold on halonap.com, and coming soon to Amazon UK.
-**Business model:** One-off purchase. £12.99 per mask in Black, Pink or Grey. UK Standard delivery £2.99 (about 3 business days), Express £3.99 (1–2 business days), free standard delivery from £25 (2 masks). Payment by Visa, Mastercard, Apple Pay, Amex, Onelink and Klarna.
+**Business model:** One-off purchase. £12.99 per mask in Black, Pink or Grey. UK Standard delivery £2.99 (about 3 business days), Express £3.99 (1–2 business days), free standard delivery always starts at 2 masks (2 × the current mask price, set in Admin Settings). **Current promotion:** Black Friday / Cyber Monday 2026: £9.99 (was £12.99, save 23%, "£3 off every mask") in all 3 colours, 24 Nov to 30 Nov 2026 at 11:59 pm UK time. Free delivery on 2 masks = £19.98 during the sale. The sale banner removes itself when the sale ends; the price must be set back to £12.99 in Admin Settings.
+Payment by Visa, Mastercard, Apple Pay, Amex, Onelink and Klarna.
 **Materials:**
 - Upper fabric, lower fabric and contact surface: 95% nylon, 5% spandex
 - Upper and lower interlayers: polyurethane sponge
@@ -75,7 +76,7 @@ Not used: HALONAP is B2C with one buyer. See Target Audience.
 | "Will it block all light?" | Yes: 100% blackout (confirmed by the owner, 2026-11-27). Keep a record of how it was tested, since UK ad rules (ASA/CAP) require proof for absolute claims. |
 | "Can I wear it lying on my side?" | Yes: side-sleeper friendly (confirmed by the owner, 2026-11-27). |
 | "Will it press on my lashes or extensions?" | The 3D eye pockets create room around the eyes and eyelashes (site FAQ). |
-| "Delivery adds cost." (£15.98 for one mask) | Free standard delivery from £25, so 2 masks for £25.98. On Amazon, use FBA/Prime. |
+| "Delivery adds cost." (£15.98 for one mask) | Free standard delivery on 2 masks (£25.98 at full price, £19.98 in the Black Friday sale). On Amazon, use FBA/Prime. |
 | "Can I return it?" | 30-day return request window for eligible items. Hygiene-seal exceptions may apply, and statutory rights are unaffected. |
 
 **Anti-persona:** Shoppers who only want the cheapest mask. People who need a medical device or treatment for a sleep disorder. People who want built-in headphones or silk.
@@ -144,6 +145,7 @@ Not used: HALONAP is B2C with one buyer. See Target Audience.
 | Channel | Price | Unit cost | Est. fees | Profit before ads | Break-even ad cost |
 |---------|-------|-----------|-----------|-------------------|--------------------|
 | halonap.com | £12.99 | £3.14 | card fees, packaging, postage not yet counted | up to £9.85 | max CPA about £9 |
+| halonap.com, Black Friday | £9.99 | £3.14 | card fees, packaging, postage not yet counted | up to £6.85 | max CPA about £6 |
 | Amazon UK (FBA) | £12.99 | £3.14 | about £1.95 referral (15%) + about £2.75 FBA | about £5.15 | ACoS about 40% |
 
 Amazon fees are estimates. Check them in Amazon's Revenue Calculator before setting bids. **TBC:** VAT status (sole trader; not VAT-registered unless turnover passes £90k).
@@ -165,10 +167,12 @@ Amazon fees are estimates. Check them in Amazon's Revenue Calculator before sett
 | Date | Learning | Evidence | Applies to | Status |
 |------|----------|----------|------------|--------|
 | 2026-11-27 | At £12.99 HALONAP sits between £5–8 volume masks and £23–55 premium masks, so copy must justify the price with design, comfort and gifting, not price. | Amazon UK competitor report, 2026-11-27 | Amazon listing, ads, website | watch |
+| 2026-11-27 | During the Black Friday sale (£9.99) profit before ads drops to about £6.85, so cap website CPA near £6 while it runs. Use "£3 off" or "save 23%" only with the real £12.99 was-price. | black-friday.js; margin table | Ads, website, social | active |
 | 2026-11-27 | Lead with "100% blackout" and "side sleeper": owner-approved, matched to real Amazon UK searches, and Manta charges £23.20+ for the same promise. | Owner confirmation; Amazon UK autocomplete 2026-11-27 | Amazon listing, ads, website | active |
 | 2026-11-27 | Avoid "halo sleep mask" as a keyword or ad target: the #1 competitor brands itself "Halo Masks". | Amazon UK listing B09CZ68WV3 | Amazon PPC, ads, SEO | active |
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v3 (2026-11-27) — Added the Black Friday / Cyber Monday 2026 sale (£9.99, 24–30 Nov), the 2-mask free delivery rule, a sale-price margin row and a sale CPA learning.
 - v2 (2026-11-27) — Owner input: added materials, zip pouch, £3.14 unit cost and margin table; widened the audience to everyone who struggles to sleep; approved "100% blackout", "side sleeper", "lash extensions" and "for men" claims and keywords; recorded 0 orders (pre-launch).
 - v1 (2026-11-27) — Initial context, drafted from the site files and the Amazon UK competitor report.
